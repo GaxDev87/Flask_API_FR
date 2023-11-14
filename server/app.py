@@ -65,6 +65,20 @@ def get_users():
       
         } for user in User.query.all()
      ])
+
+#updating a user
+@app.route('/users/<int:id>', methods=['PUT'])
+def update_user(id):
+    
+     if not id:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+     user = User.query.filter_by(id=id).first()
+     
+     if user:
+       user.email = request.json["email"]
+       db.session.commit()
+     return jsonify({"message": "user updated correctly"}), 200
     
 #add a new student
 @app.route("/registerstudent", methods=["POST"])
