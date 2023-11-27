@@ -11,9 +11,9 @@ db = SQLAlchemy()
 class Users(db.Model):
     __tablename__ = "Users"
     user_Id = db.Column(db.Integer, primary_key=True, index=True)
-    firstName = db.Column(db.String(25), nullable=False)
-    lastName = db.Column(db.String(25), nullable=False)
-    email = db.Column(db.String(80), unique=True, nullable=False)
+    firstName = db.Column(db.String(100), nullable=False)
+    lastName = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
     is_Admin = db.Column(db.Boolean, default=False)
     password = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime(timezone=True),
@@ -23,7 +23,7 @@ class Courses(db.Model):
     __tablename__ = "Courses"
     course_Id = db.Column(db.Integer, primary_key=True, index=True)
     user_Id = db.Column(db.Integer, db.ForeignKey("users.user_Id"), nullable=False)
-    course_Name = db.Column(db.String(25), nullable=False)
+    course_Name = db.Column(db.String(100), nullable=False)
     is_course_Completed = db.Column(db.Boolean, default=False)
     course_comp_Date = db.Column(db.DateTime(timezone=False),
                              server_default=func.now())
@@ -33,13 +33,13 @@ class Roles(db.Model):
     __tablename__ = "Roles"
     role_Id = db.Column(db.Integer, primary_key=True, index=True)
     user_Id = db.Column(db.Integer, db.ForeignKey("users.user_Id"), nullable=False)
-    role_Type = db.Column(db.String(25), nullable=False)
+    role_Type = db.Column(db.String(50), nullable=False)
  
 class Permissions(db.Model):
     __tablename__ = "Permissions"
     permission_Id = db.Column(db.Integer, primary_key=True, index=True)
     role_Id = db.Column(db.Integer, db.ForeignKey("roles.role_Id"), nullable=False)
-    description = db.Column(db.String(30), nullable=False)
+    description = db.Column(db.String(50), nullable=False)
     value = db.Column(db.Integer, nullable=False)
 
 
