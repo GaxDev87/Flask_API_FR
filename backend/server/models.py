@@ -22,7 +22,7 @@ class Users(db.Model):
 class Courses(db.Model):
     __tablename__ = "Courses"
     course_Id = db.Column(db.Integer, primary_key=True, index=True)
-    user_Id = db.Column(db.Integer, db.ForeignKey("users.user_Id"), nullable=False)
+    user_Id = db.Column(db.Integer, db.ForeignKey("Users.user_Id"), nullable=False)
     course_Name = db.Column(db.String(100), nullable=False)
     is_course_Completed = db.Column(db.Boolean, default=False)
     course_comp_Date = db.Column(db.DateTime(timezone=False),
@@ -32,13 +32,13 @@ class Courses(db.Model):
 class Roles(db.Model):
     __tablename__ = "Roles"
     role_Id = db.Column(db.Integer, primary_key=True, index=True)
-    user_Id = db.Column(db.Integer, db.ForeignKey("users.user_Id"), nullable=False)
+    user_Id = db.Column(db.Integer, db.ForeignKey("Users.user_Id"), nullable=False)
     role_Type = db.Column(db.String(50), nullable=False)
  
 class Permissions(db.Model):
     __tablename__ = "Permissions"
     permission_Id = db.Column(db.Integer, primary_key=True, index=True)
-    role_Id = db.Column(db.Integer, db.ForeignKey("roles.role_Id"), nullable=False)
+    role_Id = db.Column(db.Integer, db.ForeignKey("Roles.role_Id"), nullable=False)
     description = db.Column(db.String(50), nullable=False)
     value = db.Column(db.Integer, nullable=False)
 
