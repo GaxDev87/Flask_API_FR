@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from uuid import uuid4
 from sqlalchemy.sql import func
+from sqlalchemy.orm import sessionmaker, relationship 
+
 
 
 db = SQLAlchemy()
@@ -23,9 +25,11 @@ class Courses(db.Model):
     __tablename__ = "Courses"
     course_Id = db.Column(db.Integer, primary_key=True, index=True)
     course_Name = db.Column(db.String(100), nullable=False)
-    is_course_Completed = db.Column(db.Boolean, default=False)
-    course_comp_Date = db.Column(db.DateTime(timezone=False),
-                             server_default=func.now())  
+    department_Name = db.Column(db.String(100), nullable=False)
+    Enrollments = relationship('Enrollments', backref='course', cascade='all, delete') 
+    Documents = relationship('Documents', backref='document', cascade='all, delete') 
+    Videos = relationship('Videos', backref='video', cascade='all, delete') 
+  
 
 class Enrollments(db.Model):
     __tablename__ = "Enrollments"
@@ -37,6 +41,9 @@ class Enrollments(db.Model):
     email = db.Column(db.String(100), unique=False, nullable=False)
     created_at = db.Column(db.DateTime(timezone=True),
                              server_default=func.now())
+    is_course_Completed = db.Column(db.Boolean, default=False)
+    course_comp_Date = db.Column(db.DateTime(timezone=False),
+                             server_default=func.now())  
     
 
 class Documents(db.Model):

@@ -5,7 +5,7 @@ import { cssBundleHref } from "@remix-run/css-bundle";
 import registroStyles from "~/styles/registro.css";
 import { LinksFunction, json } from "@remix-run/node";
 import Modal from "react-modal";
-import NTT from "~/images/NTT-Data-Logo.png";
+import NTT from "~/images/NTT2.png";
 
 import {
   Links,
