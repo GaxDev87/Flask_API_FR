@@ -618,9 +618,9 @@ video {
   border-radius: 0.75rem;
 }
 
-.border-r-indigo-600 {
+.border-r-lime-500 {
   --tw-border-opacity: 1;
-  border-right-color: rgb(79 70 229 / var(--tw-border-opacity));
+  border-right-color: rgb(132 204 22 / var(--tw-border-opacity));
 }
 
 .bg-blue-700 {
