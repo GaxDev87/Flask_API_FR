@@ -4,7 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS, cross_origin
 from flask_session import Session
 from config import ApplicationConfig
-from models import db, Users, Roles, Courses
+from models import db, Users, Roles, User_courses, Permissions, Courses, Documents, Videos, User_courses
 import os
 
 app = Flask(__name__)
@@ -28,7 +28,7 @@ with app.app_context():
     
 # ##********************USERS*********************#
 
-# Register a user
+# create a user
 @app.route("/user", methods=["POST"])
 def register_user():    
    
@@ -50,187 +50,360 @@ def register_user():
         session["user_Id"] = new_user.user_Id
         return jsonify({'message': 'user created!',"id": new_user.user_Id, "firstName": new_user.firstName, "lastName": new_user.lastName,"email": new_user.email})
     except:
-        return jsonify({'error': 'error creating user'}), 500    
+        return jsonify({'error': 'error creating user'}), 500   
+    
+# # update a user by id
+@app.route("/update/<int:id>", methods=["PUT"])
+def update_user(id):
+ try:
+     user = Users.query.filter_by(user_Id=id).first()
+
+     if not id:
+         return jsonify({"error": "Unauthorized"}), 401  
+     
+
+     else:     
+          if(user.user_Type=="Admin"):    
+              user.user_Type=="User"     
+          else: 
+             user.user_Type=="Admin"             
+            
+     db.session.commit()
+             
+ except:
+            return jsonify({'message': 'error getting user'}), 500
+
+# # delete a user
+    
+@app.route('/delete/<int:id>', methods=['DELETE'])
+def delete_user(id):
+   try:
+     user = Users.query.filter_by(user_Id=id).first()
+     if user:
+       db.session.delete(user)
+       db.session.commit()      
+       return jsonify({'message': 'user deleted'}), 200
+     return jsonify({'message': 'user not found'}), 404
+   except:
+     return jsonify({'message': 'error getting user'}), 500
    
-# Get current user
+
+# register a user for a course 
+@app.route("/course_enrollment", methods=["POST"])
+def register_user_course():
+   
+    try:       
+        email = request.json["email"]
+        course_Id = request.json["course_Id"]
+
+        user = Users.query.filter_by(email=email).first()
+        course = Courses.query.filter_by(course_Id=course_Id).first()
+
+        if not user and not course:
+           return jsonify({"error": "User or course not found"}), 401    
+        
+        course_and_user_exists = User_courses.query.filter_by(course_Id=course_Id, user_Id=user.user_Id).first() is not None
+
+        if course_and_user_exists:
+            return jsonify({"error": "User already registered for this course"}), 409
+
+        new_enrollment = User_courses( user_Id=user.user_Id, course_Id=course_Id, course_Name=course.course_Name)
+        db.session.add(new_enrollment)
+        db.session.commit()
+        session["user_course_Id"] = new_enrollment.user_course_Id
+        return jsonify({'message': 'User created!', "user id": new_enrollment.user_Id, "id": new_enrollment.user_course_Id, "Course Name": new_enrollment.course_Name})
+    except:
+        return jsonify({'error': 'Error creating user'}), 500    
+    
+
+    # get enrolled courses by user id
+@app.route('/user_courses/<id>', methods=['GET'])
+def get_user_courses(id):
+
+  try:
+
+    if not id: 
+        return jsonify({"error": "Unauthorized"}), 401       
+
+    return jsonify(
+    [
+        {
+            "user_Id": user.user_Id,              
+            "course_Id": user.course_Id,
+            "course_Name": user.course_Name,
+            
+        }
+        for user in User_courses.query.filter_by(user_Id=id).first()
+    ]
+)
+  
+  except:
+      return jsonify({'message': 'error getting enrollments'}), 500
+    
+
+    
+    # # update a user by id  
+
+# get current user
 @app.route("/current")
 def get_current_user():
     user_Id = session.get("user_Id")
 
-    if not user_Id:
+    if not id:
         return jsonify({"error": "Unauthorized"}), 401
 
     user = Users.query.filter_by(user_Id=user_Id).first()
-    return jsonify({"id": user.user_Id, "email": user.email})
+    return jsonify({ "id": user.user_Id,              
+                "firstName": user.firstName,
+                "lastName": user.lastName,
+                "email": user.email,})
 
-# Create a course
-@app.route("/course", methods=["POST"])
-def register_course():    
-   
-    try:      
-        user_Id = session.get("user_Id")
-        course_Name = request.json["course_Name"]
-        #verifies if Id provided exists in the Users table
-        user = Users.query.filter_by(user_Id=user_Id).first()
-        if not user:
-           return jsonify({"error": "User does not exist in database"}), 401
-        
-
-        course_exists = Courses.query.filter_by(course_Name=course_Name, user_Id=user.user_Id).first() is not None
-
-        if course_exists:
-            return jsonify({"error": "A course associated with current user already exists"}), 409
-
-        new_course = Courses(course_Name=course_Name, user_Id=user.user_Id)
-        db.session.add(new_course)
-        db.session.commit()
-        session["course_Id"] = new_course.course_Id
-        return jsonify({'message': 'course created!',  "user_Id": new_course.user_Id, "FirstName": user.firstName, 
-                        "lastName": user.lastName,"course_Id": new_course.course_Id, "Course_Name": new_course.course_Name})
-    except:
-        return jsonify({'error': 'error creating user'}), 500   
-
-# get a user by id
-@app.route('/users/<int:user_Id>', methods=['GET'])
-def get_user(user_Id):
-  try:
-    user = Users.query.filter_by(user_Id=user_Id).first()
-    if user:
-      return jsonify({"id": user.user_Id, "email": user.email}), 200
-    return jsonify({'message': 'user not found'}), 404
-  except:
-    return jsonify({'message': 'error getting user'}), 500
-
-# get all users
+# get all users,
 @app.route("/users", methods=["GET"])
 def get_users():
     return jsonify(
         [
             {
-                "id": user.id,
+                "id": user.user_Id,              
+                "firstName": user.firstName,
+                "lastName": user.lastName,
                 "email": user.email,
+                "user_Type": user.user_Type,
             }
             for user in Users.query.all()
         ]
     )
 
-# # updating a user by id
-# @app.route("/users/<int:id>", methods=["PUT"])
-# def update_user(id):
-
-#     if not id:
-#         return jsonify({"error": "Unauthorized"}), 401
+# get a user by id
+@app.route('/users/<id>', methods=['GET'])
+def get_user(id):
+  
+  try:
     
-#     try:
-#         user = User.query.filter_by(id=id).first()
+    user = Users.query.filter_by(user_Id=id).first()
+    if user:
+     
 
-#         if user:
-#             user.email = request.json["email"]
-#             db.session.commit()
-#             return jsonify({'message': 'user updated',"id": user.id, "email": user.email}), 200
-#     except:
-#         return jsonify({'message': 'error getting user'}), 500
-
-
-# # add a new student
-
-# # delete a user
-# @app.route('/users/<int:id>', methods=['DELETE'])
-# def delete_user(id):
-#   try:
-#     user = User.query.filter_by(id=id).first()
-#     if user:
-#       db.session.delete(user)
-#       db.session.commit()      
-#       return jsonify({'message': 'user deleted'}), 200
-#     return jsonify({'message': 'user not found'}), 404
-#   except:
-#     return jsonify({'message': 'error getting user'}), 500
+      return jsonify({ "user_Id": user.user_Id,              
+                "firstName": user.firstName,
+                "lastName": user.lastName,
+                "user_Type": user.user_Type,
+                "email": user.email,}), 200
+    
+    session["user_id"] = user.user_Id
+    return jsonify({'message': 'user not found'}), 404
+  except:
+    return jsonify({'message': 'error getting user'}), 500
+  
+  
 
 
-# #********************STUDENTS************************#
+# create a course
+@app.route("/course", methods=["POST"])
+def register_course():    
+   
+    try:      
+        course_Name = request.json["course_Name"]
+        department_Name = request.json["department_Name"]
+        #verifies if Id provided exists in Users table         
 
-# @app.route("/registerstudent", methods=["POST"])
-# def register_student():
+        course_exists = Courses.query.filter_by(course_Name=course_Name).first() is not None
 
-#     try:
-#         firstname = request.json["firstname"]
-#         lastname = request.json["lastname"]
-#         email = request.json["email"]
-#         age = request.json["age"]
+        if course_exists:
+            return jsonify({"error": "A course with the name provided already exists"}), 409
 
-#         student_exists = Student.query.filter_by(email=email).first() is not None
+        new_course = Courses(course_Name=course_Name, department_Name=department_Name)
+        db.session.add(new_course)
+        db.session.commit()
+        session["course_Id"] = new_course.course_Id
+        return jsonify({'message': 'course created!',"course_Id": new_course.course_Id, "Course_Name": new_course.course_Name, "Department": new_course.department_Name})
+    except:
+        return jsonify({'error': 'error creating user'}), 500   
+    
 
-#     except student_exists:
-#         return jsonify({"error": "Student already exists"}), 409
 
-#         new_student = Student(
-#             firstname=firstname, lastname=lastname, email=email, age=age
-#         )
-#         db.session.add(new_student)
-#         db.session.commit()
+# get all courses
+@app.route('/get_courses', methods=["GET"])
+def get_courses():
+    
+    return jsonify(
+        [ 
+            {   
+                "course_Id": course.course_Id,              
+                "course_Name": course.course_Name,
+                "department_Name": course.department_Name,
+              
+            }
+            for course in Courses.query.all()
+        ]
+    )
 
-#         session["student_id"] = new_student.id
+    
+    # # update a course by course id
+@app.route("/course/<int:id>", methods=["PUT"])
+def update_course(id):
 
-#         return jsonify(
-#             {
-#                 "id": new_student.id,
-#                 "firstname": new_student.firstname,
-#                 "lastname": new_student.lastname,
-#                 "email": new_student.email,
-#                 "age": new_student.age,
-#             }
-#         )
+     if not id:
+         return jsonify({"error": "course id not found"}), 401
+    
+     try:
+         course = Courses.query.filter_by(course_Id=id).first()
+         enrollment = User_courses.query.filter_by(course_Id=id).first()
 
-# # Get current student
-# @app.route("/currentStudent")
-# def get_current_student():
-#     student_id = session.get("student_id")
+         if course:
+             course.course_Name = request.json["course_Name"]
+             course.department_Name = request.json["department_Name"] 
+             enrollment.course_Name = course.course_Name 
+             db.session.commit()
+             return jsonify({'message': 'Course updated!',"id": course.course_Id, "Name": course.course_Name, "Department": course.department_Name}), 200
+     except:
+         return jsonify({'message': 'error updating course'}), 500
 
-#     if not student_id:
-#         return jsonify({"error": "Unauthorized"}), 401
-#     student = Student.query.filter_by(id=student_id).first()
-#     return jsonify({"id": student.id, "email": student.email})
+#delete a course
+@app.route('/delete_course/<int:id>', methods=['DELETE'])
+def delete_course(id):
+   try:
+     course = Courses.query.filter_by(course_Id=id).first()
+     if course:
+       db.session.delete(course)
+       db.session.commit()      
+       return jsonify({'message': 'course deleted'}), 200
+     return jsonify({'message': 'course not found'}), 404
+   except:
+     return jsonify({'message': 'error getting course'}), 500
 
-# # get all students
-# @app.route("/students", methods=["GET"])
-# def get_students():
+# create a resource document
+@app.route("/document", methods=["POST"])
+def create_document(): 
 
-#     return jsonify(
-#         [
-#             {
-#                 "id": student.id,
-#                 "firstname": student.firstname,
-#                 "lastname": student.lastname,
-#                 "email": student.email,
-#                 "age": student.age,
-#             }
-#             for student in Student.query.all()])
+    try:   
+        course_Id = request.json["course_Id"]   
+        course_Name= request.json["course_Name"]
+        document_Url = request.json["document_Url"]
 
-# # Login
-# @app.route("/login", methods=["POST"])
-# def login_user():
-#     email = request.json["email"]
-#     password = request.json["password"]
+        #verifies if course name and course id correspond with a record in the table
+        course = Courses.query.filter_by(course_Id=course_Id, course_Name=course_Name).first()
+        if not course:
+           return jsonify({"error": "Course name does not exist in database"}), 401
+        
+        # verifies if a course name with the same url already exists in Documents table
+        document_exists = Documents.query.filter_by(document_Name=course.course_Name, document_Url=document_Url).first() is not None
 
-#     user = User.query.filter_by(email=email).first()
+        if document_exists:
+            return jsonify({"error": "An url document associated with course already exists"}), 409
 
-#     if user is None:
-#         return jsonify({"error": "Unauthorized"}), 401
+        new_document = Documents(course_Id=course_Id, document_Name=course_Name, document_Url=document_Url)
+        db.session.add(new_document)
+        db.session.commit()
+        session["course_Id"] = new_document.document_Id
+        return jsonify({'message': 'document created!',  "document_Id": new_document.document_Id, "document_Name": new_document.document_Name})
+    except:
+        return jsonify({'error': 'error creating document'}), 500  
 
-#     if not bcrypt.check_password_hash(user.password, password):
-#         return jsonify({"error": "Unauthorized"}), 401
 
-#     session["user_id"] = user.id
+# # update a document by course id
+@app.route("/document/<int:id>", methods=["PUT"])
+def update_document(id):
 
-#     return jsonify({"id": user.id, "email": user.email})
+     if not id:
+         return jsonify({"error": "document id not found"}), 401
+    
+     try:
+         document = Documents.query.filter_by(document_Id=id).first()
+       
 
-# # Logout
-# @app.route("/logout", methods=["POST"])
-# def logout_user():
-#     session.pop("user_id")
-#     return "200"
+         if document:
+             document.document_Url = request.json["document_Url"]
+           
+             db.session.commit()
+             return jsonify({'message': 'document updated!',"id": document.document_Id, "Url": document.document_Url}), 200
+     except:
+         return jsonify({'message': 'error updating document_Url'}), 500 
+    
+#delete a document
+@app.route('/document/<int:id>', methods=['DELETE'])
+def delete_document(id):
+   try:
+     document = Documents.query.filter_by(document_Id=id).first()
+     if document:
+       db.session.delete(document)
+       db.session.commit()      
+       return jsonify({'message': 'document deleted'}), 200
+     return jsonify({'message': 'document not found'}), 404
+   except:
+     return jsonify({'message': 'error getting document'}), 500
 
+# Create a  video
+@app.route("/video", methods=["POST"])
+def create_video(): 
+    try:   
+        course_Id = request.json["course_Id"]   
+        course_Name= request.json["course_Name"]
+        video_Url = request.json["video_Url"]
+
+        #verifies if course name and course id correspond with a record in the table
+        course = Courses.query.filter_by(course_Id=course_Id, course_Name=course_Name).first()
+        if not course:
+           return jsonify({"error": "Course name does not exist in database"}), 401
+        
+        # verifies if a course name with the same url already exists in Videos table
+        video_exists = Videos.query.filter_by(video_Name=course.course_Name, video_Url=video_Url).first() is not None
+
+        if video_exists:
+            return jsonify({"error": "An url document associated with course already exists"}), 409
+
+        new_video = Videos(course_Id=course_Id, video_Name=course_Name, video_Url=video_Url)
+        db.session.add(new_video)
+        db.session.commit()
+        session["course_Id"] = new_video.video_Id
+        return jsonify({'message': 'video created!',  "video_Id": new_video.video_Id, "video_Name": new_video.video_Name})
+    except:
+        return jsonify({'error': 'error creating video'}), 500   
+    
+
+#delete a video
+@app.route('/video/<int:id>', methods=['DELETE'])
+def delete_video(id):
+   try:
+     video = Videos.query.filter_by(video_Id=id).first()
+     if video:
+       db.session.delete(video)
+       db.session.commit()      
+       return jsonify({'message': 'video deleted'}), 200
+     return jsonify({'message': 'video not found'}), 404
+   except:
+     return jsonify({'message': 'error getting video'}), 500
+
+
+ # Login
+ 
+@app.route("/login", methods=["POST"])
+def login_user():
+     email = request.json["email"]
+     password = request.json["password"]
+
+     user = Users.query.filter_by(email=email).first()
+
+     if user is None:
+         return jsonify({"error": "Unauthorized"}), 401
+
+     if not bcrypt.check_password_hash(user.password, password):
+         return jsonify({"error": "Unauthorized"}), 401
+
+     session["user_id"] = user.user_Id
+     session["user_Type"] = user.user_Type
+     session["firstName"] = user.firstName
+
+
+     return jsonify({'message': 'login sucessful!!', "id": user.user_Id, "Name": user.firstName, "user_Type": user.user_Type}), 200
+ 
+  
+
+ # Logout
+@app.route("/logout", methods=["POST"])
+def logout_user():
+     session.pop("user_Id")
+     return "200"
 
 if __name__ == "__main__":
     app.run(debug=True)

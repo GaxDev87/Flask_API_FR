@@ -5,7 +5,9 @@ import { cssBundleHref } from "@remix-run/css-bundle";
 import registroStyles from "~/styles/registro.css";
 import { LinksFunction, json } from "@remix-run/node";
 import Modal from "react-modal";
-import NTT from "~/images/NTT-Data-Logo.png";
+import NTT from "~/images/NTT2.png";
+
+
 
 import {
   Links,
@@ -26,8 +28,8 @@ export const links: LinksFunction = () => [
 ];
 
 const Registro_user = () => {
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
+  const [firstName, setName] = useState("");
+  const [lastName, setSurname] = useState("");
   const [email, setEmail] = useState("");
   //const [user_type, setType] = useState('');
   const [username, setUsername] = useState("");
@@ -74,17 +76,8 @@ const Registro_user = () => {
         return;
       }
 
-      // Validación de la presencia del username
-      let username_sin_espacios = username.trim();
-      if (username_sin_espacios === "") {
-        console.log("Por favor, introduzca su nombre de usuario");
-        setInfo("Por favor, introduzca su nombre de usuario");
-        setIsOpen(true);
-        return;
-      }
-
-      // Validación de la presencia del nombre
-      let nombre_sin_espacios = name.trim();
+        // Validación de la presencia del nombre
+      let nombre_sin_espacios = firstName.trim();
       if (nombre_sin_espacios === "") {
         console.log("Por favor, introduzca su nombre");
         setInfo("Por favor, introduzca su nombre");
@@ -94,12 +87,10 @@ const Registro_user = () => {
 
       try {
         axios
-          .post("http://127.0.0.1:5000/api/users/add", {
-            name: name,
-            surname: surname,
+          .post('http://localhost:5000/user', {
+            firstName: firstName,
+            lastName: lastName,
             email: email,
-            user_type: "USER",
-            username: username,
             password: password,
           })
           .then(
@@ -152,7 +143,7 @@ const Registro_user = () => {
             type="text"
             placeholder="Introduzca su nombre"
             id="name"
-            value={name}
+            value={firstName}
             onChange={(event) => setName(event.target.value)}
           />
         </div>
@@ -162,7 +153,7 @@ const Registro_user = () => {
             type="text"
             placeholder="Introduzca sus apellidos"
             id="surname"
-            value={surname}
+            value={lastName}
             onChange={(event) => setSurname(event.target.value)}
           />
         </div>
@@ -197,6 +188,7 @@ const Registro_user = () => {
             onChange={(event) => setConfirmarPassword(event.target.value)}
           />
         </div>
+        
         <button type="submit">REGISTRAR USUARIO</button>
         <Modal
           isOpen={isOpen}
