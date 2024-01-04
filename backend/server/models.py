@@ -16,29 +16,32 @@ class Users(db.Model):
     firstName = db.Column(db.String(100), nullable=False)
     lastName = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    is_Admin = db.Column(db.Boolean, default=False)
+    user_Type = db.Column(db.String(100), default="User")
     password = db.Column(db.Text, nullable=False)
+    User_courses = relationship('User_courses', backref='user_courses', cascade='all, save-update, delete') 
+    Roles = relationship('Roles', backref='roles', cascade='all, save-update, delete') 
     created_at = db.Column(db.DateTime(timezone=True),
                              server_default=func.now())
+  
+
+
     
 class Courses(db.Model):
     __tablename__ = "Courses"
     course_Id = db.Column(db.Integer, primary_key=True, index=True)
     course_Name = db.Column(db.String(100), nullable=False)
     department_Name = db.Column(db.String(100), nullable=False)
-    Enrollments = relationship('Enrollments', backref='course', cascade='all, delete') 
-    Documents = relationship('Documents', backref='document', cascade='all, delete') 
-    Videos = relationship('Videos', backref='video', cascade='all, delete') 
+    User_courses = relationship('User_courses', backref='user_course', cascade='all, save-update, delete') 
+    Documents = relationship('Documents', backref='document', cascade='all, save-update, delete') 
+    Videos = relationship('Videos', backref='video', cascade='all, save-update, delete') 
   
 
-class Enrollments(db.Model):
-    __tablename__ = "Enrollments"
-    enrollment_Id = db.Column(db.Integer, primary_key=True, index=True)
-    course_Id = db.Column(db.Integer, db.ForeignKey("Courses.course_Id"), nullable=False)
+class User_courses(db.Model):
+    __tablename__ = "User_courses"
+    user_course_Id = db.Column(db.Integer, primary_key=True, index=True)
+    user_Id = db.Column(db.Integer, db.ForeignKey("Users.user_Id"), nullable=False)
+    course_Id = db.Column(db.Integer, db.ForeignKey("Courses.course_Id"), nullable=False)   
     course_Name = db.Column(db.String(100), nullable=False)
-    firstName =  db.Column(db.String(100), nullable=False)
-    lastName =  db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), unique=False, nullable=False)
     created_at = db.Column(db.DateTime(timezone=True),
                              server_default=func.now())
     is_course_Completed = db.Column(db.Boolean, default=False)
