@@ -8,7 +8,6 @@ import Modal from 'react-modal';
 import { User } from './user_interface';
 import { FaTrash } from 'react-icons/fa';
 import { TbEdit } from "react-icons/tb";
-import Model from '../modal';
 
 
 const UsersList = () => {
@@ -145,8 +144,8 @@ const UsersList = () => {
 
                 <td>
                 <Link
-                  to="/modal"
-                 
+                  to="#"
+                  onClick={() => handleClickDelete(item.usuario.id)}
                   className="DeleteLink"
                 >
                   <TbEdit />

@@ -3,7 +3,7 @@ import { Link } from "@remix-run/react";
 import LogoNTT from '~/images/NTT-Data-Logo.png';
 import { Layout } from "./components/layout";
 import ReadOnlyEditable from "./components/ReadOnlyEditable";
-import Model from './modal';
+import Model from './components/modal';
 
 export const meta: MetaFunction = () => {
   return [
