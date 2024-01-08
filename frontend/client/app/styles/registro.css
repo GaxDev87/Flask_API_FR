@@ -67,6 +67,8 @@ form{
     padding: 50px 35px;
     margin-top: 25px;
 }
+
+
 form *{
     font-family: 'Poppins',sans-serif;
     color: #ffffff;

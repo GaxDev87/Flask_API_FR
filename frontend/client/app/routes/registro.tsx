@@ -7,8 +7,6 @@ import { LinksFunction, json } from "@remix-run/node";
 import Modal from "react-modal";
 import NTT from "~/images/NTT2.png";
 
-
-
 import {
   Links,
   LiveReload,
@@ -76,7 +74,7 @@ const Registro_user = () => {
         return;
       }
 
-        // Validación de la presencia del nombre
+      // Validación de la presencia del nombre
       let nombre_sin_espacios = firstName.trim();
       if (nombre_sin_espacios === "") {
         console.log("Por favor, introduzca su nombre");
@@ -87,7 +85,7 @@ const Registro_user = () => {
 
       try {
         axios
-          .post('http://localhost:5000/user', {
+          .post("http://localhost:5000/user", {
             firstName: firstName,
             lastName: lastName,
             email: email,
@@ -128,114 +126,112 @@ const Registro_user = () => {
   };
 
   return (
-    <Layout>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <img
-            src={NTT}
-            alt="Logo de NTT"
-            style={{ width: "50%", height: "auto" }}
-          />{" "}
-          <h2> REGISTRO DE USUARIO</h2>
-          <h3>{info}</h3>
-          {/* <label htmlFor="name">Nombre:</label> */}
-          <input
-            type="text"
-            placeholder="Introduzca su nombre"
-            id="name"
-            value={firstName}
-            onChange={(event) => setName(event.target.value)}
-          />
-        </div>
-        <div>
-          {/* <label htmlFor="surname">Apellidos:</label> */}
-          <input
-            type="text"
-            placeholder="Introduzca sus apellidos"
-            id="surname"
-            value={lastName}
-            onChange={(event) => setSurname(event.target.value)}
-          />
-        </div>
-        <div>
-          {/* <label htmlFor="email">Correo Electrónico:</label> */}
-          <input
-            type="text"
-            placeholder="Introduzca su correo electrónico"
-            id="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-        </div>
+    <form onSubmit={handleSubmit}>
+      <div>
+        <img
+          src={NTT}
+          alt="Logo de NTT"
+          style={{ width: "50%", height: "auto" }}
+        />{" "}
+        <h2> REGISTRO DE USUARIO</h2>
+        <h3>{info}</h3>
+        {/* <label htmlFor="name">Nombre:</label> */}
+        <input
+          type="text"
+          placeholder="Introduzca su nombre"
+          id="name"
+          value={firstName}
+          onChange={(event) => setName(event.target.value)}
+        />
+      </div>
+      <div>
+        {/* <label htmlFor="surname">Apellidos:</label> */}
+        <input
+          type="text"
+          placeholder="Introduzca sus apellidos"
+          id="surname"
+          value={lastName}
+          onChange={(event) => setSurname(event.target.value)}
+        />
+      </div>
+      <div>
+        {/* <label htmlFor="email">Correo Electrónico:</label> */}
+        <input
+          type="text"
+          placeholder="Introduzca su correo electrónico"
+          id="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+        />
+      </div>
 
-        <div>
-          {/* <label htmlFor="password">Contraseña:</label> */}
-          <input
-            type="password"
-            placeholder="Introduzca su contraseña"
-            id="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </div>
-        <div>
-          {/* <label htmlFor="confirmar_password">Confirmar contraseña:</label> */}
-          <input
-            type="password"
-            placeholder="Vuelva a introducir su contraseña"
-            id="confirmar_password"
-            value={confirmar_password}
-            onChange={(event) => setConfirmarPassword(event.target.value)}
-          />
-        </div>
-        
-        <button type="submit">REGISTRAR USUARIO</button>
-        <Modal
-          isOpen={isOpen}
-          onRequestClose={handleClose}
+      <div>
+        {/* <label htmlFor="password">Contraseña:</label> */}
+        <input
+          type="password"
+          placeholder="Introduzca su contraseña"
+          id="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+        />
+      </div>
+      <div>
+        {/* <label htmlFor="confirmar_password">Confirmar contraseña:</label> */}
+        <input
+          type="password"
+          placeholder="Vuelva a introducir su contraseña"
+          id="confirmar_password"
+          value={confirmar_password}
+          onChange={(event) => setConfirmarPassword(event.target.value)}
+        />
+      </div>
+
+      <button type="submit">REGISTRAR USUARIO</button>
+      <Modal
+        isOpen={isOpen}
+        onRequestClose={handleClose}
+        style={{
+          overlay: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
+          content: {
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "white",
+            borderRadius: "5px",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+            padding: "20px",
+            maxWidth: "550px",
+            width: "100%",
+            height: "300px",
+            maxHeight: "600px",
+          },
+        }}
+      >
+        <h4
           style={{
-            overlay: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
-            content: {
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              backgroundColor: "white",
-              borderRadius: "5px",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-              padding: "20px",
-              maxWidth: "550px",
-              width: "100%",
-              height: "300px",
-              maxHeight: "600px",
-            },
+            textAlign: "center",
+            fontSize: "30px",
+            fontWeight: "bold",
+            color: "#141048",
           }}
         >
-          <h4
-            style={{
-              textAlign: "center",
-              fontSize: "30px",
-              fontWeight: "bold",
-              color: "#141048",
-            }}
-          >
-            AVISO
-          </h4>
-          <p
-            style={{
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: "22px",
-            }}
-          >
-            {info}
-          </p>
-          <button onClick={handleClose} className="popUpButton">
-            Aceptar
-          </button>
-        </Modal>
-      </form>
-    </Layout>
+          AVISO
+        </h4>
+        <p
+          style={{
+            textAlign: "center",
+            fontWeight: "bold",
+            fontSize: "22px",
+          }}
+        >
+          {info}
+        </p>
+        <button onClick={handleClose} className="popUpButton">
+          Aceptar
+        </button>
+      </Modal>
+    </form>
   );
 };
 

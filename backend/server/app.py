@@ -4,7 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS, cross_origin
 from flask_session import Session
 from config import ApplicationConfig
-from models import db, Users, Roles, User_courses, Permissions, Courses, Documents, Videos, User_courses
+from models import db, Users, User_courses, Courses, Documents, Videos, User_courses
 import os
 
 app = Flask(__name__)
@@ -116,14 +116,15 @@ def register_user_course():
         return jsonify({'error': 'Error creating user'}), 500    
     
 
-    # get enrolled courses by user id
+    # get # of enrolled courses by user id
 @app.route('/user_courses/<id>', methods=['GET'])
 def get_user_courses(id):
 
   try:
+    id_exists=User_courses.query.filter_by(user_Id=id).first()
 
-    if not id: 
-        return jsonify({"error": "Unauthorized"}), 401       
+    if not id_exists:
+      return jsonify({"error": "User not enrolled for any course"}), 401       
 
     return jsonify(
     [
@@ -133,16 +134,13 @@ def get_user_courses(id):
             "course_Name": user.course_Name,
             
         }
-        for user in User_courses.query.filter_by(user_Id=id).first()
+        for user in User_courses.query.filter_by(user_Id=id)
     ]
 )
   
   except:
       return jsonify({'message': 'error getting enrollments'}), 500
     
-
-    
-    # # update a user by id  
 
 # get current user
 @app.route("/current")

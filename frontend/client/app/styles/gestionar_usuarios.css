@@ -143,11 +143,11 @@ h5{
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #1278e6;
 }
 
 .popUpButton {
-    background-color: #2c22bd;
+    background-color: #2a1cee;
     color: #FFFFFF;
     margin-top: 100px;
     margin-left: 110px
@@ -159,19 +159,44 @@ button:hover {
 
 
 .DeleteLink {
-    background-color: rgb(203, 18, 18);
-    color: white;
+    background-color: rgb(185, 6, 6);
+    color: rgb(252, 251, 251);
     padding: 10px;
+    size: 15px;
     text-decoration: none;
     display: inline-block;
-    border-radius: 4px;
+    border-radius: 15px;
+    border: 4px solid rgba(255, 255, 255, 0.877);
+
+    
+    border-color: #fdfdfd;
+    margin-left: 25px;
+    margin-top: 7px;
+}
+
+.EditLink {
+    background-color: rgb(61, 64, 247);
+    color: rgb(252, 252, 252);
+    border-color: #fdfdfd;
+    padding: 10px;
+    size: 30%;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 15px;
+    border: 4px solid rgba(255, 255, 255, 0.877);
+    
+
     margin-left: 25px;
     margin-top: 7px;
 }
   
 
 .DeleteLink:hover {
-    background-color: rgb(133, 10, 10);
+    background-color: rgb(94, 4, 4);
+}
+
+.EditLink:hover {
+    background-color: rgb(5, 29, 167);
 }
 
 .ManageLink {
@@ -196,7 +221,8 @@ button:hover {
     color: #FFFFFF;
     margin-top: 100px;
     margin-left: 82px;
-    width: 200px
+    width: 200px 
+    
 }
 
 .popUpButton2:hover {

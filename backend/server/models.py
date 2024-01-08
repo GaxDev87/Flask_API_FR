@@ -19,10 +19,9 @@ class Users(db.Model):
     user_Type = db.Column(db.String(100), default="User")
     password = db.Column(db.Text, nullable=False)
     User_courses = relationship('User_courses', backref='user_courses', cascade='all, save-update, delete') 
-    Roles = relationship('Roles', backref='roles', cascade='all, save-update, delete') 
+    # Roles = relationship('Roles', backref='roles', cascade='all, save-update, delete') 
     created_at = db.Column(db.DateTime(timezone=True),
-                             server_default=func.now())
-  
+                             server_default=func.now()) 
 
 
     
@@ -66,30 +65,8 @@ class Videos(db.Model):
     video_Url =  db.Column(db.String(800), nullable=False)
 
 
-class Roles(db.Model):
-    __tablename__ = "Roles"
-    role_Id = db.Column(db.Integer, primary_key=True, index=True)
-    user_Id = db.Column(db.Integer, db.ForeignKey("Users.user_Id"), nullable=False)
-    role_Type = db.Column(db.String(50), nullable=False)
 
- 
-class Permissions(db.Model):
-    __tablename__ = "Permissions"
-    permission_Id = db.Column(db.Integer, primary_key=True, index=True)
-    role_Id = db.Column(db.Integer, db.ForeignKey("Roles.role_Id"), nullable=False)
-    description = db.Column(db.String(50), nullable=False)
-    value = db.Column(db.Integer, nullable=False)
 
 
     
 
-
-# class Student(db.Model):
-#     __tablename__ = "students"
-#     user_id = db.Column(db.Integer, primary_key=True)
-#     firstname = db.Column(db.String(100), nullable=False)
-#     lastname = db.Column(db.String(100), nullable=False)
-#     email = db.Column(db.String(80), unique=True, nullable=False)
-#     age = db.Column(db.Integer)
-#     created_at = db.Column(db.DateTime(timezone=True),
-#                             server_default=func.now())
