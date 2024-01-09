@@ -29,6 +29,7 @@ const Registro_user = () => {
   const [firstName, setName] = useState("");
   const [lastName, setSurname] = useState("");
   const [email, setEmail] = useState("");
+  const [department, setDepartment] = useState("");
   //const [user_type, setType] = useState('');
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -89,6 +90,7 @@ const Registro_user = () => {
             firstName: firstName,
             lastName: lastName,
             email: email,
+            department: department,
             password: password,
           })
           .then(

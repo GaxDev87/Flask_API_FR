@@ -53,7 +53,7 @@ img{
 }
 
 form{
-    height: 810px;
+    height: 850x;
     width: 22%;
     background-color: #166DD6;
     position: absolute;
@@ -156,4 +156,27 @@ button:hover {
 
 .popUpButton:hover {
     background-color: #100974;
+}
+.select-container select {
+    padding: 5px;
+    margin-top: 40px;
+    margin-left: 2px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    width: 260px;
+    height: 50px;
+    background-color: rgb(243, 243, 243);
+    color: rgb(142, 142, 150);
+    cursor: pointer;
+    font-family:Arial, Helvetica, sans-serif;
+    display: block;
+
+
+}
+
+.select-container select option {
+    background-color: #f5f5f5;
+    color: rgb(91, 91, 97);
+    cursor: pointer;
+    font-weight: bold;
 }

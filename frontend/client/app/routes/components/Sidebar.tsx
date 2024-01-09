@@ -35,30 +35,7 @@ import {
 
 import { IoCloseCircle, IoBookSharp } from "react-icons/io5";
 
-import {
-  FaUsers,
-  FaProjectDiagram,
-  FaTasks,
-  FaCalendarTimes,
-  FaBriefcase,
-  FaRavelry,
-  FaTumblr,
-  FaIndent,
-  FaCompass,
-  FaPlusCircle,
-  FaSyncAlt,
-  FaTrashAlt,
-  FaKey,
-  FaHammer,
-  FaClipboardList,
-  FaCube,
-  FaSatellite,
-  FaFileArchive,
-  FaBox,
-  FaFileAlt,
-  FaLock,
-  FaUserSecret,
-} from "react-icons/fa";
+import { FaUsers } from "react-icons/fa";
 import { RiNumber0 } from "react-icons/ri";
 
 // export const links: LinksFunction = () => [
@@ -70,7 +47,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const menuOptions = [
     { path: "/", icon: <FaCog /> },
-    { path: "/", icon: <FaCircleUser /> },
+    { path: "/Micuenta", icon: <FaCircleUser /> },
     { path: "/", icon: <AiOutlineHome /> },
   ];
 
@@ -99,6 +76,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
             firstName: data["firstName"],
             lastName: data["lastName"],
             email: data["email"],
+            group_Type: data["group_Type"],
             user_Type: data["user_Type"],
           };
 
@@ -134,9 +112,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
       <aside>
         <div>
           <Navbar
-            title={
-              "Hola " + firstName + " " + lastName + ", te damos la bienvenida!"
-            }
+            title={"Hola " + firstName + ", te damos la bienvenida!"}
             options={menuOptions}
           />
 
@@ -213,9 +189,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
       <aside>
         <div>
           <Navbar
-            title={
-              "Hola " + firstName + " " + lastName + ", te damos la bienvenida!"
-            }
+            title={"Hola " + firstName + ", te damos la bienvenida!"}
             options={menuOptions}
           />
 
