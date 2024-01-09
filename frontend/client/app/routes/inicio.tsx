@@ -5,6 +5,8 @@ import inicioStyles from "~/styles/inicio.css";
 import { LinksFunction, json } from "@remix-run/node";
 import Modal from "react-modal";
 import NTT from "~/images/NTT2.png";
+import { Link } from "@remix-run/react";
+
 import {
   Links,
   LiveReload,
@@ -104,6 +106,10 @@ const Inicio = () => {
         />
       </div>
       <button type="submit">INICIAR SESIÓN</button>
+
+      <div className="contrasena">
+        <Link to="#"> Olvidaste tu contraseña?</Link>
+      </div>
       <Modal
         isOpen={isOpen}
         onRequestClose={handleClose}

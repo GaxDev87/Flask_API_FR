@@ -22,9 +22,12 @@ import { TbEdit } from "react-icons/tb";
 
 const UsersList = () => {
   const [info, setInfo] = useState("");
+  const [isEditOpen, setEditOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
   const [id, setId] = useState(0);
+  const [courseName, setCourseName] = useState("");
+  const [courseDepartment, setDepartment] = useState("");
   const [courseData, setCourseData] = useState<
     {
       curso: Course;
@@ -155,6 +158,102 @@ const UsersList = () => {
             </tr>
           ))}
         </tbody>
+        <Modal
+          isOpen={isEditOpen}
+          onRequestClose={handleClose}
+          style={{
+            overlay: {
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            },
+            content: {
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "white",
+              borderRadius: "5px",
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              padding: "20px",
+              height: "550px",
+              maxWidth: "500px",
+              width: "100%",
+            },
+          }}
+        >
+          <h4
+            style={{
+              textAlign: "center",
+              marginRight: "40px",
+              fontSize: "30px",
+            }}
+          ></h4>
+          <p
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: "22px",
+            }}
+          >
+            {info}
+          </p>
+          <form className="max-w-sm mx-auto bg">
+            <div>
+              {/* <label htmlFor="email">Correo Electrónico:</label> */}
+              <input
+                style={{
+                  backgroundColor: "skyblue",
+                  textAlign: "center",
+                  fontSize: "25px",
+                  borderRadius: "15px",
+                }}
+                type="text"
+                placeholder="id"
+                id="id"
+                readOnly="readOnly"
+                value={id}
+                // onChange={(event) => setEmail(event.target.value)}
+              />
+            </div>
+            <br></br>
+            <div>
+              {/* <label htmlFor="name">Nombre:</label> */}
+              <input
+                style={{
+                  backgroundColor: "skyblue",
+                  textAlign: "center",
+                  fontSize: "25px",
+                  borderRadius: "15px",
+                }}
+                type="text"
+                id="courseName"
+                value={courseName}
+                onChange={(event) => setCourseName(event.target.value)}
+              />
+            </div>
+            <br></br>
+            <div>
+              {/* <label htmlFor="surname">Apellidos:</label> */}
+              <input
+                style={{
+                  backgroundColor: "skyblue",
+                  textAlign: "center",
+                  fontSize: "25px",
+                  borderRadius: "15px",
+                }}
+                type="text"
+                id="courseDetartment"
+                value={courseDepartment}
+                onChange={(event) => setDepartment(event.target.value)}
+              />
+            </div>
+            <br></br>
+
+            <div>
+              <button onClick={handleClose} className="popUpButton">
+                Actualizar
+              </button>
+            </div>
+          </form>
+        </Modal>
 
         <Modal
           isOpen={isOpen}

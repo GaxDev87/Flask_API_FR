@@ -48,7 +48,7 @@ def register_user():
         db.session.add(new_user)
         db.session.commit()
         session["user_Id"] = new_user.user_Id
-        return jsonify({'message': 'user created!',"id": new_user.user_Id, "firstName": new_user.firstName, "lastName": new_user.lastName,"email": new_user.email})
+        return jsonify({'message': 'user created!',"id": new_user.user_Id, "firstName": new_user.firstName, "lastName": new_user.lastName, "group_Type": new_user.group_Type,"email": new_user.email})
     except:
         return jsonify({'error': 'error creating user'}), 500   
     
@@ -165,6 +165,7 @@ def get_users():
                 "id": user.user_Id,              
                 "firstName": user.firstName,
                 "lastName": user.lastName,
+                "group_Type": user.group_Type,                
                 "email": user.email,
                 "user_Type": user.user_Type,
             }
@@ -186,6 +187,7 @@ def get_user(id):
                 "firstName": user.firstName,
                 "lastName": user.lastName,
                 "user_Type": user.user_Type,
+                "group_Type": user.group_Type, 
                 "email": user.email,}), 200
     
     session["user_id"] = user.user_Id

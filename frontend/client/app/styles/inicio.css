@@ -139,6 +139,14 @@ h2{
    
 }
 
+.contrasena
+{
+
+    margin-left: 250px;
+    margin-top: 20px;
+
+}
+
 button:hover {
     background-color: #2c22bd;
 }

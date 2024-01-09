@@ -68,16 +68,14 @@ const UsersList = () => {
   };
 
   const handleClickEdit = (
-    id: number,
     firstName: string,
     lastName: string,
     email: string
   ) => {
-    setId(id);
     setName(firstName);
     setSurname(lastName);
     setEmail(email);
-    setInfo("Editando usuario " + id);
+    // setInfo("Editando usuario " + id);
     setEditOpen(true);
   };
 
@@ -121,6 +119,7 @@ const UsersList = () => {
           id: diccionario["id"],
           firstName: diccionario["firstName"],
           lastName: diccionario["lastName"],
+          group_Type: diccionario["group_Type"],
           email: diccionario["email"],
           user_Type: diccionario["user_Type"],
         };
@@ -200,7 +199,6 @@ const UsersList = () => {
                   to="#"
                   onClick={() =>
                     handleClickEdit(
-                      item.usuario.id,
                       item.usuario.firstName,
                       item.usuario.lastName,
                       item.usuario.email
@@ -239,9 +237,9 @@ const UsersList = () => {
               borderRadius: "5px",
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
               padding: "20px",
-              height: "550px",
+              height: "500px",
               maxWidth: "500px",
-              width: "100%",
+              width: "600px",
             },
           }}
         >
@@ -262,23 +260,6 @@ const UsersList = () => {
             {info}
           </p>
           <form className="max-w-sm mx-auto bg">
-            <div>
-              {/* <label htmlFor="email">Correo Electrónico:</label> */}
-              <input
-                style={{
-                  backgroundColor: "skyblue",
-                  textAlign: "center",
-                  fontSize: "25px",
-                  borderRadius: "15px",
-                }}
-                type="text"
-                placeholder="id"
-                id="id"
-                readOnly="readOnly"
-                value={id}
-                // onChange={(event) => setEmail(event.target.value)}
-              />
-            </div>
             <br></br>
             <div>
               {/* <label htmlFor="name">Nombre:</label> */}
