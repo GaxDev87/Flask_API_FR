@@ -44,12 +44,30 @@ const UsersList = () => {
   >([]);
   const data = useLoaderData();
   let courses_data = data["data_response"];
+  const URL = "http://localhost:5000/get_courses";
+  const [coursesList, setCourses] = useState([]);
 
   const handleClickDelete = (id: number) => {
     setId(id);
     setInfo("¿Está seguro de que desea eliminar el curso " + id + "?");
     setIsOpenConfirm(true);
   };
+
+  // State to hold fetched courses data
+
+  useEffect(() => {
+    // Fetch data using Promise with the Fetch API
+    const getCoursesAPI = () => {
+      fetch(URL) // Fetch data based on the current page
+        .then((response) => response.json()) // Parse the response as JSON
+        .then((data) => {
+          setCourses(data); // Set the fetched data
+        });
+    };
+
+    // Trigger fetching method on component mount
+    getCoursesAPI();
+  }, []);
 
   const handleClickManage = (id: number) => {
     axios
@@ -65,7 +83,7 @@ const UsersList = () => {
   };
 
   const handleClose = () => {
-    location.href = "/Admin_cursos"; // Actualizar la tabla después
+    location.href = "/Admin_cursos"; // Actualizar tabla cursos
     updateCourses();
     setIsOpen(false);
   };
@@ -129,7 +147,7 @@ const UsersList = () => {
           <tr>
             <th>ID de Curso</th>
             <th>Nombre del Curso</th>
-            <th>Departamento</th>
+            <th>Temática del Curso</th>
 
             <th></th>
             <th></th>
@@ -355,41 +373,30 @@ const UsersList = () => {
             Cancelar
           </button>
         </Modal>
-
-
-        
       </table>
 
-      <br></br>
-
-      <div style={{ marginLeft: '280px', marginTop: '7%'}}>
-      <h1 className='text-blue-500 font-bold size-10'>LISTADO DE RECURSOS POR CATEGORIA:</h1>
-    </div>
+      <div style={{ marginLeft: "280px", marginTop: "7%" }}>
+        <h1 className="text-blue-500 font-bold size-10">
+          LISTADO DE RECURSOS POR CURSOS:
+        </h1>
+      </div>
 
       <div className="dropcontainer">
-                        <select
-                        >
-                            <option value="">Seleccione Tematica</option>
+        <select>
+          <option>Seleccionar curso...</option>
 
-                            <option value="Automatización">Automatización</option>
+          {coursesList.map((curso) => {
+            return (
+              <>
+                <option key={curso.course_Id}> {curso.course_Name}</option>
+              </>
+            );
+          })}
+        </select>
+      </div>
 
-                            <option value="Infraestructura">Infraestructura</option>
-
-                            <option value="Seguridad">Seguridad</option>
-
-                            <option value="Seguridad">AI</option>
-
-                        </select>
-
-                        </div>
-
-                        <br></br>
-
-
+      <br></br>
     </div>
-
-
-
   );
 };
 

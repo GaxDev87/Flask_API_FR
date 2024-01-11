@@ -12,6 +12,8 @@ import { useEffect, useState } from "react";
 import LogoNTT from "~/images/NTT2.png";
 import { GiExitDoor } from "react-icons/gi";
 import { AiFillExperiment, AiOutlineHome } from "react-icons/ai";
+import { BiSolidBookReader } from "react-icons/bi";
+
 import { RxDashboard } from "react-icons/rx";
 import Navbar from "./Navbar";
 import styles from "~/styles/app.css";
@@ -148,8 +150,8 @@ function Sidebar({ children }: { children: React.ReactNode }) {
                 className="flex items-center px-6 py-3 text-blue-300 hover:text-white hover:bg-blue-700"
                 style={{ color: "white" }}
               >
-                <IoBookSharp className="w-6 h-6 mr-2" />
-                <Link to={`/cursos`}>Vizualizar cursos</Link>
+                <BiSolidBookReader className="w-6 h-6 mr-2" />
+                <Link to={`/cursos`}>Visualizar cursos</Link>
               </li>
 
               <li
@@ -159,7 +161,6 @@ function Sidebar({ children }: { children: React.ReactNode }) {
                 <IoBookSharp className="w-6 h-6 mr-2" />
                 <Link to={`/cursos`}>Mis cursos</Link>
               </li>
-              
 
               <li
                 className="flex items-center px-6 py-3 text-blue-300 hover:text-white hover:bg-blue-700"

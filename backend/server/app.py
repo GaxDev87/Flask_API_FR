@@ -266,6 +266,38 @@ def delete_course(id):
      return jsonify({'message': 'course not found'}), 404
    except:
      return jsonify({'message': 'error getting course'}), 500
+   
+
+   
+    # get # of enrolled courses by user id
+@app.route('/course_resources/<id>', methods=['GET'])
+def get_resources(id):
+
+  try:
+    id_document_exists=Documents.query.filter_by(course_Id=id).first()
+    id_video_exists=Videos.query.filter_by(course_Id=id).first()
+
+    if not id_document_exists or not id_video_exists:
+      return jsonify({"error": "No resources found for the selected course"}), 401       
+
+    return jsonify(
+    [
+        {
+            "document_Id": document.document_Id,              
+            "document_Name": document.document_Name,
+            "document_Url": document.document_Url,
+            "video_Id": video.video_Id,              
+            "video_Name": video.video_Name,
+            "video_Url": video.video_Url,
+            
+        }
+        for document in Documents.query.filter_by(course_Id=id)
+        for video in Videos.query.filter_by(course_Id=id)
+
+    ])  
+  
+  except:
+      return jsonify({'message': 'error getting recourses'}), 500
 
 # create a resource document
 @app.route("/document", methods=["POST"])
