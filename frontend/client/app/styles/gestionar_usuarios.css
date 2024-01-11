@@ -45,7 +45,7 @@ body{
   
   table {
     overflow: hidden;
-    border-radius: 15px;
+    border-radius: 20px;
     width: 100%;
     border-collapse: collapse;
     font-family: Arial, sans-serif;
@@ -58,12 +58,15 @@ body{
   th {
     background-color: #2553ec;
     text-align: center;
+    border-bottom: 5px solid #ddd;
+
     padding: 10px;
     color: #ffffff;
     text-align: center;
   }
   
   td {
+    
     border-bottom: 5px solid #ddd;
     padding: 10px;
     color: #ddd;
@@ -89,6 +92,7 @@ input{
     font-size: 14px;
     font-weight: 300;
 }
+
 ::placeholder{
     color: #c9ffff;
 }
@@ -232,8 +236,8 @@ button:hover {
 .select-container select {
     padding: 5px;
     margin-left: 30px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    border-radius: 10px;
+    border: 1px solid #fdf8f8;
     width: 210px;
     background-color: #ffffff;
     color: rgb(16, 26, 139);
@@ -241,11 +245,72 @@ button:hover {
     font-weight: bold;
 }
 
+.select-container-user select
+{
+
+    padding: 5px;
+    margin-left: 5px;
+    border-radius: 15px;
+    border: 2px solid #fdf8f8;
+    width: 250px;
+    background-color: #ffffff;
+    color: rgb(16, 26, 139);
+    cursor: pointer;
+    font-weight: bold;
+    background-color: rgba(71, 234, 147, 0.719);
+
+
+
+}
+
+.select-container-user select option {
+    background-color: #f5f5f5;
+    color: rgb(16, 26, 139);
+    cursor: pointer;
+    font-weight: bold;
+}
 .select-container select option {
     background-color: #f5f5f5;
     color: rgb(16, 26, 139);
     cursor: pointer;
     font-weight: bold;
+}
+
+.dropcontainer select {
+    padding: 5px;
+    height: 50px;
+    margin-left: 800px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 800px;
+    background-color: #f1e6e6;
+    color: rgb(16, 26, 139);
+    cursor: pointer;
+    font-weight: bold;
+    size: 20px;
+}
+
+.dropcontainer select option {
+    background-color: #f5f5f5;
+    color: rgb(16, 26, 139);
+    cursor: pointer;
+    font-weight: bold;
+}
+
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  z-index: 1;
 }
 
 

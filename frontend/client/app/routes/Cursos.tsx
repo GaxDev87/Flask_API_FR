@@ -4,15 +4,9 @@ import {
     Link
 } from "@remix-run/react";
 import { useEffect, useState } from 'react';
-import LogoNTT from '~/images/NTT2.png';
-import { GiExitDoor } from "react-icons/gi";
-import { AiFillExperiment } from "react-icons/ai";
-import { RxDashboard } from "react-icons/rx";
-import Navbar from './components/Navbar';
-import styles from "~/styles/app.css";
-import { FiUser } from "react-icons/fi";
-import { FaCog } from "react-icons/fa";
-import axios from 'axios';
+import { cssBundleHref } from "@remix-run/css-bundle";
+import gestionarUsuariosStyles from "~/styles/gestionar_usuarios.css";
+import { LinksFunction, json } from "@remix-run/node";
 
 import { User } from './components/user_interface';
 import {
@@ -28,70 +22,90 @@ import {
 
 import { IoCloseCircle, IoBookSharp } from "react-icons/io5";
 import Sidebar from './components/Sidebar';
+
+export const links: LinksFunction = () => [
+    { rel: "stylesheet", href: gestionarUsuariosStyles },
+    ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
+];
 const Cursos = () => {
 
-    
-    const [user_Id, setId] = useState('');
-    const [firstName, setName] = useState('');
-    const [lastName, setSurname] = useState('');
-    const [email, setEmail] = useState('');
-    const [user_type, setType] = useState('');
     const [info, setInfo] = useState('');
-    const [isValidEmail, setIsValidEmail] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
-    const [isOpenConfirm, setIsOpenConfirm] = useState(false);
+
+    const URL = 'http://localhost:5000/get_courses';
+
+    // State to hold fetched data
+    const [coursesList, setCourses] = useState([]);
 
     useEffect(() => {
-        try {
-            // Para recuperar el ID del usuario logueado
-            const userId = sessionStorage.getItem('user_id');
-            console.log(userId)
-          
-            axios.get('http://localhost:5000/users/' + userId)
-                .then((response) => {
-                    const data = response.data;
-                    const user: User = {
-                        user_Id: data['user_Id'],
-                        firstName: data['firstName'],
-                        lastName: data['lastName'],
-                        email: data['email'],
-                        user_Type: data['user_Type'],
 
-                    };
-                    console.log(user);
-                    setId(user.user_Id);
-                    setName(user.firstName);
-                    setSurname(user.lastName);
-                    setEmail(user.email);
-
-                }, (error) => {
-                    console.log(error);
-                    setInfo('Error: La información del usuario no se ha podido obtener correctamente');
-                    setIsOpen(true);
+        // Fetch data using Promise with the Fetch API
+        const fetchUsingPromiseWithFetchApi = () => {
+            fetch(URL) // Fetch data based on the current page
+                .then((response) => response.json()) // Parse the response as JSON
+                .then((data) => {
+                    setCourses(data); // Set the fetched data
                 });
+        };
 
-        } catch (error) {
-            console.log(error);
-            setInfo('Error: La información del usuario no se ha podido obtener correctamente');
-            setIsOpen(true);
-        }
+        // Trigger fetching method on component mount
+        fetchUsingPromiseWithFetchApi();
+
     }, []);
+
+
     return (
 
         <Sidebar>
 
             <div className=" h-full flex justify-center items-center flex-col gap-4 bg-ambar-400" style={{ width: '600px', height: '500px' }}>
-                <h1>Cursos 1</h1>
-                <h1>Cursos 2</h1>
-                <h1>Cursos 3</h1>
-                <h1>Cursos 1</h1>
-                <h1>Cursos 2</h1>
-                <h1>Cursos 3</h1>
-                <h1>Cursos 1</h1>
-                <h1>Cursos 2</h1>
-                <h1>Cursos 3</h1>
 
-            </div>
+                <div className="dropcontainer">
+
+                    <div className="select-container">
+                        <select
+                        >
+                            <option value="">Seleccione Tematica de Curso</option>
+                            <option value="Automatización">Automatización</option>
+
+                            <option value="Infraestructura">Infraestructura</option>
+
+                            <option value="Seguridad">Seguridad</option>
+
+                            <option value="Infraestructura">IA</option>
+
+                        </select>
+
+                        </div>
+
+                        <br></br>
+
+                        <select >
+                            {coursesList.map((curso) => {
+
+                                return (
+
+                                    <option value="Seleccione..."
+
+                                        key={curso.course_Id}>  {curso.course_Name}
+
+                                    </option>
+
+
+                                )
+
+                            })}
+
+
+
+                        </select>
+
+                    </div>
+
+
+
+
+                </div>
 
         </Sidebar>
     );

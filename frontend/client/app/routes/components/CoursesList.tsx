@@ -19,6 +19,15 @@ import Modal from "react-modal";
 import { Course } from "./course_interface";
 import { FaTrash } from "react-icons/fa";
 import { TbEdit } from "react-icons/tb";
+import { LinksFunction, json } from "@remix-run/node";
+import { cssBundleHref } from "@remix-run/css-bundle";
+// import { safeRedirect } from "~/utils";
+import registroStyles from "~/styles/registro.css";
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: registroStyles },
+  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
+];
 
 const UsersList = () => {
   const [info, setInfo] = useState("");
@@ -173,7 +182,7 @@ const UsersList = () => {
               borderRadius: "5px",
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
               padding: "20px",
-              height: "550px",
+              height: "570px",
               maxWidth: "500px",
               width: "100%",
             },
@@ -346,8 +355,41 @@ const UsersList = () => {
             Cancelar
           </button>
         </Modal>
+
+
+        
       </table>
+
+      <br></br>
+
+      <div style={{ marginLeft: '280px', marginTop: '7%'}}>
+      <h1 className='text-blue-500 font-bold size-10'>LISTADO DE RECURSOS POR CATEGORIA:</h1>
     </div>
+
+      <div className="dropcontainer">
+                        <select
+                        >
+                            <option value="">Seleccione Tematica</option>
+
+                            <option value="Automatización">Automatización</option>
+
+                            <option value="Infraestructura">Infraestructura</option>
+
+                            <option value="Seguridad">Seguridad</option>
+
+                            <option value="Seguridad">AI</option>
+
+                        </select>
+
+                        </div>
+
+                        <br></br>
+
+
+    </div>
+
+
+
   );
 };
 

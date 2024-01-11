@@ -40,6 +40,8 @@ const UsersList = () => {
   const [firstName, setName] = useState("");
   const [lastName, setSurname] = useState("");
   const [email, setEmail] = useState("");
+  const [user_Type, setuserType] = useState("");
+
   const [userData, setUserData] = useState<
     {
       usuario: User;
@@ -54,27 +56,38 @@ const UsersList = () => {
     setIsOpenConfirm(true);
   };
 
-  const handleClickManage = (id: number) => {
+  const handleClickManage = () => {
     axios
-      .put("http://localhost:5000/update/" + id)
-      .then((response) => {
-        setInfo("Editando usuario " + id);
-        setIsOpen(true);
+      .put("http://localhost:5000/update" + id, {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        user_Type: user_Type
       })
-      .catch((error) => {
-        setInfo("Fallo al actualizar usuario " + id);
-        setIsOpen(true);
-      });
+      .then(
+        (response) => {
+          console.log(response);
+
+          "Error: El nuevo usuario no se ha podido crear correctamente"
+
+        }
+
+      )
   };
 
+
   const handleClickEdit = (
+    id: number,
     firstName: string,
     lastName: string,
-    email: string
+    email: string,
+    user_Type: string
   ) => {
+    setId(id);
     setName(firstName);
     setSurname(lastName);
     setEmail(email);
+    setuserType(user_Type);
     // setInfo("Editando usuario " + id);
     setEditOpen(true);
   };
@@ -154,7 +167,6 @@ const UsersList = () => {
             <th>Apellidos</th>
             <th>Correo Electrónico</th>
             <th>Tipo de Usuario</th>
-            <th>Rol</th>
 
             <th></th>
             <th></th>
@@ -178,30 +190,17 @@ const UsersList = () => {
               <td className="text-white font-bold size-15">
                 {item.usuario.user_Type}
               </td>
-              <td>
-                <div className="select-container">
-                  <select
-                    value=""
-                    onChange={() => handleClickManage(item.usuario.id)}
-                  >
-                    <option disabled value="">
-                      Cambiar rol de usuario
-                    </option>
-                    <option value={getOppositeUserRole(item.usuario.user_Type)}>
-                      {getOppositeUserRole(item.usuario.user_Type)}
-                    </option>
-                  </select>
-                </div>
-              </td>
 
               <td>
                 <Link
                   to="#"
                   onClick={() =>
                     handleClickEdit(
+                      item.usuario.id,
                       item.usuario.firstName,
                       item.usuario.lastName,
-                      item.usuario.email
+                      item.usuario.email,
+                      item.usuario.user_Type
                     )
                   }
                   className="EditLink"
@@ -237,7 +236,7 @@ const UsersList = () => {
               borderRadius: "5px",
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
               padding: "20px",
-              height: "500px",
+              height: "630px",
               maxWidth: "500px",
               width: "600px",
             },
@@ -310,8 +309,40 @@ const UsersList = () => {
               />
             </div>
 
+            <br></br>
+
             <div>
-              <button onClick={handleClose} className="popUpButton">
+              <select
+
+                value={user_Type}
+                onChange={(event) => setuserType(event.target.value)}
+
+                style={{
+                  width: "200px",
+                  height: "50px",
+
+                  backgroundColor: "skyblue",
+                  textAlign: "center",
+                  fontSize: "20px",
+                  borderRadius: "15px",
+                }}
+
+              >
+                <option>Tipo de usuario</option>
+
+
+                <option value="Administrador">Administrador</option>
+
+                <option value="Alumno">Alumno</option>
+              </select>
+
+            </div>
+
+            <div>
+              <button onClick={handleClickManage}
+      
+
+                className="popUpButton">
                 Actualizar
               </button>
             </div>

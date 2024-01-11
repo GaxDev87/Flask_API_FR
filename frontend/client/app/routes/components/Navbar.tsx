@@ -11,6 +11,8 @@ import LogoProteo from "~/images/ProteoLogo.png";
 import { useEffect, useState } from "react";
 import { FaCog } from "react-icons/fa";
 
+
+
 interface MenuOption {
   path: string;
   icon: JSX.Element;

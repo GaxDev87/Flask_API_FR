@@ -56,22 +56,17 @@ def register_user():
 @app.route("/update/<int:id>", methods=["PUT"])
 def update_user(id):
  try:
-     user = Users.query.filter_by(user_Id=id).first()
-
-     if not id:
-         return jsonify({"error": "Unauthorized"}), 401  
-     
-
-     else:     
-          if(user.user_Type=="Admin"):    
-              user.user_Type=="User"     
-          else: 
-             user.user_Type=="Admin"             
-            
-     db.session.commit()
+    user = Users.query.filter_by(user_Id=id).first()
+    if user:
+        user.firstName = request.json["firstName"]
+        user.lastName = request.json["lastName"]
+        user.email = request.json["email"]
+        user.user_Type = request.json["user_Type"]
+        db.session.commit()
              
+        return jsonify({'message': 'User updated!',"id": user.user_Id, "firstName": user.firstName, "lastName": user.lastName,  "Email": user.email, "user_Type": user.user_Type}), 200
  except:
-            return jsonify({'message': 'error getting user'}), 500
+        return jsonify({'message': 'error updating user'}), 500
 
 # # delete a user
     

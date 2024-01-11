@@ -16,10 +16,14 @@ import Sidebar from "./components/Sidebar";
 import styles from "~/styles/app.css";
 import {} from "react-icons/ai";
 import { FaCircleUser } from "react-icons/fa6";
+import gestionarUsuariosStyles from "~/styles/gestionar_usuarios.css";
 
 import { FiUser } from "react-icons/fi";
 import { FaCog } from "react-icons/fa";
 import axios from "axios";
+import { LinksFunction, json} from "@remix-run/node";
+
+import { useNavigate } from "react-router-dom";
 
 import { User } from "./components/user_interface";
 
@@ -33,10 +37,17 @@ import {
   useLocation,
 } from "@remix-run/react";
 
-import { IoCloseCircle, IoBookSharp } from "react-icons/io5";
+import { cssBundleHref } from "@remix-run/css-bundle";
+
 
 import { FaUsers } from "react-icons/fa";
 import { RiNumber0 } from "react-icons/ri";
+import { Table } from "flowbite-react";
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: gestionarUsuariosStyles },
+  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
+];
 
 export default function Mi_cuenta() {
   const location = useLocation();
@@ -45,6 +56,8 @@ export default function Mi_cuenta() {
     { path: "/Micuenta", icon: <FaCircleUser /> },
     { path: "/", icon: <AiOutlineHome /> },
   ];
+
+  
 
   const [user_Id, setId] = useState(RiNumber0);
   const [firstName, setName] = useState("");
@@ -110,20 +123,48 @@ export default function Mi_cuenta() {
         style={{ marginLeft: "300px", width: "600px", height: "500px" }}
       >
         {" "}
-        <h1 className=" mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-          Mis datos personales
-        </h1>
-        <h2 className=" text-blue-600 font-bold size-20">
-          Nombre: {firstName}
-        </h2>
-        <h2 className="text-blue-600 font-bold size-20">
-          Apellidos: {lastName}
-        </h2>
-        <h2 className="text-blue-600 font-bold size-20">
-          Departamento: {group_Type}
-        </h2>
-        <h2 className="text-blue-600 font-bold size-20">Correo: {email}</h2>
+        <h2 className=" mb-4 text-4xl font-extrabold leading-none tracking-tight text-blue-600 md:text-5xl lg:text-4xl dark:text-white">Mis Datos:</h2>
+
+
+<table>
+
+
+  <tr>
+    <th>Nombre:</th>
+    <td>{firstName}</td>
+  </tr>
+  <tr>
+    <th>Apellidos:</th>
+    <td>{lastName}</td>
+  </tr>
+  <tr>
+    <th>Area:</th>
+    <td>{group_Type}</td>
+  </tr>
+
+  <tr>
+    <th>Correo:</th>
+    <td>{email}</td>
+  </tr>
+</table>
+
+
+<button  style={{
+         
+           
+            marginLeft: "20px",
+
+            borderRadius: "5px",
+          
+       
+        }}>Editar</button>
+
+
+     
+        
       </div>
+
+
     </Sidebar>
   );
 }

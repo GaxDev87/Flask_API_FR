@@ -900,11 +900,6 @@ video {
   color: rgb(37 99 235 / var(--tw-text-opacity));
 }
 
-.text-gray-900 {
-  --tw-text-opacity: 1;
-  color: rgb(17 24 39 / var(--tw-text-opacity));
-}
-
 .text-lime-300 {
   --tw-text-opacity: 1;
   color: rgb(190 242 100 / var(--tw-text-opacity));
@@ -1031,8 +1026,8 @@ video {
 }
 
 @media (min-width: 1024px) {
-  .lg\:text-6xl {
-    font-size: 3.75rem;
-    line-height: 1;
+  .lg\:text-4xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
   }
 }

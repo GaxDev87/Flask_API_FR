@@ -108,7 +108,7 @@ const Inicio = () => {
       <button type="submit">INICIAR SESIÓN</button>
 
       <div className="contrasena">
-        <Link to="#"> Olvidaste tu contraseña?</Link>
+        <Link to="#">¿Has olvidado tu contraseña?</Link>
       </div>
       <Modal
         isOpen={isOpen}

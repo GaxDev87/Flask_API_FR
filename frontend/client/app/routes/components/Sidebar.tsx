@@ -149,8 +149,17 @@ function Sidebar({ children }: { children: React.ReactNode }) {
                 style={{ color: "white" }}
               >
                 <IoBookSharp className="w-6 h-6 mr-2" />
+                <Link to={`/cursos`}>Vizualizar cursos</Link>
+              </li>
+
+              <li
+                className="flex items-center px-6 py-3 text-blue-300 hover:text-white hover:bg-blue-700"
+                style={{ color: "white" }}
+              >
+                <IoBookSharp className="w-6 h-6 mr-2" />
                 <Link to={`/cursos`}>Mis cursos</Link>
               </li>
+              
 
               <li
                 className="flex items-center px-6 py-3 text-blue-300 hover:text-white hover:bg-blue-700"
