@@ -56,9 +56,13 @@ const UsersList = () => {
     setIsOpenConfirm(true);
   };
 
-  const handleClickManage = () => {
+  const handleClickManage = (id:number) => {
+    setName(firstName);
+    setSurname(lastName);
+    setEmail(email);
+    setuserType(user_Type);
     axios
-      .put("http://localhost:5000/update" + id, {
+      .put("http://localhost:5000/update/" + id, {
         firstName: firstName,
         lastName: lastName,
         email: email,
@@ -153,9 +157,6 @@ const UsersList = () => {
     updateUsers(); // Obtener los usuarios
   }, []);
 
-  const getOppositeUserRole = (userType: string) => {
-    return userType === "Administrador" ? "Alumno" : "Administrador";
-  };
 
   return (
     <div style={{ marginRight: "7%", marginTop: "1%" }}>
@@ -339,7 +340,7 @@ const UsersList = () => {
             </div>
 
             <div>
-              <button onClick={handleClickManage}
+              <button onClick={() => handleClickManage(id)}
       
 
                 className="popUpButton">

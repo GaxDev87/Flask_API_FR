@@ -269,7 +269,7 @@ def delete_course(id):
    
 
    
-    # get # of enrolled courses by user id
+# get # of resources by course id
 @app.route('/course_resources/<id>', methods=['GET'])
 def get_resources(id):
 
