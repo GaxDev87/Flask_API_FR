@@ -19,6 +19,7 @@ import Modal from "react-modal";
 import { Course } from "./course_interface";
 import { FaTrash } from "react-icons/fa";
 import { TbEdit } from "react-icons/tb";
+import { IoAddOutline } from "react-icons/io5";
 import { LinksFunction, json } from "@remix-run/node";
 import { cssBundleHref } from "@remix-run/css-bundle";
 // import { safeRedirect } from "~/utils";
@@ -151,17 +152,56 @@ const UsersList = () => {
 
             <th></th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <th className="colim">
+              <input className="search"></input>
+            </th>
+            <th className="colim">
+              <select className="dropdownsearch">
+                <option value="">Curso</option>
+
+                <option value="Automatización">Linux</option>
+
+                <option value="Infraestructura">Ansible</option>
+              </select>
+            </th>
+            <th className="colim">
+              <select className="dropdownsearch">
+                <option value="">Temática</option>
+
+                <option value="Automatización">Administrador</option>
+
+                <option value="Infraestructura">Alumno</option>
+              </select>
+            </th>
+
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
           {courseData.map((item) => (
             <tr key={item.curso.id}>
               <td className="text-white font-bold size-15">{item.curso.id}</td>
+
               <td className="text-white font-bold size-15">
                 {item.curso.course_Name}
               </td>
               <td className="text-white font-bold size-15">
                 {item.curso.department_Name}
+              </td>
+
+              <td>
+                <Link
+                  to="#"
+                  onClick={() => handleClickManage(item.curso.id)}
+                  className="AddLink"
+                >
+                  <IoAddOutline />
+                </Link>
               </td>
 
               <td>
