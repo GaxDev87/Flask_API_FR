@@ -62,19 +62,14 @@ const UsersList = () => {
         firstName: firstName,
         lastName: lastName,
         email: email,
-        user_Type: user_Type
+        user_Type: user_Type,
       })
-      .then(
-        (response) => {
-          console.log(response);
+      .then((response) => {
+        console.log(response);
 
-          "Error: El nuevo usuario no se ha podido crear correctamente"
-
-        }
-
-      )
+        ("Error: El nuevo usuario no se ha podido crear correctamente");
+      });
   };
-
 
   const handleClickEdit = (
     id: number,
@@ -167,12 +162,37 @@ const UsersList = () => {
             <th>Apellidos</th>
             <th>Correo Electrónico</th>
             <th>Tipo de Usuario</th>
-
             <th></th>
             <th></th>
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <th className="colim">
+              <input className="search"></input>
+            </th>
+            <th className="colim">
+              <input className="search"></input>
+            </th>
+            <th className="colim">
+              <input className="search"></input>
+            </th>
+            <th className="colim">
+              <input className="search"></input>
+            </th>
+            <th className="colim">
+              <select className="dropdownsearch">
+                <option value="">Tipo usuario</option>
+
+                <option value="Automatización">Administrador</option>
+
+                <option value="Infraestructura">Alumno</option>
+              </select>
+            </th>
+            <th></th>
+            <th></th>
+          </tr>
+
           {userData.map((item) => (
             <tr key={item.usuario.id}>
               <td className="text-white font-bold size-15">
@@ -313,10 +333,8 @@ const UsersList = () => {
 
             <div>
               <select
-
                 value={user_Type}
                 onChange={(event) => setuserType(event.target.value)}
-
                 style={{
                   width: "200px",
                   height: "50px",
@@ -326,23 +344,17 @@ const UsersList = () => {
                   fontSize: "20px",
                   borderRadius: "15px",
                 }}
-
               >
                 <option>Tipo de usuario</option>
-
 
                 <option value="Administrador">Administrador</option>
 
                 <option value="Alumno">Alumno</option>
               </select>
-
             </div>
 
             <div>
-              <button onClick={handleClickManage}
-      
-
-                className="popUpButton">
+              <button onClick={handleClickManage} className="popUpButton">
                 Actualizar
               </button>
             </div>
