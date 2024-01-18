@@ -54,7 +54,7 @@ const Admin_cursos = () => {
   return (
     <Sidebar>
       <div style={{ marginLeft: "280px", marginTop: "7%" }}>
-        <h1 className="text-blue-500 font-bold size-10">CURSOS:</h1>
+        <h1 className="text-blue-500 font-bold size-10">GESTIONAR CURSOS:</h1>
         <CoursesList />
       </div>
     </Sidebar>

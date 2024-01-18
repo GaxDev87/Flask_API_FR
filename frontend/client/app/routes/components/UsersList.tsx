@@ -25,6 +25,7 @@ import Modal from "react-modal";
 import { User } from "./user_interface";
 import { FaTrash } from "react-icons/fa";
 import { TbEdit } from "react-icons/tb";
+import { Button, ModalBody, ModalFooter, ModalHeader } from "flowbite-react";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: registroStyles },
@@ -41,6 +42,7 @@ const UsersList = () => {
   const [lastName, setSurname] = useState("");
   const [email, setEmail] = useState("");
   const [user_Type, setuserType] = useState("");
+  const [search, setSearch] = useState("");
 
   const [userData, setUserData] = useState<
     {
@@ -50,24 +52,73 @@ const UsersList = () => {
   const data = useLoaderData();
   let users_data = data["data_response"];
 
+  // const handleChangeId = (event) => {
+  //   setSearch(event.target.value);
+  // };
+
+  const handleChangeName = (event) => {
+    setSearch(event.target.value);
+  };
+
+  // const handleChangeSurname = (event) => {
+  //   setSearch(event.target.value);
+  // };
+
+  const SearchUserData = userData.filter((user) => {
+    if (user.usuario.firstName.toLowerCase().includes(search.toLowerCase())) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  // const searcherName = (e) => {
+  //   setSearchName(e.target.value);
+  // };
+
+  // const searcherId = (e) => {
+  //   setsearchId(e.target.value);
+  // };
+
+  // var results = [];
+
+  // if (!searchId) {
+  //   results = userData;
+  // } else {
+  //   results = userData.filter((item) =>
+  //     item.usuario.id.toString().includes(searchId.toString())
+  //   );
+  // }
+
+  // if (!searchName) {
+  //   results = userData;
+  // } else {
+  //   results = userData.filter((item) =>
+  //     item.usuario.firstName.toLowerCase().includes(searchName.toLowerCase())
+  //   );
+  // }
+
   const handleClickDelete = (id: number) => {
     setId(id);
     setInfo("¿Está seguro de que desea eliminar el usuario " + id + "?");
     setIsOpenConfirm(true);
   };
 
-  const handleClickManage = () => {
+  const handleClickUpdate = () => {
     axios
-      .put("http://localhost:5000/update" + id, {
+      .put("http://localhost:5000/update/" + id, {
         firstName: firstName,
         lastName: lastName,
         email: email,
         user_Type: user_Type,
       })
       .then((response) => {
-        console.log(response);
-
-        ("Error: El nuevo usuario no se ha podido crear correctamente");
+        setInfo("Usuario actualizado correctamente!");
+        setIsOpen(true);
+      })
+      .catch((error) => {
+        setInfo("Fallo al actualizar el usuario");
+        setIsOpen(true);
       });
   };
 
@@ -92,6 +143,10 @@ const UsersList = () => {
     updateUsers();
     setIsOpen(false);
   };
+
+  // const getOppositeUserRole = (userType: string) => {
+  //   return userType === "Administrador" ? "Alumno" : "Administrador";
+  // };
 
   const handleCloseCancel = () => {
     location.href = "/Admin_usuarios";
@@ -148,10 +203,6 @@ const UsersList = () => {
     updateUsers(); // Obtener los usuarios
   }, []);
 
-  const getOppositeUserRole = (userType: string) => {
-    return userType === "Administrador" ? "Alumno" : "Administrador";
-  };
-
   return (
     <div style={{ marginRight: "7%", marginTop: "1%" }}>
       <table>
@@ -169,31 +220,44 @@ const UsersList = () => {
         <tbody>
           <tr>
             <th className="colim">
-              <input className="search"></input>
+              <input
+                name="searcherId"
+                // value={search}
+                // className="search"
+                // onChange={handleChangeId}
+                data-index=""
+              ></input>
+            </th>
+            <th className="colim">
+              <input
+                name="searchName"
+                className="search"
+                value={search}
+                onChange={handleChangeName}
+              ></input>
+            </th>
+            <th className="colim">
+              <input
+                name="searchSurname"
+                // value={search}
+                // onChange={handleChangeSurname}
+                className="search"
+              ></input>
             </th>
             <th className="colim">
               <input className="search"></input>
             </th>
-            <th className="colim">
-              <input className="search"></input>
-            </th>
-            <th className="colim">
-              <input className="search"></input>
-            </th>
+
             <th className="colim">
               <select className="dropdownsearch">
                 <option value="">Tipo usuario</option>
-
-                <option value="Automatización">Administrador</option>
-
-                <option value="Infraestructura">Alumno</option>
               </select>
             </th>
             <th></th>
             <th></th>
           </tr>
 
-          {userData.map((item) => (
+          {SearchUserData.map((item) => (
             <tr key={item.usuario.id}>
               <td className="text-white font-bold size-15">
                 {item.usuario.id}
@@ -256,7 +320,7 @@ const UsersList = () => {
               borderRadius: "5px",
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
               padding: "20px",
-              height: "630px",
+              height: "800px",
               maxWidth: "500px",
               width: "600px",
             },
@@ -268,7 +332,9 @@ const UsersList = () => {
               marginRight: "40px",
               fontSize: "30px",
             }}
-          ></h4>
+          >
+            EDITAR USUARIO
+          </h4>
           <p
             style={{
               textAlign: "center",
@@ -281,7 +347,7 @@ const UsersList = () => {
           <form className="max-w-sm mx-auto bg">
             <br></br>
             <div>
-              {/* <label htmlFor="name">Nombre:</label> */}
+              <label htmlFor="name">Nombre:</label>
               <input
                 style={{
                   backgroundColor: "skyblue",
@@ -297,7 +363,7 @@ const UsersList = () => {
             </div>
             <br></br>
             <div>
-              {/* <label htmlFor="surname">Apellidos:</label> */}
+              <label htmlFor="surname">Apellidos:</label>
               <input
                 style={{
                   backgroundColor: "skyblue",
@@ -314,7 +380,7 @@ const UsersList = () => {
             <br></br>
 
             <div>
-              {/* <label htmlFor="email">Correo Electrónico:</label> */}
+              <label htmlFor="email">Correo Electrónico:</label>
               <input
                 style={{
                   backgroundColor: "skyblue",
@@ -332,6 +398,8 @@ const UsersList = () => {
             <br></br>
 
             <div>
+              <label htmlFor="email">Rol de Usuario:</label>
+
               <select
                 value={user_Type}
                 onChange={(event) => setuserType(event.target.value)}
@@ -345,8 +413,9 @@ const UsersList = () => {
                   borderRadius: "15px",
                 }}
               >
-                <option>Tipo de usuario</option>
-
+                <option disabled value="">
+                  Seleccione role..
+                </option>
                 <option value="Administrador">Administrador</option>
 
                 <option value="Alumno">Alumno</option>
@@ -354,9 +423,12 @@ const UsersList = () => {
             </div>
 
             <div>
-              <button onClick={handleClickManage} className="popUpButton">
-                Actualizar
-              </button>
+              <Button onClick={handleClickUpdate} className="popUpButtonUpdate">
+                ACTUALIZAR
+              </Button>
+              <Button onClick={handleClose} className="popUpButtonCancel">
+                CANCELAR
+              </Button>
             </div>
           </form>
         </Modal>
@@ -456,5 +528,7 @@ const UsersList = () => {
     </div>
   );
 };
+
+<script></script>;
 
 export default UsersList;

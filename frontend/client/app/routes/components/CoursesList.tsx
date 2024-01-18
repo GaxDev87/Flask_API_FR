@@ -23,19 +23,22 @@ import { IoAddOutline } from "react-icons/io5";
 import { LinksFunction, json } from "@remix-run/node";
 import { cssBundleHref } from "@remix-run/css-bundle";
 // import { safeRedirect } from "~/utils";
-import registroStyles from "~/styles/registro.css";
+import cursoStyles from "~/styles/gestionar_cursos.css";
+
+import { Button, ModalBody, ModalFooter, ModalHeader } from "flowbite-react";
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: registroStyles },
+  { rel: "stylesheet", href: cursoStyles },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
 
-const UsersList = () => {
+const CoursesList = () => {
   const [info, setInfo] = useState("");
   const [isEditOpen, setEditOpen] = useState(false);
+  const [isCreatetOpen, setCreateOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
-  const [id, setId] = useState(0);
+  const [courseId, setId] = useState(0);
   const [courseName, setCourseName] = useState("");
   const [courseDepartment, setDepartment] = useState("");
   const [courseData, setCourseData] = useState<
@@ -45,8 +48,8 @@ const UsersList = () => {
   >([]);
   const data = useLoaderData();
   let courses_data = data["data_response"];
-  const URL = "http://localhost:5000/get_courses";
-  const [coursesList, setCourses] = useState([]);
+  // const URL = "http://localhost:5000/get_courses";
+  // const [coursesList, setCourses] = useState([]);
 
   const handleClickDelete = (id: number) => {
     setId(id);
@@ -56,29 +59,64 @@ const UsersList = () => {
 
   // State to hold fetched courses data
 
-  useEffect(() => {
-    // Fetch data using Promise with the Fetch API
-    const getCoursesAPI = () => {
-      fetch(URL) // Fetch data based on the current page
-        .then((response) => response.json()) // Parse the response as JSON
-        .then((data) => {
-          setCourses(data); // Set the fetched data
+  // useEffect(() => {
+  //   // Fetch data using Promise with the Fetch API
+  //   const getCoursesAPI = () => {
+  //     fetch(URL) // Fetch data based on the current page
+  //       .then((response) => response.json()) // Parse the response as JSON
+  //       .then((data) => {
+  //         setCourses(data); // Set the fetched data
+  //       });
+  //   };
+
+  //   // Trigger fetching method on component mount
+  //   getCoursesAPI();
+  // }, []);
+
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
+    let nombre_curso_sin_espacios = courseName.trim();
+    let nombre_tematica_sin_espacios = courseDepartment.trim();
+
+    if (nombre_curso_sin_espacios === "") {
+      console.log("Por favor, introduzca nombre del curso");
+      setInfo("Por favor, introduzca el nombre del curso");
+      setIsOpen(true);
+      return handleClickAdd();
+    }
+
+    if (nombre_tematica_sin_espacios === "") {
+      console.log("Por favor, introduzca la tematica del curso");
+      setInfo("Por favor, introduzca la tematica del curso");
+      setIsOpen(true);
+      return handleClickAdd();
+    }
+
+    try {
+      axios
+        .post("http://localhost:5000/course", {
+          course_Name: courseName,
+          department_Name: courseDepartment,
+        })
+        .then((response) => {
+          setInfo("Curso creado correctamente!");
+          setIsOpen(true);
+        })
+        .catch((error) => {
+          setInfo("Fallo al crear el curso");
+          setIsOpen(true);
         });
-    };
+    } catch {}
+  };
 
-    // Trigger fetching method on component mount
-    getCoursesAPI();
-  }, []);
-
-  const handleClickManage = (id: number) => {
+  const handleClickUpdate = () => {
     axios
-      .put("http://localhost:5000/update/" + id)
+      .put("http://localhost:5000/course/" + courseId)
       .then((response) => {
-        setInfo("Usuario actualizado correctamente");
+        setInfo("Curso actualizado correctamente!");
         setIsOpen(true);
       })
       .catch((error) => {
-        setInfo("Fallo al promover/degradar el usuario " + id);
+        setInfo("Fallo al actualizar el curso " + courseId);
         setIsOpen(true);
       });
   };
@@ -97,20 +135,41 @@ const UsersList = () => {
 
   const handleCloseConfirm = () => {
     const data = {
-      id: id,
+      id: courseId,
     };
 
     setIsOpenConfirm(false);
 
     axios
-      .delete("http://localhost:5000/delete_course/" + id)
+      .delete("http://localhost:5000/delete_course/" + courseId)
       .then((response) => {
         setInfo("Curso eliminado correctamente");
         setIsOpen(true);
       })
       .catch((error) => {
         console.log(error);
-        setInfo("Fallo al eliminar el curso" + id);
+        setInfo("Fallo al eliminar el curso" + courseId);
+        setIsOpen(true);
+      });
+  };
+
+  const handleClickAdd = () => {
+    // setInfo("Editando usuario " + id);
+    setCreateOpen(true);
+  };
+
+  const handleClickCreate = () => {
+    axios
+      .post("http://localhost:5000/course", {
+        course_Name: courseName,
+        department_Name: courseDepartment,
+      })
+      .then((response) => {
+        setInfo("Curso creado correctamente!");
+        setIsOpen(true);
+      })
+      .catch((error) => {
+        setInfo("Fallo al crear el curso");
         setIsOpen(true);
       });
   };
@@ -146,21 +205,31 @@ const UsersList = () => {
       <table>
         <thead>
           <tr>
+            <td>
+              <Button onClick={handleClickAdd} className="AddLink">
+                ANADIR NUEVO CURSO <IoAddOutline />
+              </Button>
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
             <th>ID de Curso</th>
             <th>Nombre del Curso</th>
             <th>Temática del Curso</th>
 
             <th></th>
             <th></th>
-            <th></th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th className="colim">
-              <input className="search"></input>
+            <th>
+              <input></input>
             </th>
-            <th className="colim">
+            <th>
               <select className="dropdownsearch">
                 <option value="">Curso</option>
 
@@ -169,7 +238,7 @@ const UsersList = () => {
                 <option value="Infraestructura">Ansible</option>
               </select>
             </th>
-            <th className="colim">
+            <th>
               <select className="dropdownsearch">
                 <option value="">Temática</option>
 
@@ -181,8 +250,8 @@ const UsersList = () => {
 
             <th></th>
             <th></th>
-            <th></th>
           </tr>
+
           {courseData.map((item) => (
             <tr key={item.curso.id}>
               <td className="text-white font-bold size-15">{item.curso.id}</td>
@@ -197,17 +266,7 @@ const UsersList = () => {
               <td>
                 <Link
                   to="#"
-                  onClick={() => handleClickManage(item.curso.id)}
-                  className="AddLink"
-                >
-                  <IoAddOutline />
-                </Link>
-              </td>
-
-              <td>
-                <Link
-                  to="#"
-                  onClick={() => handleClickManage(item.curso.id)}
+                  onClick={() => handleClickUpdate()}
                   className="EditLink"
                 >
                   <TbEdit />
@@ -225,6 +284,91 @@ const UsersList = () => {
             </tr>
           ))}
         </tbody>
+        <Modal
+          isOpen={isCreatetOpen}
+          onRequestClose={handleClose}
+          style={{
+            overlay: {
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            },
+            content: {
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "white",
+              borderRadius: "5px",
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              padding: "20px",
+              height: "570px",
+              maxWidth: "500px",
+              width: "100%",
+            },
+          }}
+        >
+          <h4
+            style={{
+              textAlign: "center",
+              marginRight: "40px",
+              fontSize: "30px",
+            }}
+          >
+            {" "}
+            CREAR CURSO
+          </h4>
+          <p
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: "22px",
+            }}
+          >
+            {info}
+          </p>
+          <form className="max-w-sm mx-auto bg">
+            <div>
+              <label htmlFor="name">Nombre del Curso:</label>
+              <input
+                style={{
+                  marginTop: "20px",
+                  backgroundColor: "skyblue",
+                  textAlign: "center",
+                  fontSize: "25px",
+                  borderRadius: "15px",
+                }}
+                type="text"
+                id="courseName"
+                value={courseName}
+                onChange={(event) => setCourseName(event.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="surname">Temática:</label>
+              <input
+                style={{
+                  backgroundColor: "skyblue",
+                  textAlign: "center",
+                  marginTop: "20px",
+                  fontSize: "25px",
+                  borderRadius: "15px",
+                }}
+                type="text"
+                id="courseDetartment"
+                value={courseDepartment}
+                onChange={(event) => setDepartment(event.target.value)}
+              />
+            </div>
+
+            <div>
+              <Button onClick={handleSubmit} className="popUpButtonCreate">
+                CREAR
+              </Button>
+              <Button onClick={handleCloseCancel} className="popUpButtonCancel">
+                CANCELAR
+              </Button>
+            </div>
+          </form>
+        </Modal>
+
         <Modal
           isOpen={isEditOpen}
           onRequestClose={handleClose}
@@ -262,25 +406,7 @@ const UsersList = () => {
           >
             {info}
           </p>
-          <form className="max-w-sm mx-auto bg">
-            <div>
-              {/* <label htmlFor="email">Correo Electrónico:</label> */}
-              <input
-                style={{
-                  backgroundColor: "skyblue",
-                  textAlign: "center",
-                  fontSize: "25px",
-                  borderRadius: "15px",
-                }}
-                type="text"
-                placeholder="id"
-                id="id"
-                readOnly="readOnly"
-                value={id}
-                // onChange={(event) => setEmail(event.target.value)}
-              />
-            </div>
-            <br></br>
+          <form onSubmit={handleClose} className="max-w-sm mx-auto bg">
             <div>
               {/* <label htmlFor="name">Nombre:</label> */}
               <input
@@ -291,6 +417,7 @@ const UsersList = () => {
                   borderRadius: "15px",
                 }}
                 type="text"
+                name="Name"
                 id="courseName"
                 value={courseName}
                 onChange={(event) => setCourseName(event.target.value)}
@@ -307,6 +434,7 @@ const UsersList = () => {
                   borderRadius: "15px",
                 }}
                 type="text"
+                name="tematica"
                 id="courseDetartment"
                 value={courseDepartment}
                 onChange={(event) => setDepartment(event.target.value)}
@@ -315,9 +443,12 @@ const UsersList = () => {
             <br></br>
 
             <div>
-              <button onClick={handleClose} className="popUpButton">
-                Actualizar
-              </button>
+              <Button onClick={handleClickUpdate} className="popUpButtonUpdate">
+                ACTUALIZAR
+              </Button>
+              <Button onClick={handleCloseCancel} className="popUpButtonCancel">
+                CANCELAR
+              </Button>
             </div>
           </form>
         </Modal>
@@ -425,10 +556,10 @@ const UsersList = () => {
         <select>
           <option>Seleccionar curso...</option>
 
-          {coursesList.map((curso) => {
+          {courseData.map((item) => {
             return (
               <>
-                <option key={curso.course_Id}> {curso.course_Name}</option>
+                <option key={item.curso.id}> {item.curso.course_Name}</option>
               </>
             );
           })}
@@ -440,4 +571,4 @@ const UsersList = () => {
   );
 };
 
-export default UsersList;
+export default CoursesList;
