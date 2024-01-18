@@ -102,10 +102,23 @@ const CoursesList = () => {
           setIsOpen(true);
         })
         .catch((error) => {
-          setInfo("Fallo al crear el curso");
+          setInfo("Fallo al actualizar el curso");
           setIsOpen(true);
         });
     } catch {}
+  };
+
+  const handleClickEdit = (
+    course_Id: number,
+    course_Name: string,
+    department_Name: string
+  ) => {
+    setId(course_Id);
+    setCourseName(course_Name);
+    setDepartment(department_Name);
+
+    // setInfo("Editando usuario " + id);
+    setEditOpen(true);
   };
 
   const handleClickUpdate = () => {
@@ -233,18 +246,32 @@ const CoursesList = () => {
               <select className="dropdownsearch">
                 <option value="">Curso</option>
 
-                <option value="Automatización">Linux</option>
-
-                <option value="Infraestructura">Ansible</option>
+                {courseData.map((item) => {
+                  return (
+                    <>
+                      <option key={item.curso.id}>
+                        {" "}
+                        {item.curso.course_Name}
+                      </option>
+                    </>
+                  );
+                })}
               </select>
             </th>
             <th>
               <select className="dropdownsearch">
                 <option value="">Temática</option>
 
-                <option value="Automatización">Administrador</option>
-
-                <option value="Infraestructura">Alumno</option>
+                {courseData.map((item) => {
+                  return (
+                    <>
+                      <option key={item.curso.id}>
+                        {" "}
+                        {item.curso.department_Name}
+                      </option>
+                    </>
+                  );
+                })}
               </select>
             </th>
 
@@ -266,7 +293,13 @@ const CoursesList = () => {
               <td>
                 <Link
                   to="#"
-                  onClick={() => handleClickUpdate()}
+                  onClick={() =>
+                    handleClickEdit(
+                      item.curso.id,
+                      item.curso.course_Name,
+                      item.curso.department_Name
+                    )
+                  }
                   className="EditLink"
                 >
                   <TbEdit />
@@ -368,91 +401,6 @@ const CoursesList = () => {
             </div>
           </form>
         </Modal>
-
-        <Modal
-          isOpen={isEditOpen}
-          onRequestClose={handleClose}
-          style={{
-            overlay: {
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            },
-            content: {
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              backgroundColor: "white",
-              borderRadius: "5px",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-              padding: "20px",
-              height: "570px",
-              maxWidth: "500px",
-              width: "100%",
-            },
-          }}
-        >
-          <h4
-            style={{
-              textAlign: "center",
-              marginRight: "40px",
-              fontSize: "30px",
-            }}
-          ></h4>
-          <p
-            style={{
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: "22px",
-            }}
-          >
-            {info}
-          </p>
-          <form onSubmit={handleClose} className="max-w-sm mx-auto bg">
-            <div>
-              {/* <label htmlFor="name">Nombre:</label> */}
-              <input
-                style={{
-                  backgroundColor: "skyblue",
-                  textAlign: "center",
-                  fontSize: "25px",
-                  borderRadius: "15px",
-                }}
-                type="text"
-                name="Name"
-                id="courseName"
-                value={courseName}
-                onChange={(event) => setCourseName(event.target.value)}
-              />
-            </div>
-            <br></br>
-            <div>
-              {/* <label htmlFor="surname">Apellidos:</label> */}
-              <input
-                style={{
-                  backgroundColor: "skyblue",
-                  textAlign: "center",
-                  fontSize: "25px",
-                  borderRadius: "15px",
-                }}
-                type="text"
-                name="tematica"
-                id="courseDetartment"
-                value={courseDepartment}
-                onChange={(event) => setDepartment(event.target.value)}
-              />
-            </div>
-            <br></br>
-
-            <div>
-              <Button onClick={handleClickUpdate} className="popUpButtonUpdate">
-                ACTUALIZAR
-              </Button>
-              <Button onClick={handleCloseCancel} className="popUpButtonCancel">
-                CANCELAR
-              </Button>
-            </div>
-          </form>
-        </Modal>
-
         <Modal
           isOpen={isOpen}
           onRequestClose={handleClose}
@@ -496,6 +444,91 @@ const CoursesList = () => {
           <button onClick={handleClose} className="popUpButton">
             Aceptar
           </button>
+        </Modal>
+
+        <Modal
+          isOpen={isEditOpen}
+          onRequestClose={handleClose}
+          style={{
+            overlay: {
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            },
+            content: {
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "white",
+              borderRadius: "5px",
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              padding: "20px",
+              height: "570px",
+              maxWidth: "500px",
+              width: "100%",
+            },
+          }}
+        >
+          <h4
+            style={{
+              textAlign: "center",
+              marginRight: "40px",
+              fontSize: "30px",
+            }}
+          >
+            {" "}
+            EDITAR CURSO
+          </h4>
+          <p
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: "22px",
+            }}
+          >
+            {info}
+          </p>
+          <form className="max-w-sm mx-auto bg">
+            <div>
+              <label htmlFor="name">Nombre del Curso:</label>
+              <input
+                style={{
+                  marginTop: "20px",
+                  backgroundColor: "skyblue",
+                  textAlign: "center",
+                  fontSize: "25px",
+                  borderRadius: "15px",
+                }}
+                type="text"
+                id="courseName"
+                value={courseName}
+                onChange={(event) => setCourseName(event.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="surname">Temática:</label>
+              <input
+                style={{
+                  backgroundColor: "skyblue",
+                  textAlign: "center",
+                  marginTop: "20px",
+                  fontSize: "25px",
+                  borderRadius: "15px",
+                }}
+                type="text"
+                id="courseDetartment"
+                value={courseDepartment}
+                onChange={(event) => setDepartment(event.target.value)}
+              />
+            </div>
+
+            <div>
+              <Button onClick={handleClickUpdate} className="popUpButtonCreate">
+                ACTUALIZAR
+              </Button>
+              <Button onClick={handleCloseCancel} className="popUpButtonCancel">
+                CANCELAR
+              </Button>
+            </div>
+          </form>
         </Modal>
         <Modal
           isOpen={isOpenConfirm}
@@ -548,11 +581,11 @@ const CoursesList = () => {
 
       <div style={{ marginLeft: "280px", marginTop: "7%" }}>
         <h1 className="text-blue-500 font-bold size-10">
-          LISTADO DE RECURSOS POR CURSOS:
+          {/* LISTADO DE RECURSOS POR CURSOS: */}
         </h1>
       </div>
 
-      <div className="dropcontainer">
+      {/* <div className="dropcontainer">
         <select>
           <option>Seleccionar curso...</option>
 
@@ -566,7 +599,7 @@ const CoursesList = () => {
         </select>
       </div>
 
-      <br></br>
+      <br></br> */}
     </div>
   );
 };
