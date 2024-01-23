@@ -355,14 +355,8 @@ const UsersList = () => {
             </div>
 
             <div>
-<<<<<<< HEAD
-              <button onClick={() => handleClickManage(id)}
       
-
-                className="popUpButton">
-=======
-              <button onClick={handleClickManage} className="popUpButton">
->>>>>>> 034b70f161bb5dce339f8b21d0855b17e14810fd
+            <button onClick={() => handleClickManage(id)} className="popUpButton">
                 Actualizar
               </button>
             </div>
