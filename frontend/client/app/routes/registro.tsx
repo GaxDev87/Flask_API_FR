@@ -3,12 +3,9 @@ import axios from "axios";
 import { cssBundleHref } from "@remix-run/css-bundle";
 // import { safeRedirect } from "~/utils";
 import registroStyles from "~/styles/registro.css";
-import { Navigate } from "react-router-dom";
-
 import { LinksFunction, json } from "@remix-run/node";
 import Modal from "react-modal";
 import NTT from "~/images/NTT2.png";
-import { useNavigate } from "react-router-dom";
 
 import {
   Links,
@@ -41,7 +38,6 @@ const Registro_user = () => {
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [isValidPassword, setIsValidPassword] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     if (password != confirmar_password) {
@@ -110,9 +106,6 @@ const Registro_user = () => {
               } else {
                 console.log("Usuario añadido correctamente");
                 setInfo("Usuario creado correctamente");
-                navigate("/inicio")
-
-
               }
             },
             (error) => {
@@ -130,11 +123,8 @@ const Registro_user = () => {
     }
   };
 
-  const handleClose = () => {   
-
+  const handleClose = () => {
     setIsOpen(false);
-    
-
   };
 
   return (
@@ -241,7 +231,6 @@ const Registro_user = () => {
         </p>
         <button onClick={handleClose} className="popUpButton">
           Aceptar
-
         </button>
       </Modal>
     </form>
