@@ -151,8 +151,9 @@ const ListarCursos = () => {
               </td>
 
               <td>
-                <Link to= "/about">
-                <button className="GoCourse"> Ver Curso</button></Link>
+                <Link to="/Course_Template">
+                  <button className="GoCourse"> Ver Curso</button>
+                </Link>
               </td>
             </tr>
           ))}
