@@ -6,3 +6,10 @@ export interface User {
   email: string;
   user_Type: string;
 }
+
+export interface update_User {
+  firstName: string;
+  lastName: string;
+  email: string;
+  user_Type: string;
+}
