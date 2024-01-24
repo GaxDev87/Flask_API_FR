@@ -46,7 +46,7 @@ export function loader() {
     });
 }
 
-const Alumnos_cursos = () => {
+const Cursos_Disponibles = () => {
   const menuOptions = [
     { path: "/admin", icon: <FaCog /> },
     { path: "/perfil", icon: <FiUser /> },
@@ -62,4 +62,4 @@ const Alumnos_cursos = () => {
   );
 };
 
-export default Alumnos_cursos;
+export default Cursos_Disponibles;

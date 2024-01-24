@@ -1,4 +1,4 @@
-from flask import Flask, request, json, jsonify, session, make_response
+from flask import Flask, request, json, jsonify, session, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS, cross_origin
@@ -6,6 +6,8 @@ from flask_session import Session
 from config import ApplicationConfig
 from models import db, Users, User_courses, Courses, Documents, Videos, User_courses
 import os
+from sqlalchemy import distinct
+
 
 app = Flask(__name__)
 
@@ -25,6 +27,136 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
+
+# ##********************SEARCH*********************#
+    
+@app.route('/search/<int:id>', methods=['GET'])
+def search_id(id):
+   try:
+    print(id)     
+     
+    if id:
+        search_results_id= Users.query.filter_by(user_Id = id).all()
+
+        return jsonify(        [ 
+            {                   
+                "user_Id": user.user_Id,
+                "firstName":user.firstName,
+                "lastName": user.lastName,
+                "email": user.email,
+                "user_Type": user.user_Type
+            }            
+            for user in search_results_id
+        ]
+    )
+    search_results_id = []   
+   except:
+     return jsonify({'message': 'error getting search'}), 500
+ 
+
+@app.route('/searchfirst/<string:query>', methods=['GET'])
+def searchfirst(query):
+   
+  try:
+    print(query)     
+     
+    if query:
+        search_results= Users.query.filter(Users.firstName.icontains(query))                                 
+
+        return jsonify(  
+        [ 
+            {   "user_Id": user.user_Id,              
+                "firstName": user.firstName,
+                "lastName": user.lastName,
+                "group_Type": user.group_Type,                
+                "email": user.email,
+                "user_Type": user.user_Type,               
+            }            
+            for user in search_results
+        ]
+        
+    )
+    search_results = []   
+  except:
+     return jsonify({'message': 'error getting search'}), 500
+  
+@app.route('/searchlast/<string:query>', methods=['GET'])
+def searchlast(query):
+   
+  try:
+    print(query)     
+     
+    if query:
+        search_results= Users.query.filter(Users.lastName.icontains(query))                                      
+
+        return jsonify(  
+        [ 
+            {   "user_Id": user.user_Id,             
+                "firstName": user.firstName,
+                "lastName": user.lastName,
+                "email": user.email,
+                "user_Type":user.user_Type                
+            }            
+            for user in search_results
+        ]
+        
+    )
+    search_results = []   
+  except:
+     return jsonify({'message': 'error getting search'}), 500
+  
+
+@app.route('/searchemail/<string:query>', methods=['GET'])
+def searchemail(query):
+   
+  try:
+    print(query)     
+     
+    if query:
+        search_results= Users.query.filter(Users.email.icontains(query))                                      
+
+        return jsonify(  
+        [ 
+            {  "user_Id": user.user_Id,             
+                "firstName": user.firstName,
+                "lastName": user.lastName,
+                "email": user.email,
+                "user_Type":user.user_Type                
+            }            
+            for user in search_results
+        ]
+        
+    )
+    search_results = []   
+  except:
+     return jsonify({'message': 'error getting search'}), 500
+  
+
+  
+@app.route('/searchusertype/<string:query>', methods=['GET'])
+def searchusertype(query):
+   
+  try:
+    print(query)     
+     
+    if query:
+        search_results= Users.query.filter(Users.user_Type.icontains(query))                                      
+
+        return jsonify(  
+        [ 
+            {  "user_Id": user.user_Id,             
+                "firstName": user.firstName,
+                "lastName": user.lastName,
+                "email": user.email,
+                "user_Type":user.user_Type                
+            }            
+            for user in search_results
+        ]
+        
+    )
+    search_results = []   
+  except:
+     return jsonify({'message': 'error getting search'}), 500
     
 # ##********************USERS*********************#
 
@@ -152,12 +284,12 @@ def get_current_user():
                 "email": user.email,})
 
 # get all users,
-@app.route("/users", methods=["GET"])
+@app.route("/get_users", methods=["GET"])
 def get_users():
     return jsonify(
         [
             {
-                "id": user.user_Id,              
+                "user_Id": user.user_Id,              
                 "firstName": user.firstName,
                 "lastName": user.lastName,
                 "group_Type": user.group_Type,                
@@ -215,7 +347,17 @@ def register_course():
     except:
         return jsonify({'error': 'error creating user'}), 500   
     
-
+# get all courses
+@app.route('/get_thematic', methods=["GET"])
+def get_thematic():    
+    unique_courses =  Courses.query.distinct(Courses.department_Name)    
+    return jsonify(        [ 
+            {                   
+                "department_Name": course.department_Name              
+            }            
+            for course in unique_courses
+        ]
+    )
 
 # get all courses
 @app.route('/get_courses', methods=["GET"])
@@ -235,23 +377,18 @@ def get_courses():
 
     
     # # update a course by course id
-@app.route("/course/<int:id>", methods=["PUT"])
+@app.route("/update_course/<int:id>", methods=["PUT"])
 def update_course(id):
-
-     if not id:
-         return jsonify({"error": "course id not found"}), 401
     
-     try:
-         course = Courses.query.filter_by(course_Id=id).first()
-         enrollment = User_courses.query.filter_by(course_Id=id).first()
-
-         if course:
-             course.course_Name = request.json["course_Name"]
-             course.department_Name = request.json["department_Name"] 
-             enrollment.course_Name = course.course_Name 
-             db.session.commit()
-             return jsonify({'message': 'Course updated!',"id": course.course_Id, "Name": course.course_Name, "Department": course.department_Name}), 200
-     except:
+    try:
+        course = Courses.query.filter_by(course_Id=id).first()
+        if course:
+            course.course_Name = request.json["course_Name"]
+            course.department_Name = request.json["department_Name"]
+        
+            db.session.commit()
+            return jsonify({'message': 'Course updated!',"id": course.course_Id, "Name": course.course_Name, "Department": course.department_Name}), 200
+    except:
          return jsonify({'message': 'error updating course'}), 500
 
 #delete a course
