@@ -151,7 +151,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
                 style={{ color: "white" }}
               >
                 <BiSolidBookReader className="w-6 h-6 mr-2" />
-                <Link to={`/Cursos_disponibles`}>Visualizar cursos</Link>
+                <Link to={`/RenderListCourses`}>Visualizar cursos</Link>
               </li>
 
               <li

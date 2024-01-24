@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { cssBundleHref } from "@remix-run/css-bundle";
-import gestionarUsuariosStyles from "~/styles/gestionar_usuarios.css";
+import gestionarUsuariosStyles from "~/styles/gestionar_cursos.css";
 import { LinksFunction, json } from "@remix-run/node";
 
 import {
@@ -17,8 +17,10 @@ import {
 import { FaCog } from "react-icons/fa";
 import { FiUser, FiHome } from "react-icons/fi";
 import Navbar from "./components/Navbar";
-import UsersList from "./components/UsersList";
+import CoursesList from "./components/CoursesList";
 import Sidebar from "./components/Sidebar";
+import CoursesListAlumnos from "./CoursesListAlumnos";
+import ListCourses from "./ListCourses";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: gestionarUsuariosStyles },
@@ -27,7 +29,7 @@ export const links: LinksFunction = () => [
 
 export function loader() {
   return axios
-    .get("http://localhost:5000/get_users")
+    .get("http://localhost:5000/get_courses")
     .then((response) => {
       const data = response.data;
       let data_response = data;
@@ -35,7 +37,7 @@ export function loader() {
         console.log("Error: no data");
         return "no data";
       } else {
-        console.log("Cursos obtenidos correctamente");
+        console.log("Usuarios obtenidos correctamente");
         return { data_response };
       }
     })
@@ -45,7 +47,7 @@ export function loader() {
     });
 }
 
-const Admin_usuarios = () => {
+const RenderListaCurso = () => {
   const menuOptions = [
     { path: "/admin", icon: <FaCog /> },
     { path: "/perfil", icon: <FiUser /> },
@@ -54,11 +56,11 @@ const Admin_usuarios = () => {
   return (
     <Sidebar>
       <div style={{ marginLeft: "280px", marginTop: "7%" }}>
-        <h1 className="text-blue-500 font-bold size-10">GESTIONAR USUARIOS:</h1>
-        <UsersList />
+        <h1 className="text-blue-500 font-bold size-10">CURSOS DISPONIBLES:</h1>
+        <ListCourses />
       </div>
     </Sidebar>
   );
 };
 
-export default Admin_usuarios;
+export default RenderListaCurso;

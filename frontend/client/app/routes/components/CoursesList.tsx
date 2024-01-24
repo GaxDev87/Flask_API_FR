@@ -36,11 +36,14 @@ const CoursesList = () => {
   const [info, setInfo] = useState("");
   const [isEditOpen, setEditOpen] = useState(false);
   const [isCreatetOpen, setCreateOpen] = useState(false);
+  const [isClosedCreatetOpen, setClosedCreatetOpen] = useState(false);
+
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
   const [courseId, setId] = useState(0);
   const [courseName, setCourseName] = useState("");
   const [courseDepartment, setDepartment] = useState("");
+  const [courseThematic, setThematic] = useState([]);
   const [courseData, setCourseData] = useState<
     {
       curso: Course;
@@ -48,7 +51,7 @@ const CoursesList = () => {
   >([]);
   const data = useLoaderData();
   let courses_data = data["data_response"];
-  // const URL = "http://localhost:5000/get_courses";
+  const URL = "http://localhost:5000/get_thematic";
   // const [coursesList, setCourses] = useState([]);
 
   const handleClickDelete = (id: number) => {
@@ -59,36 +62,37 @@ const CoursesList = () => {
 
   // State to hold fetched courses data
 
-  // useEffect(() => {
-  //   // Fetch data using Promise with the Fetch API
-  //   const getCoursesAPI = () => {
-  //     fetch(URL) // Fetch data based on the current page
-  //       .then((response) => response.json()) // Parse the response as JSON
-  //       .then((data) => {
-  //         setCourses(data); // Set the fetched data
-  //       });
-  //   };
+  useEffect(() => {
+    // Fetch data using Promise with the Fetch API
+    const getCoursesAPI = () => {
+      fetch(URL) // Fetch data based on the current page
+        .then((response) => response.json()) // Parse the response as JSON
+        .then((data) => {
+          setThematic(data); // Set the fetched data
+        });
+    };
 
-  //   // Trigger fetching method on component mount
-  //   getCoursesAPI();
-  // }, []);
+    // Trigger fetching method on component mount
+    getCoursesAPI();
+  }, []);
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     let nombre_curso_sin_espacios = courseName.trim();
     let nombre_tematica_sin_espacios = courseDepartment.trim();
 
     if (nombre_curso_sin_espacios === "") {
-      console.log("Por favor, introduzca nombre del curso");
       setInfo("Por favor, introduzca el nombre del curso");
-      setIsOpen(true);
-      return handleClickAdd();
+      setClosedCreatetOpen(true);
+
+      return;
     }
 
     if (nombre_tematica_sin_espacios === "") {
-      console.log("Por favor, introduzca la tematica del curso");
       setInfo("Por favor, introduzca la tematica del curso");
-      setIsOpen(true);
-      return handleClickAdd();
+
+      setClosedCreatetOpen(true);
+
+      return;
     }
 
     try {
@@ -102,7 +106,7 @@ const CoursesList = () => {
           setIsOpen(true);
         })
         .catch((error) => {
-          setInfo("Fallo al actualizar el curso");
+          setInfo("Fallo al crear el curso");
           setIsOpen(true);
         });
     } catch {}
@@ -123,7 +127,10 @@ const CoursesList = () => {
 
   const handleClickUpdate = () => {
     axios
-      .put("http://localhost:5000/course/" + courseId)
+      .put("http://localhost:5000/update_course/" + courseId, {
+        course_Name: courseName,
+        department_Name: courseDepartment,
+      })
       .then((response) => {
         setInfo("Curso actualizado correctamente!");
         setIsOpen(true);
@@ -138,6 +145,11 @@ const CoursesList = () => {
     location.href = "/Admin_cursos"; // Actualizar tabla cursos
     updateCourses();
     setIsOpen(false);
+  };
+
+  const handleCloseCreate = () => {
+    setClosedCreatetOpen(false);
+    setCreateOpen(true); // location.href = "/Admin_cursos"; // Actualizar tabla cursos
   };
 
   const handleCloseCancel = () => {
@@ -156,7 +168,7 @@ const CoursesList = () => {
     axios
       .delete("http://localhost:5000/delete_course/" + courseId)
       .then((response) => {
-        setInfo("Curso eliminado correctamente");
+        setInfo("Curso eliminado correctamente!");
         setIsOpen(true);
       })
       .catch((error) => {
@@ -227,14 +239,15 @@ const CoursesList = () => {
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
           </tr>
           <tr>
             <th>ID de Curso</th>
             <th>Nombre del Curso</th>
             <th>Temática del Curso</th>
-
-            <th></th>
-            <th></th>
+            <th>Editar Curso</th>
+            <th>Eliminar Curso</th>
+            <th>Recursos</th>
           </tr>
         </thead>
         <tbody>
@@ -262,12 +275,12 @@ const CoursesList = () => {
               <select className="dropdownsearch">
                 <option value="">Temática</option>
 
-                {courseData.map((item) => {
+                {courseThematic.map((item) => {
                   return (
                     <>
-                      <option key={item.curso.id}>
+                      <option key={item.course_Id}>
                         {" "}
-                        {item.curso.department_Name}
+                        {item.department_Name}
                       </option>
                     </>
                   );
@@ -275,6 +288,7 @@ const CoursesList = () => {
               </select>
             </th>
 
+            <th></th>
             <th></th>
             <th></th>
           </tr>
@@ -312,6 +326,16 @@ const CoursesList = () => {
                   className="DeleteLink"
                 >
                   <FaTrash />
+                </Link>
+              </td>
+
+              <td>
+                <Link
+                  to="#"
+                  // onClick={() => handleClickDelete(item.curso.id)}
+                  className="EditLink"
+                >
+                  Gestionar recursos
                 </Link>
               </td>
             </tr>
@@ -355,7 +379,7 @@ const CoursesList = () => {
               fontSize: "22px",
             }}
           >
-            {info}
+            {/* {info} */}
           </p>
           <form className="max-w-sm mx-auto bg">
             <div>
@@ -401,50 +425,6 @@ const CoursesList = () => {
             </div>
           </form>
         </Modal>
-        <Modal
-          isOpen={isOpen}
-          onRequestClose={handleClose}
-          style={{
-            overlay: {
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            },
-            content: {
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              backgroundColor: "white",
-              borderRadius: "5px",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-              padding: "20px",
-              height: "300px",
-              maxWidth: "500px",
-              width: "100%",
-            },
-          }}
-        >
-          <h4
-            style={{
-              textAlign: "center",
-              marginRight: "40px",
-              fontSize: "30px",
-            }}
-          >
-            AVISO
-          </h4>
-          <p
-            style={{
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: "22px",
-            }}
-          >
-            {info}
-          </p>
-          <button onClick={handleClose} className="popUpButton">
-            Aceptar
-          </button>
-        </Modal>
 
         <Modal
           isOpen={isEditOpen}
@@ -484,7 +464,7 @@ const CoursesList = () => {
               fontSize: "22px",
             }}
           >
-            {info}
+            {/* {info} */}
           </p>
           <form className="max-w-sm mx-auto bg">
             <div>
@@ -521,10 +501,10 @@ const CoursesList = () => {
             </div>
 
             <div>
-              <Button onClick={handleClickUpdate} className="popUpButtonCreate">
+              <Button onClick={handleClickUpdate} className="popUpButtonUpdate">
                 ACTUALIZAR
               </Button>
-              <Button onClick={handleCloseCancel} className="popUpButtonCancel">
+              <Button onClick={handleClose} className="popUpButtonCancel">
                 CANCELAR
               </Button>
             </div>
@@ -578,28 +558,100 @@ const CoursesList = () => {
           </button>
         </Modal>
       </table>
-
       <div style={{ marginLeft: "280px", marginTop: "7%" }}>
         <h1 className="text-blue-500 font-bold size-10">
           {/* LISTADO DE RECURSOS POR CURSOS: */}
         </h1>
       </div>
+      <Modal
+        isOpen={isOpen}
+        onRequestClose={handleClose}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+          content: {
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "white",
+            borderRadius: "5px",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+            padding: "20px",
+            height: "300px",
+            maxWidth: "500px",
+            width: "100%",
+          },
+        }}
+      >
+        <h4
+          style={{
+            textAlign: "center",
+            marginRight: "40px",
+            fontSize: "30px",
+          }}
+        >
+          AVISO
+        </h4>
+        <p
+          style={{
+            textAlign: "center",
+            fontWeight: "bold",
+            fontSize: "22px",
+          }}
+        >
+          {info}
+        </p>
+        <button onClick={handleClose} className="popUpButton">
+          Aceptar
+        </button>
+      </Modal>
 
-      {/* <div className="dropcontainer">
-        <select>
-          <option>Seleccionar curso...</option>
-
-          {courseData.map((item) => {
-            return (
-              <>
-                <option key={item.curso.id}> {item.curso.course_Name}</option>
-              </>
-            );
-          })}
-        </select>
-      </div>
-
-      <br></br> */}
+      <Modal
+        isOpen={isClosedCreatetOpen}
+        onRequestClose={handleCloseCreate}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+          content: {
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "white",
+            borderRadius: "5px",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+            padding: "20px",
+            height: "300px",
+            maxWidth: "500px",
+            width: "100%",
+          },
+        }}
+      >
+        <h4
+          style={{
+            textAlign: "center",
+            marginRight: "40px",
+            fontSize: "30px",
+          }}
+        >
+          AVISO
+        </h4>
+        <p
+          style={{
+            textAlign: "center",
+            fontWeight: "bold",
+            fontSize: "22px",
+          }}
+        >
+          {info}
+        </p>
+        <Button onClick={handleCloseCreate} className="popUpButton">
+          Aceptar
+        </Button>
+      </Modal>
     </div>
   );
 };

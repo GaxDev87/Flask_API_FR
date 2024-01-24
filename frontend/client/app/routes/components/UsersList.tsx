@@ -26,6 +26,7 @@ import { User } from "./user_interface";
 import { FaTrash } from "react-icons/fa";
 import { TbEdit } from "react-icons/tb";
 import { Button, ModalBody, ModalFooter, ModalHeader } from "flowbite-react";
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>;
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: registroStyles },
@@ -42,8 +43,17 @@ const UsersList = () => {
   const [lastName, setSurname] = useState("");
   const [email, setEmail] = useState("");
   const [user_Type, setuserType] = useState("");
-  const [search, setSearch] = useState("");
-
+  const [searchId, setSearchId] = useState("");
+  const [searchFirstName, setSearchFirstName] = useState("");
+  const [searchSurname, setSearchSurname] = useState("");
+  const [searchEmail, setSearchEmail] = useState("");
+  const [searchUser_Type, setSearchUser_Type] = useState("");
+  const [coursesList, setCourses] = useState([]);
+  let [SearchUserData, setSearchUserData] = useState<
+    {
+      usuario: User;
+    }[]
+  >([]);
   const [userData, setUserData] = useState<
     {
       usuario: User;
@@ -52,54 +62,90 @@ const UsersList = () => {
   const data = useLoaderData();
   let users_data = data["data_response"];
 
-  // const handleChangeId = (event) => {
-  //   setSearch(event.target.value);
-  // };
+  // Fetch data using Promise with the Fetch API
 
-  const handleChangeName = (event) => {
-    setSearch(event.target.value);
+  const getUsersListAPI = () => {
+    fetch("http://localhost:5000/get_users") // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setUserData(data); // Set the fetched data
+      });
   };
 
-  // const handleChangeSurname = (event) => {
-  //   setSearch(event.target.value);
-  // };
+  const getUsersId = () => {
+    fetch("http://localhost:5000/search/" + searchId) // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setSearchUserData(data); // Set the fetched data
+      });
+  };
+  const getUsersFirst = () => {
+    fetch("http://localhost:5000/searchfirst/" + searchFirstName) // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setSearchUserData(data); // Set the fetched data
+      });
+  };
 
-  const SearchUserData = userData.filter((user) => {
-    if (user.usuario.firstName.toLowerCase().includes(search.toLowerCase())) {
-      return true;
-    } else {
-      return false;
-    }
-  });
+  const getUsersSurname = () => {
+    fetch("http://localhost:5000/searchlast/" + searchSurname) // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setSearchUserData(data); // Set the fetched data
+      });
+  };
 
-  // const searcherName = (e) => {
-  //   setSearchName(e.target.value);
-  // };
+  const getUsersEmail = () => {
+    fetch("http://localhost:5000/searchemail/" + searchEmail) // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setSearchUserData(data); // Set the fetched data
+      });
+  };
 
-  // const searcherId = (e) => {
-  //   setsearchId(e.target.value);
-  // };
+  const getUsersUser_Type = () => {
+    fetch("http://localhost:5000/searchusertype/" + searchUser_Type) // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setSearchUserData(data); // Set the fetched data
+      });
+  };
 
-  // var results = [];
+  useEffect(() => {
+    // Trigger fetching method on component mount
+    updateUsers();
 
-  // if (!searchId) {
-  //   results = userData;
-  // } else {
-  //   results = userData.filter((item) =>
-  //     item.usuario.id.toString().includes(searchId.toString())
-  //   );
-  // }
+    getUsersListAPI();
+  }, []);
+  // Trigger fetching method on component mount
 
-  // if (!searchName) {
-  //   results = userData;
-  // } else {
-  //   results = userData.filter((item) =>
-  //     item.usuario.firstName.toLowerCase().includes(searchName.toLowerCase())
-  //   );
-  // }
+  const handleChangeId = (event) => {
+    setSearchId(event.target.value);
+    getUsersId();
+  };
 
-  const handleClickDelete = (id: number) => {
-    setId(id);
+  const handleChangeFirstName = (event) => {
+    setSearchFirstName(event.target.value);
+    getUsersFirst();
+  };
+
+  const handleChangeSurname = (event) => {
+    setSearchSurname(event.target.value);
+    getUsersSurname();
+  };
+
+  const handleChangeEmail = (event) => {
+    setSearchEmail(event.target.value);
+    getUsersEmail();
+  };
+
+  const handleChangeUser_Type = (event) => {
+    setSearchUser_Type(event.target.value);
+    getUsersUser_Type();
+  };
+
+  const handleClickDelete = (user_Id: number) => {
+    setId(user_Id);
     setInfo("¿Está seguro de que desea eliminar el usuario " + id + "?");
     setIsOpenConfirm(true);
   };
@@ -131,13 +177,13 @@ const UsersList = () => {
   };
 
   const handleClickEdit = (
-    id: number,
+    user_Id: number,
     firstName: string,
     lastName: string,
     email: string,
     user_Type: string
   ) => {
-    setId(id);
+    setId(user_Id);
     setName(firstName);
     setSurname(lastName);
     setEmail(email);
@@ -164,7 +210,7 @@ const UsersList = () => {
 
   const handleCloseConfirm = () => {
     const data = {
-      id: id,
+      user_Id: id,
     };
 
     setIsOpenConfirm(false);
@@ -187,7 +233,7 @@ const UsersList = () => {
       const userData = Object.keys(users_data).map((diccionarioKey) => {
         const diccionario = users_data[diccionarioKey];
         const usuario: User = {
-          id: diccionario["id"],
+          user_Id: diccionario["id"],
           firstName: diccionario["firstName"],
           lastName: diccionario["lastName"],
           group_Type: diccionario["group_Type"],
@@ -201,6 +247,7 @@ const UsersList = () => {
       });
 
       setUserData(userData);
+      SearchUserData = userData;
       console.log(userData);
     } catch (error) {
       console.log(error);
@@ -234,69 +281,74 @@ const UsersList = () => {
             <th className="colim">
               <input
                 name="searcherId"
-                // value={search}
-                // className="search"
-                // onChange={handleChangeId}
-                data-index=""
+                value={searchId}
+                className="search"
+                onChange={handleChangeId}
               ></input>
             </th>
             <th className="colim">
               <input
-                name="searchName"
+                name="searchFirstName"
+                value={searchFirstName}
                 className="search"
-                value={search}
-                onChange={handleChangeName}
+                onChange={handleChangeFirstName}
               ></input>
             </th>
             <th className="colim">
               <input
                 name="searchSurname"
-                // value={search}
-                // onChange={handleChangeSurname}
+                value={searchSurname}
+                onChange={handleChangeSurname}
                 className="search"
               ></input>
             </th>
             <th className="colim">
-              <input className="search"></input>
+              <input
+                name="searchEmail"
+                value={searchEmail}
+                onChange={handleChangeEmail}
+                className="search"
+              ></input>
             </th>
 
             <th className="colim">
-              <select className="dropdownsearch">
-                <option value="">Tipo usuario</option>
+              <select
+                name="searchUser_Type"
+                value={searchUser_Type}
+                onChange={handleChangeUser_Type}
+                className="dropdownsearch"
+              >
+                <option disabled value="">
+                  {" "}
+                  Tipo Usuario
+                </option>
+
+                <option value="Administrador">Administrador</option>
+
+                <option value="Alumno">Alumno</option>
               </select>
             </th>
             <th></th>
             <th></th>
           </tr>
-
           {SearchUserData.map((item) => (
-            <tr key={item.usuario.id}>
-              <td className="text-white font-bold size-15">
-                {item.usuario.id}
-              </td>
-              <td className="text-white font-bold size-15">
-                {item.usuario.firstName}
-              </td>
-              <td className="text-white font-bold size-15">
-                {item.usuario.lastName}
-              </td>
-              <td className="text-white font-bold size-15">
-                {item.usuario.email}
-              </td>
-              <td className="text-white font-bold size-15">
-                {item.usuario.user_Type}
-              </td>
+            <tr key={item.user_Id}>
+              <td className="text-white font-bold size-15">{item.user_Id}</td>
+              <td className="text-white font-bold size-15">{item.firstName}</td>
+              <td className="text-white font-bold size-15">{item.lastName}</td>
+              <td className="text-white font-bold size-15">{item.email}</td>
+              <td className="text-white font-bold size-15">{item.user_Type}</td>
 
               <td>
                 <Link
                   to="#"
                   onClick={() =>
                     handleClickEdit(
-                      item.usuario.id,
-                      item.usuario.firstName,
-                      item.usuario.lastName,
-                      item.usuario.email,
-                      item.usuario.user_Type
+                      item.user_Id,
+                      item.firstName,
+                      item.lastName,
+                      item.email,
+                      item.user_Type
                     )
                   }
                   className="EditLink"
@@ -307,7 +359,7 @@ const UsersList = () => {
               <td>
                 <Link
                   to="#"
-                  onClick={() => handleClickDelete(item.usuario.id)}
+                  onClick={() => handleClickDelete(item.user_Id)}
                   className="DeleteLink"
                 >
                   <FaTrash />
@@ -354,7 +406,7 @@ const UsersList = () => {
               fontSize: "22px",
             }}
           >
-            {info}
+            {/* {info} */}
           </p>
           <form className="max-w-sm mx-auto bg">
             <br></br>

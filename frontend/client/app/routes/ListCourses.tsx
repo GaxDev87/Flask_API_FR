@@ -17,15 +17,11 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { Course } from "./components/course_interface";
-import { FaTrash } from "react-icons/fa";
-import { TbEdit } from "react-icons/tb";
-import { IoAddOutline } from "react-icons/io5";
 import { LinksFunction, json } from "@remix-run/node";
 import { cssBundleHref } from "@remix-run/css-bundle";
 // import { safeRedirect } from "~/utils";
 import cursoStyles from "~/styles/gestionar_cursos.css";
 
-import { Button, ModalBody, ModalFooter, ModalHeader } from "flowbite-react";
 import { CgArrowRightR } from "react-icons/cg";
 
 export const links: LinksFunction = () => [
@@ -33,7 +29,7 @@ export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
 
-const CoursesListAlumnos = () => {
+const ListarCursos = () => {
   const [info, setInfo] = useState("");
   const [isEditOpen, setEditOpen] = useState(false);
   const [isCreatetOpen, setCreateOpen] = useState(false);
@@ -43,6 +39,7 @@ const CoursesListAlumnos = () => {
   const [courseName, setCourseName] = useState("");
   const [courseDepartment, setDepartment] = useState("");
   const [search, setSearch] = useState("");
+  const [courseThematic, setThematic] = useState([]);
 
   const [courseData, setCourseData] = useState<
     {
@@ -51,36 +48,25 @@ const CoursesListAlumnos = () => {
   >([]);
   const data = useLoaderData();
   let courses_data = data["data_response"];
-  // const URL = "http://localhost:5000/get_courses";
+  const URL = "http://localhost:5000/get_thematic/";
   // const [coursesList, setCourses] = useState([]);
 
-  // State to hold fetched courses data
+  // State to hold fetched thematic data
 
-  // useEffect(() => {
-  //   // Fetch data using Promise with the Fetch API
-  //   const getCoursesAPI = () => {
-  //     fetch(URL) // Fetch data based on the current page
-  //       .then((response) => response.json()) // Parse the response as JSON
-  //       .then((data) => {
-  //         setCourses(data); // Set the fetched data
-  //       });
-  //   };
+  useEffect(() => {
+    // Fetch data using Promise with the Fetch API
+    const getCoursesAPI = () => {
+      fetch(URL) // Fetch data based on the current page
+        .then((response) => response.json()) // Parse the response as JSON
+        .then((data) => {
+          setThematic(data); // Set the fetched data
+        });
+    };
 
-  //   // Trigger fetching method on component mount
-  //   getCoursesAPI();
-  // }, []);
+    // Trigger fetching method on component mount
+    getCoursesAPI();
+  }, []);
 
-  const handleChangeName = (event) => {
-    setSearch(event.target.value);
-  };
-
-  const SearchUserData = courseData.filter((user) => {
-    if (user.curso.course_Name.toLowerCase().includes(search.toLowerCase())) {
-      return true;
-    } else {
-      return false;
-    }
-  });
   const updateCourses = () => {
     try {
       const courseData = Object.keys(courses_data).map((diccionarioKey) => {
@@ -109,23 +95,6 @@ const CoursesListAlumnos = () => {
 
   return (
     <div style={{ marginRight: "7%", marginTop: "1%" }}>
-      {/* <div className="dropcontainer">
-        <br></br>
-
-        <select>
-          <option>Seleccionar curso...</option>
-
-          {courseData.map((item) => {
-            return (
-              <>
-                <option key={item.curso.id}> {item.curso.course_Name}</option>
-              </>
-            );
-          })}
-        </select>
-      </div>
-      <br></br>
-      <br></br> */}
       <table>
         <thead>
           <tr>
@@ -141,7 +110,6 @@ const CoursesListAlumnos = () => {
                 className="dropdownsearch"
                 name="searchName"
                 value={search}
-                onSelect={handleChangeName}
               >
                 <option value="">Cursos</option>
 
@@ -161,13 +129,10 @@ const CoursesListAlumnos = () => {
               <select className="dropdownsearch">
                 <option value="Temática">Temática</option>
 
-                {courseData.map((item) => {
+                {courseThematic.map((item) => {
                   return (
                     <>
-                      <option key={item.curso.id}>
-                        {" "}
-                        {item.curso.department_Name}
-                      </option>
+                      <option key={item.id}> {item.department_Name}</option>
                     </>
                   );
                 })}
@@ -184,11 +149,9 @@ const CoursesListAlumnos = () => {
               <td className="text-white font-bold size-15">
                 {item.curso.department_Name}
               </td>
+
               <td>
-                <button className="GoCourse">
-                  Ver curso
-                  <CgArrowRightR />
-                </button>
+                <button className="GoCourse"> Ver Curso</button>
               </td>
             </tr>
           ))}
@@ -198,4 +161,4 @@ const CoursesListAlumnos = () => {
   );
 };
 
-export default CoursesListAlumnos;
+export default ListarCursos;
