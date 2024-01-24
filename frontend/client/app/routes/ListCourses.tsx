@@ -48,7 +48,6 @@ const ListarCursos = () => {
   >([]);
   const data = useLoaderData();
   let courses_data = data["data_response"];
-  const URL = "http://localhost:5000/get_thematic";
   // const [coursesList, setCourses] = useState([]);
 
   // State to hold fetched thematic data
@@ -56,7 +55,7 @@ const ListarCursos = () => {
   useEffect(() => {
     // Fetch data using Promise with the Fetch API
     const getCoursesAPI = () => {
-      fetch(URL) // Fetch data based on the current page
+      fetch("http://localhost:5000/get_thematic") // Fetch data based on the current page
         .then((response) => response.json()) // Parse the response as JSON
         .then((data) => {
           setThematic(data); // Set the fetched data
@@ -67,12 +66,22 @@ const ListarCursos = () => {
     getCoursesAPI();
   }, []);
 
+  const handleClickCourse = (
+    course_Id: number,
+    course_Name: string,
+    department_Name: string
+  ) => {
+    setId(course_Id);
+    setCourseName(course_Name);
+    setDepartment(department_Name);
+  };
+
   const updateCourses = () => {
     try {
       const courseData = Object.keys(courses_data).map((diccionarioKey) => {
         const diccionario = courses_data[diccionarioKey];
         const curso: Course = {
-          id: diccionario["course_Id"],
+          course_Id: diccionario["course_Id"],
           course_Name: diccionario["course_Name"],
           department_Name: diccionario["department_Name"],
         };
@@ -111,12 +120,14 @@ const ListarCursos = () => {
                 name="searchName"
                 value={search}
               >
-                <option value="">Cursos</option>
+                <option disabled value="">
+                  Cursos
+                </option>
 
                 {courseData.map((item) => {
                   return (
                     <>
-                      <option key={item.curso.id}>
+                      <option key={item.curso.course_Id}>
                         {" "}
                         {item.curso.course_Name}
                       </option>
@@ -126,7 +137,11 @@ const ListarCursos = () => {
               </select>
             </th>
             <th>
-              <select className="dropdownsearch">
+              <select
+                className="dropdownsearch"
+                name="searchName"
+                // value={search}
+              >
                 <option value="">Temática</option>
 
                 {courseThematic.map((item) => {
@@ -145,7 +160,7 @@ const ListarCursos = () => {
           </tr>
 
           {courseData.map((item) => (
-            <tr key={item.curso.id}>
+            <tr key={item.curso.course_Id}>
               <td className="text-white font-bold size-15">
                 {item.curso.course_Name}
               </td>
@@ -154,8 +169,26 @@ const ListarCursos = () => {
               </td>
 
               <td>
-                <Link to="/Course_Template">
-                  <button className="GoCourse"> Ver Curso</button>
+                <Link
+                  to="/Course_Template"
+                  state={{
+                    course_Id: item.curso.course_Id,
+                    course_Name: item.curso.course_Name,
+                  }}
+                >
+                  <button
+                    onClick={() => {
+                      handleClickCourse(
+                        item.curso.course_Id,
+                        item.curso.course_Name,
+                        item.curso.department_Name
+                      );
+                    }}
+                    className="GoCourse"
+                  >
+                    {" "}
+                    Ver Curso
+                  </button>
                 </Link>
               </td>
             </tr>

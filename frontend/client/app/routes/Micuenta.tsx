@@ -21,7 +21,7 @@ import gestionarUsuariosStyles from "~/styles/gestionar_usuarios.css";
 import { FiUser } from "react-icons/fi";
 import { FaCog } from "react-icons/fa";
 import axios from "axios";
-import { LinksFunction, json} from "@remix-run/node";
+import { LinksFunction, json } from "@remix-run/node";
 
 import { useNavigate } from "react-router-dom";
 
@@ -39,7 +39,6 @@ import {
 
 import { cssBundleHref } from "@remix-run/css-bundle";
 
-
 import { FaUsers } from "react-icons/fa";
 import { RiNumber0 } from "react-icons/ri";
 import { Table } from "flowbite-react";
@@ -56,8 +55,6 @@ export default function Mi_cuenta() {
     { path: "/Micuenta", icon: <FaCircleUser /> },
     { path: "/", icon: <AiOutlineHome /> },
   ];
-
-  
 
   const [user_Id, setId] = useState(RiNumber0);
   const [firstName, setName] = useState("");
@@ -81,7 +78,7 @@ export default function Mi_cuenta() {
         (response) => {
           const data = response.data;
           const user: User = {
-            id: data["user_Id"],
+            user_Id: data["user_Id"],
             firstName: data["firstName"],
             lastName: data["lastName"],
             email: data["email"],
@@ -89,7 +86,7 @@ export default function Mi_cuenta() {
             user_Type: data["user_Type"],
           };
 
-          setId(user.id);
+          setId(user.user_Id);
           setName(user.firstName);
           setSurname(user.lastName);
           setgroup_Type(user.group_Type);
@@ -123,48 +120,38 @@ export default function Mi_cuenta() {
         style={{ marginLeft: "300px", width: "600px", height: "500px" }}
       >
         {" "}
-        <h2 className=" mb-4 text-4xl font-extrabold leading-none tracking-tight text-blue-600 md:text-5xl lg:text-4xl dark:text-white">Mis Datos:</h2>
+        <h2 className=" mb-4 text-4xl font-extrabold leading-none tracking-tight text-blue-600 md:text-5xl lg:text-4xl dark:text-white">
+          Mis Datos:
+        </h2>
+        <table>
+          <tr>
+            <th>Nombre:</th>
+            <td>{firstName}</td>
+          </tr>
+          <tr>
+            <th>Apellidos:</th>
+            <td>{lastName}</td>
+          </tr>
+          <tr>
+            <th>Area:</th>
+            <td>{group_Type}</td>
+          </tr>
 
-
-<table>
-
-
-  <tr>
-    <th>Nombre:</th>
-    <td>{firstName}</td>
-  </tr>
-  <tr>
-    <th>Apellidos:</th>
-    <td>{lastName}</td>
-  </tr>
-  <tr>
-    <th>Area:</th>
-    <td>{group_Type}</td>
-  </tr>
-
-  <tr>
-    <th>Correo:</th>
-    <td>{email}</td>
-  </tr>
-</table>
-
-
-<button  style={{
-         
-           
+          <tr>
+            <th>Correo:</th>
+            <td>{email}</td>
+          </tr>
+        </table>
+        <button
+          style={{
             marginLeft: "20px",
 
             borderRadius: "5px",
-          
-       
-        }}>Editar</button>
-
-
-     
-        
+          }}
+        >
+          Editar
+        </button>
       </div>
-
-
     </Sidebar>
   );
 }

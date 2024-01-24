@@ -51,7 +51,6 @@ const CoursesList = () => {
   >([]);
   const data = useLoaderData();
   let courses_data = data["data_response"];
-  const URL = "http://localhost:5000/get_thematic";
   // const [coursesList, setCourses] = useState([]);
 
   const handleClickDelete = (id: number) => {
@@ -65,7 +64,7 @@ const CoursesList = () => {
   useEffect(() => {
     // Fetch data using Promise with the Fetch API
     const getCoursesAPI = () => {
-      fetch(URL) // Fetch data based on the current page
+      fetch("http://localhost:5000/get_thematic") // Fetch data based on the current page
         .then((response) => response.json()) // Parse the response as JSON
         .then((data) => {
           setThematic(data); // Set the fetched data
@@ -204,7 +203,7 @@ const CoursesList = () => {
       const courseData = Object.keys(courses_data).map((diccionarioKey) => {
         const diccionario = courses_data[diccionarioKey];
         const curso: Course = {
-          id: diccionario["course_Id"],
+          course_Id: diccionario["course_Id"],
           course_Name: diccionario["course_Name"],
           department_Name: diccionario["department_Name"],
         };
@@ -262,7 +261,7 @@ const CoursesList = () => {
                 {courseData.map((item) => {
                   return (
                     <>
-                      <option key={item.curso.id}>
+                      <option key={item.curso.course_Id}>
                         {" "}
                         {item.curso.course_Name}
                       </option>
@@ -294,8 +293,10 @@ const CoursesList = () => {
           </tr>
 
           {courseData.map((item) => (
-            <tr key={item.curso.id}>
-              <td className="text-white font-bold size-15">{item.curso.id}</td>
+            <tr key={item.curso.course_Id}>
+              <td className="text-white font-bold size-15">
+                {item.curso.course_Id}
+              </td>
 
               <td className="text-white font-bold size-15">
                 {item.curso.course_Name}
@@ -309,7 +310,7 @@ const CoursesList = () => {
                   to="#"
                   onClick={() =>
                     handleClickEdit(
-                      item.curso.id,
+                      item.curso.course_Id,
                       item.curso.course_Name,
                       item.curso.department_Name
                     )
@@ -322,7 +323,7 @@ const CoursesList = () => {
               <td>
                 <Link
                   to="#"
-                  onClick={() => handleClickDelete(item.curso.id)}
+                  onClick={() => handleClickDelete(item.curso.course_Id)}
                   className="DeleteLink"
                 >
                   <FaTrash />
