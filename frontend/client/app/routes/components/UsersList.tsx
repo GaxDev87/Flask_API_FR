@@ -47,13 +47,9 @@ const UsersList = () => {
   const [searchFirstName, setSearchFirstName] = useState("");
   const [searchSurname, setSearchSurname] = useState("");
   const [searchEmail, setSearchEmail] = useState("");
-  const [searchUser_Type, setSearchUser_Type] = useState("");
   const [coursesList, setCourses] = useState([]);
-  let [SearchUserData, setSearchUserData] = useState<
-    {
-      usuario: User;
-    }[]
-  >([]);
+  const [SearchUserData, setSearchUserData] = useState([]);
+
   const [userData, setUserData] = useState<
     {
       usuario: User;
@@ -68,7 +64,7 @@ const UsersList = () => {
     fetch("http://localhost:5000/get_users") // Fetch data based on the current page
       .then((response) => response.json()) // Parse the response as JSON
       .then((data) => {
-        setUserData(data); // Set the fetched data
+        setSearchUserData(data); // Set the fetched data
       });
   };
 
@@ -103,19 +99,10 @@ const UsersList = () => {
       });
   };
 
-  const getUsersUser_Type = () => {
-    fetch("http://localhost:5000/searchusertype/" + searchUser_Type) // Fetch data based on the current page
-      .then((response) => response.json()) // Parse the response as JSON
-      .then((data) => {
-        setSearchUserData(data); // Set the fetched data
-      });
-  };
-
   useEffect(() => {
     // Trigger fetching method on component mount
-    updateUsers();
-
     getUsersListAPI();
+    updateUsers();
   }, []);
   // Trigger fetching method on component mount
 
@@ -139,26 +126,13 @@ const UsersList = () => {
     getUsersEmail();
   };
 
-  const handleChangeUser_Type = (event) => {
-    setSearchUser_Type(event.target.value);
-    getUsersUser_Type();
-  };
-
   const handleClickDelete = (user_Id: number) => {
     setId(user_Id);
     setInfo("¿Está seguro de que desea eliminar el usuario " + id + "?");
     setIsOpenConfirm(true);
   };
 
-<<<<<<< HEAD
-  const handleClickManage = (id:number) => {
-    setName(firstName);
-    setSurname(lastName);
-    setEmail(email);
-    setuserType(user_Type);
-=======
   const handleClickUpdate = () => {
->>>>>>> 7266aad4c0c2939676be04f4e7023c66ae353fef
     axios
       .put("http://localhost:5000/update/" + id, {
         firstName: firstName,
@@ -175,6 +149,7 @@ const UsersList = () => {
         setIsOpen(true);
       });
   };
+
 
   const handleClickEdit = (
     user_Id: number,
@@ -247,7 +222,6 @@ const UsersList = () => {
       });
 
       setUserData(userData);
-      SearchUserData = userData;
       console.log(userData);
     } catch (error) {
       console.log(error);
@@ -258,10 +232,6 @@ const UsersList = () => {
     updateUsers(); // Obtener los usuarios
   }, []);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 7266aad4c0c2939676be04f4e7023c66ae353fef
   return (
     <div style={{ marginRight: "7%", marginTop: "1%" }}>
       <table>
@@ -288,7 +258,7 @@ const UsersList = () => {
             </th>
             <th className="colim">
               <input
-                name="searchFirstName"
+                name="searchName"
                 value={searchFirstName}
                 className="search"
                 onChange={handleChangeFirstName}
@@ -304,7 +274,7 @@ const UsersList = () => {
             </th>
             <th className="colim">
               <input
-                name="searchEmail"
+                name="searchSurname"
                 value={searchEmail}
                 onChange={handleChangeEmail}
                 className="search"
@@ -312,16 +282,8 @@ const UsersList = () => {
             </th>
 
             <th className="colim">
-              <select
-                name="searchUser_Type"
-                value={searchUser_Type}
-                onChange={handleChangeUser_Type}
-                className="dropdownsearch"
-              >
-                <option disabled value="">
-                  {" "}
-                  Tipo Usuario
-                </option>
+              <select className="dropdownsearch">
+                <option value="">Tipo usuario</option>
 
                 <option value="Administrador">Administrador</option>
 
@@ -487,19 +449,12 @@ const UsersList = () => {
             </div>
 
             <div>
-<<<<<<< HEAD
-      
-            <button onClick={() => handleClickManage(id)} className="popUpButton">
-                Actualizar
-              </button>
-=======
               <Button onClick={handleClickUpdate} className="popUpButtonUpdate">
                 ACTUALIZAR
               </Button>
               <Button onClick={handleClose} className="popUpButtonCancel">
                 CANCELAR
               </Button>
->>>>>>> 7266aad4c0c2939676be04f4e7023c66ae353fef
             </div>
           </form>
         </Modal>
