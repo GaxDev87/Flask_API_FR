@@ -108,30 +108,26 @@ const UsersList = () => {
 
   const handleChangeId = (event) => {
     setSearchId(event.target.value);
-    getUsersId();
     getUsersListAPI();
-
+    getUsersId();
   };
 
   const handleChangeFirstName = (event) => {
     setSearchFirstName(event.target.value);
     getUsersFirst();
     getUsersListAPI();
-
   };
 
   const handleChangeSurname = (event) => {
     setSearchSurname(event.target.value);
     getUsersSurname();
     getUsersListAPI();
-
   };
 
   const handleChangeEmail = (event) => {
     setSearchEmail(event.target.value);
     getUsersEmail();
     getUsersListAPI();
-
   };
 
   const handleClickDelete = (user_Id: number) => {
@@ -157,7 +153,6 @@ const UsersList = () => {
         setIsOpen(true);
       });
   };
-
 
   const handleClickEdit = (
     user_Id: number,

@@ -48,7 +48,7 @@ const ListarCursos = () => {
   >([]);
   const data = useLoaderData();
   let courses_data = data["data_response"];
-  const URL = "http://localhost:5000/get_thematic/";
+  const URL = "http://localhost:5000/get_thematic";
   // const [coursesList, setCourses] = useState([]);
 
   // State to hold fetched thematic data
@@ -127,12 +127,15 @@ const ListarCursos = () => {
             </th>
             <th>
               <select className="dropdownsearch">
-                <option value="Temática">Temática</option>
+                <option value="">Temática</option>
 
                 {courseThematic.map((item) => {
                   return (
                     <>
-                      <option key={item.id}> {item.department_Name}</option>
+                      <option key={item.course_Id}>
+                        {" "}
+                        {item.department_Name}
+                      </option>
                     </>
                   );
                 })}
