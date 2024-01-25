@@ -38,7 +38,7 @@ const UsersList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditOpen, setEditOpen] = useState(false);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
-  const [id, setId] = useState(0);
+  const [userId, setuserId] = useState(0);
   const [firstName, setName] = useState("");
   const [lastName, setSurname] = useState("");
   const [email, setEmail] = useState("");
@@ -48,8 +48,11 @@ const UsersList = () => {
   const [searchSurname, setSearchSurname] = useState("");
   const [searchEmail, setSearchEmail] = useState("");
   const [coursesList, setCourses] = useState([]);
-  const [SearchUserData, setSearchUserData] = useState([]);
-
+  const [SearchUserData, setSearchUserData] = useState<
+    {
+      usuario: User;
+    }[]
+  >([]);
   const [userData, setUserData] = useState<
     {
       usuario: User;
@@ -72,14 +75,14 @@ const UsersList = () => {
     fetch("http://localhost:5000/search/" + searchId) // Fetch data based on the current page
       .then((response) => response.json()) // Parse the response as JSON
       .then((data) => {
-        setSearchUserData(data); // Set the fetched data
+        setUserData(data); // Set the fetched data
       });
   };
   const getUsersFirst = () => {
     fetch("http://localhost:5000/searchfirst/" + searchFirstName) // Fetch data based on the current page
       .then((response) => response.json()) // Parse the response as JSON
       .then((data) => {
-        setSearchUserData(data); // Set the fetched data
+        setUserData(data); // Set the fetched data
       });
   };
 
@@ -87,7 +90,7 @@ const UsersList = () => {
     fetch("http://localhost:5000/searchlast/" + searchSurname) // Fetch data based on the current page
       .then((response) => response.json()) // Parse the response as JSON
       .then((data) => {
-        setSearchUserData(data); // Set the fetched data
+        setUserData(data); // Set the fetched data
       });
   };
 
@@ -95,50 +98,49 @@ const UsersList = () => {
     fetch("http://localhost:5000/searchemail/" + searchEmail) // Fetch data based on the current page
       .then((response) => response.json()) // Parse the response as JSON
       .then((data) => {
-        setSearchUserData(data); // Set the fetched data
+        setUserData(data); // Set the fetched data
       });
   };
 
-  useEffect(() => {
-    // Trigger fetching method on component mount
-    getUsersListAPI();
-    updateUsers();
-  }, []);
+  // useEffect(() => {
+  //   // Trigger fetching method on component mount
+  //   getUsersListAPI();
+  //   updateUsers();
+  // }, []);
   // Trigger fetching method on component mount
 
   const handleChangeId = (event) => {
     setSearchId(event.target.value);
-    getUsersListAPI();
+    // getUsersListAPI();
     getUsersId();
   };
 
   const handleChangeFirstName = (event) => {
     setSearchFirstName(event.target.value);
     getUsersFirst();
-    getUsersListAPI();
+    // getUsersListAPI();
   };
 
   const handleChangeSurname = (event) => {
     setSearchSurname(event.target.value);
     getUsersSurname();
-    getUsersListAPI();
+    // getUsersListAPI();
   };
 
   const handleChangeEmail = (event) => {
     setSearchEmail(event.target.value);
     getUsersEmail();
-    getUsersListAPI();
+    // getUsersListAPI();
   };
 
   const handleClickDelete = (user_Id: number) => {
-    setId(user_Id);
-    setInfo("¿Está seguro de que desea eliminar el usuario " + id + "?");
+    setInfo("¿Está seguro de que desea eliminar el usuario " + user_Id + "?");
     setIsOpenConfirm(true);
   };
 
   const handleClickUpdate = () => {
     axios
-      .put("http://localhost:5000/update/" + id, {
+      .put("http://localhost:5000/update/" + userId, {
         firstName: firstName,
         lastName: lastName,
         email: email,
@@ -161,12 +163,13 @@ const UsersList = () => {
     email: string,
     user_Type: string
   ) => {
-    setId(user_Id);
+    //setting input values
+    setuserId(user_Id);
     setName(firstName);
     setSurname(lastName);
     setEmail(email);
     setuserType(user_Type);
-    // setInfo("Editando usuario " + id);
+    // setInfo("Editando usuario " + user_Id);
     setEditOpen(true);
   };
 
@@ -188,13 +191,13 @@ const UsersList = () => {
 
   const handleCloseConfirm = () => {
     const data = {
-      user_Id: id,
+      user_Id: userId,
     };
 
     setIsOpenConfirm(false);
 
     axios
-      .delete("http://localhost:5000/delete/" + id)
+      .delete("http://localhost:5000/delete/" + userId)
       .then((response) => {
         setInfo("Usuario eliminado correctamente");
         setIsOpen(true);
@@ -211,10 +214,10 @@ const UsersList = () => {
       const userData = Object.keys(users_data).map((diccionarioKey) => {
         const diccionario = users_data[diccionarioKey];
         const usuario: User = {
-          user_Id: diccionario["id"],
+          user_Id: diccionario["user_Id"],
           firstName: diccionario["firstName"],
           lastName: diccionario["lastName"],
-          group_Type: diccionario["group_Type"],
+          // group_Type: diccionario["group_Type"],
           email: diccionario["email"],
           user_Type: diccionario["user_Type"],
         };
@@ -234,6 +237,35 @@ const UsersList = () => {
   useEffect(() => {
     updateUsers(); // Obtener los usuarios
   }, []);
+
+  // const updateUsersSearch = () => {
+  //   try {
+  //     const SearchUserData = Object.keys(users_data).map((diccionarioKey) => {
+  //       const diccionario = users_data[diccionarioKey];
+  //       const usuario: User = {
+  //         user_Id: diccionario["user_Id"],
+  //         firstName: diccionario["firstName"],
+  //         lastName: diccionario["lastName"],
+  //         // group_Type: diccionario["group_Type"],
+  //         email: diccionario["email"],
+  //         user_Type: diccionario["user_Type"],
+  //       };
+
+  //       return {
+  //         usuario: usuario,
+  //       };
+  //     });
+
+  //     setSearchUserData(userData);
+  //     console.log(userData);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   updateUsersSearch(); // Obtener los usuarios
+  // }, []);
 
   return (
     <div style={{ marginRight: "7%", marginTop: "1%" }}>
@@ -296,24 +328,34 @@ const UsersList = () => {
             <th></th>
             <th></th>
           </tr>
-          {SearchUserData.map((item) => (
-            <tr key={item.user_Id}>
-              <td className="text-white font-bold size-15">{item.user_Id}</td>
-              <td className="text-white font-bold size-15">{item.firstName}</td>
-              <td className="text-white font-bold size-15">{item.lastName}</td>
-              <td className="text-white font-bold size-15">{item.email}</td>
-              <td className="text-white font-bold size-15">{item.user_Type}</td>
+          {userData.map((item) => (
+            <tr key={item.usuario.user_Id}>
+              <td className="text-white font-bold size-15">
+                {item.usuario.user_Id}
+              </td>
+              <td className="text-white font-bold size-15">
+                {item.usuario.firstName}
+              </td>
+              <td className="text-white font-bold size-15">
+                {item.usuario.lastName}
+              </td>
+              <td className="text-white font-bold size-15">
+                {item.usuario.email}
+              </td>
+              <td className="text-white font-bold size-15">
+                {item.usuario.user_Type}
+              </td>
 
               <td>
                 <Link
                   to="#"
                   onClick={() =>
                     handleClickEdit(
-                      item.user_Id,
-                      item.firstName,
-                      item.lastName,
-                      item.email,
-                      item.user_Type
+                      item.usuario.user_Id,
+                      item.usuario.firstName,
+                      item.usuario.lastName,
+                      item.usuario.email,
+                      item.usuario.user_Type
                     )
                   }
                   className="EditLink"
@@ -324,7 +366,7 @@ const UsersList = () => {
               <td>
                 <Link
                   to="#"
-                  onClick={() => handleClickDelete(item.user_Id)}
+                  onClick={() => handleClickDelete(item.usuario.user_Id)}
                   className="DeleteLink"
                 >
                   <FaTrash />
@@ -371,7 +413,7 @@ const UsersList = () => {
               fontSize: "22px",
             }}
           >
-            {/* {info} */}
+            {info}
           </p>
           <form className="max-w-sm mx-auto bg">
             <br></br>

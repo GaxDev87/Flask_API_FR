@@ -120,7 +120,7 @@ const CoursesList = () => {
     setCourseName(course_Name);
     setDepartment(department_Name);
 
-    // setInfo("Editando usuario " + id);
+    // setInfo("Editando curso " + course_Name);
     setEditOpen(true);
   };
 
@@ -465,7 +465,7 @@ const CoursesList = () => {
               fontSize: "22px",
             }}
           >
-            {/* {info} */}
+            {info}
           </p>
           <form className="max-w-sm mx-auto bg">
             <div>

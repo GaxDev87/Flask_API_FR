@@ -21,6 +21,7 @@ import { LinksFunction, json } from "@remix-run/node";
 import { cssBundleHref } from "@remix-run/css-bundle";
 // import { safeRedirect } from "~/utils";
 import cursoStyles from "~/styles/gestionar_cursos.css";
+import { Navigate, useNavigate } from "react-router-dom";
 
 import { CgArrowRightR } from "react-icons/cg";
 
@@ -40,6 +41,7 @@ const ListarCursos = () => {
   const [courseDepartment, setDepartment] = useState("");
   const [search, setSearch] = useState("");
   const [courseThematic, setThematic] = useState([]);
+  const navigate = useNavigate();
 
   const [courseData, setCourseData] = useState<
     {
@@ -74,6 +76,23 @@ const ListarCursos = () => {
     setId(course_Id);
     setCourseName(course_Name);
     setDepartment(department_Name);
+
+    // setInfo("Editando curso " + course_Name);
+    // setIsOpen(true);
+
+    // navigate("/Course_Template", { state: course_Name });
+
+    // <Link
+    //   to="/Course_Template"
+    //   state={{
+    //     course_Id: courseId,
+    //     course_Name: courseName, x
+    //   }}
+    // ></Link>;
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
   };
 
   const updateCourses = () => {
@@ -174,26 +193,66 @@ const ListarCursos = () => {
                   state={{
                     course_Id: item.curso.course_Id,
                     course_Name: item.curso.course_Name,
-                  }}
+                    department_Name: item.curso.department_Name,
+                  }} // onClick={() =>
+                  //   handleClickCourse(
+                  //     item.curso.course_Id,
+                  //     item.curso.course_Name,
+                  //     item.curso.department_Name
+                  //   )
+                  // }
+                  className="EditLink"
                 >
-                  <button
-                    onClick={() => {
-                      handleClickCourse(
-                        item.curso.course_Id,
-                        item.curso.course_Name,
-                        item.curso.department_Name
-                      );
-                    }}
-                    className="GoCourse"
-                  >
-                    {" "}
-                    Ver Curso
-                  </button>
+                  Ver Curso
                 </Link>
               </td>
             </tr>
           ))}
         </tbody>
+        {/* <Modal
+          isOpen={isOpen}
+          onRequestClose={handleClose}
+          style={{
+            overlay: {
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            },
+            content: {
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "white",
+              borderRadius: "5px",
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              padding: "20px",
+              height: "300px",
+              maxWidth: "500px",
+              width: "100%",
+            },
+          }}
+        >
+          <h4
+            style={{
+              textAlign: "center",
+              marginRight: "40px",
+              fontSize: "30px",
+            }}
+          >
+            AVISO
+          </h4>
+          <p
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: "22px",
+            }}
+          >
+            {info}
+          </p>
+          <button onClick={handleClose} className="popUpButton">
+            Aceptar
+          </button>
+        </Modal> */}
       </table>
     </div>
   );

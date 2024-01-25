@@ -74,15 +74,15 @@ function Sidebar({ children }: { children: React.ReactNode }) {
         (response) => {
           const data = response.data;
           const user: User = {
-            id: data["user_Id"],
+            user_Id: data["user_Id"],
             firstName: data["firstName"],
             lastName: data["lastName"],
             email: data["email"],
-            group_Type: data["group_Type"],
+            // group_Type: data["group_Type"],
             user_Type: data["user_Type"],
           };
 
-          setId(user.id);
+          setId(user.user_Id);
           setName(user.firstName);
           setSurname(user.lastName);
           setEmail(user.email);
