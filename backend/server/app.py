@@ -234,11 +234,11 @@ def register_user_course():
         if course_and_user_exists:
             return jsonify({"error": "User already registered for this course"}), 409
 
-        new_enrollment = User_courses( user_Id=user.user_Id, course_Id=course_Id, course_Name=course.course_Name)
+        new_enrollment = User_courses( user_Id=user.user_Id, course_Id=course_Id, course_Name=course.course_Name, department_Name = course.department_Name )
         db.session.add(new_enrollment)
         db.session.commit()
         session["user_course_Id"] = new_enrollment.user_course_Id
-        return jsonify({'message': 'User created!', "user id": new_enrollment.user_Id, "id": new_enrollment.user_course_Id, "Course Name": new_enrollment.course_Name})
+        return jsonify({'message': 'User created!', "user id": new_enrollment.user_Id, "id": new_enrollment.user_course_Id, "Course Name": new_enrollment.course_Name, "department_Name": new_enrollment.department_Name})
     except:
         return jsonify({'error': 'Error creating user'}), 500    
     
@@ -259,9 +259,12 @@ def get_user_courses(id):
             "user_Id": user.user_Id,              
             "course_Id": user.course_Id,
             "course_Name": user.course_Name,
+            "department_Name": user.department_Name,
+            
             
         }
         for user in User_courses.query.filter_by(user_Id=id)
+
     ]
 )
   
@@ -359,6 +362,27 @@ def get_thematic():
         ]
     )
 
+# get distinct thematic for registered courses
+@app.route('/get_distinct_thematic/<id>', methods=["GET"])
+def get_distinct_thematic(id):
+ try:
+   id_exists=User_courses.query.filter_by(user_Id=id).first()
+   if not id_exists:   
+      return jsonify({"error": "User not enrolled for any course"}), 401 
+   return jsonify(        [ 
+            {                   
+                "department_Name": user.department_Name              
+            }            
+
+            for user in User_courses.query.filter_by(user_Id=id).distinct(User_courses.department_Name)
+        ]
+
+    )
+ except:
+      return jsonify({'message': 'error getting thematic'}), 500
+
+
+
 # get all courses
 @app.route('/get_courses', methods=["GET"])
 def get_courses():
@@ -369,6 +393,8 @@ def get_courses():
                 "course_Id": course.course_Id,              
                 "course_Name": course.course_Name,
                 "department_Name": course.department_Name,
+                "course_Description": course.course_Description
+
               
             }
             for course in Courses.query.all()
@@ -406,16 +432,15 @@ def delete_course(id):
    
 
    
-# get # of resources by course id
-@app.route('/course_resources/<id>', methods=['GET'])
-def get_resources(id):
+# get document by course id
+@app.route('/course_document/<id>', methods=['GET'])
+def course_document(id):
 
   try:
     id_document_exists=Documents.query.filter_by(course_Id=id).first()
-    id_video_exists=Videos.query.filter_by(course_Id=id).first()
 
-    if not id_document_exists or not id_video_exists:
-      return jsonify({"error": "No resources found for the selected course"}), 401       
+    if not id_document_exists:
+      return jsonify({"error": "No document found for the selected course"}), 401       
 
     return jsonify(
     [
@@ -423,12 +448,35 @@ def get_resources(id):
             "document_Id": document.document_Id,              
             "document_Name": document.document_Name,
             "document_Url": document.document_Url,
+          
+            
+        }
+        for document in Documents.query.filter_by(course_Id=id)
+
+    ])  
+  
+  except:
+      return jsonify({'message': 'error getting recourses'}), 500
+  
+  # get video by course id
+@app.route('/course_video/<id>', methods=['GET'])
+def course_video(id):
+
+  try:
+    id_video_exists=Videos.query.filter_by(course_Id=id).first()
+
+    if not id_video_exists:
+      return jsonify({"error": "No video found for the selected course"}), 401       
+
+    return jsonify(
+    [
+        {
+          
             "video_Id": video.video_Id,              
             "video_Name": video.video_Name,
             "video_Url": video.video_Url,
             
         }
-        for document in Documents.query.filter_by(course_Id=id)
         for video in Videos.query.filter_by(course_Id=id)
 
     ])  
@@ -466,7 +514,7 @@ def create_document():
 
 
 # # update a document by course id
-@app.route("/document/<int:id>", methods=["PUT"])
+@app.route("/update_document/<int:id>", methods=["PUT"])
 def update_document(id):
 
      if not id:

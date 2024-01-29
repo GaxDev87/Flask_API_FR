@@ -82,14 +82,14 @@ export default function Mi_cuenta() {
             firstName: data["firstName"],
             lastName: data["lastName"],
             email: data["email"],
-            group_Type: data["group_Type"],
+            // group_Type: data["group_Type"],
             user_Type: data["user_Type"],
           };
 
           setId(user.user_Id);
           setName(user.firstName);
           setSurname(user.lastName);
-          setgroup_Type(user.group_Type);
+          // setgroup_Type(user.group_Type);
           setEmail(user.email);
           setType(user.user_Type);
         },

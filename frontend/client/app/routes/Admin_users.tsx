@@ -45,7 +45,7 @@ export function loader() {
     });
 }
 
-const Admin_usuarios = () => {
+const Admin_users = () => {
   const menuOptions = [
     { path: "/admin", icon: <FaCog /> },
     { path: "/perfil", icon: <FiUser /> },
@@ -54,11 +54,16 @@ const Admin_usuarios = () => {
   return (
     <Sidebar>
       <div style={{ marginLeft: "280px", marginTop: "7%" }}>
-        <h1 className="text-blue-500 font-bold size-10">GESTIONAR USUARIOS:</h1>
+        <h1
+          style={{ marginLeft: "-285px" }}
+          className="text-blue-500 font-bold size-10"
+        >
+          GESTIONAR USUARIOS:
+        </h1>
         <UsersList />
       </div>
     </Sidebar>
   );
 };
 
-export default Admin_usuarios;
+export default Admin_users;

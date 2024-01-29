@@ -65,7 +65,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      // Para recuperar el ID del usuario que ha iniciado sesion
+      // Para recuperar el ID del usuario que ha iniciado sesio + NV
       const userId = sessionStorage.getItem("user_id");
 
       console.log(userId);
@@ -113,10 +113,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
     return (
       <aside>
         <div>
-          <Navbar
-            title={"Hola " + firstName + ", te damos la bienvenida!"}
-            options={menuOptions}
-          />
+          <Navbar title={"CURSOS DISPONIBLES"} options={menuOptions} />
 
           <div
             className="fixed top-0 left-0 w-60 bg-blue-800"
@@ -159,7 +156,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
                 style={{ color: "white" }}
               >
                 <IoBookSharp className="w-6 h-6 mr-2" />
-                <Link to={`/cursos`}>Mis cursos</Link>
+                <Link to={`/User_courses`}>Mis cursos</Link>
               </li>
 
               <li
@@ -229,7 +226,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
               >
                 <FaUsers className="w-6 h-6 mr-2" />
 
-                <Link to={`/Admin_usuarios`}> Gestión de usuarios </Link>
+                <Link to={`/Admin_users`}> Gestión de usuarios </Link>
               </li>
 
               <li
@@ -237,7 +234,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
                 style={{ color: "white" }}
               >
                 <IoBookSharp className="w-6 h-6 mr-2" />
-                <Link to={`/Admin_cursos`}>Gestión de Cursos</Link>
+                <Link to={`/Admin_courses`}>Gestión de Cursos</Link>
               </li>
 
               <li

@@ -11,8 +11,6 @@ import LogoProteo from "~/images/ProteoLogo.png";
 import { useEffect, useState } from "react";
 import { FaCog } from "react-icons/fa";
 
-
-
 interface MenuOption {
   path: string;
   icon: JSX.Element;
@@ -45,7 +43,7 @@ const Navbar: React.FC<MenuProps> = ({ title, options }) => {
         <div className="flex items-center flex-grow justify-center">
           <h1
             className="items-center justify-center mb-3 text-white"
-            style={{ marginLeft: "30%" }}
+            style={{ marginLeft: "10%" }}
           >
             {title}
           </h1>

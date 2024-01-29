@@ -141,7 +141,7 @@ const CoursesList = () => {
   };
 
   const handleClose = () => {
-    location.href = "/Admin_cursos"; // Actualizar tabla cursos
+    location.href = "/Admin_courses"; // Actualizar tabla cursos
     updateCourses();
     setIsOpen(false);
   };
@@ -152,7 +152,7 @@ const CoursesList = () => {
   };
 
   const handleCloseCancel = () => {
-    location.href = "/Admin_cursos";
+    location.href = "/Admin_courses";
     updateCourses();
     setIsOpenConfirm(false);
   };
@@ -206,6 +206,7 @@ const CoursesList = () => {
           course_Id: diccionario["course_Id"],
           course_Name: diccionario["course_Name"],
           department_Name: diccionario["department_Name"],
+          course_Description: diccionario["course_Description"],
         };
 
         return {
@@ -239,6 +240,7 @@ const CoursesList = () => {
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
           </tr>
           <tr>
             <th>ID de Curso</th>
@@ -246,7 +248,8 @@ const CoursesList = () => {
             <th>Temática del Curso</th>
             <th>Editar Curso</th>
             <th>Eliminar Curso</th>
-            <th>Recursos</th>
+            <th>Gestionar Recursos</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -287,6 +290,7 @@ const CoursesList = () => {
               </select>
             </th>
 
+            <th></th>
             <th></th>
             <th></th>
             <th></th>
@@ -332,13 +336,33 @@ const CoursesList = () => {
 
               <td>
                 <Link
-                  to="#"
+                  to="/Documents"
+                  state={{
+                    course_Id: item.curso.course_Id,
+                    course_Name: item.curso.course_Name,
+                    course_Description: item.curso.course_Description,
+                  }}
                   // onClick={() => handleClickDelete(item.curso.id)}
                   className="EditLink"
                 >
-                  Gestionar recursos
+                  Gestionar documentos
+                </Link>
+
+                <Link
+                  to="/Videos"
+                  state={{
+                    course_Id: item.curso.course_Id,
+                    course_Name: item.curso.course_Name,
+                    course_Description: item.curso.course_Description,
+                  }}
+                  // onClick={() => handleClickDelete(item.curso.id)}
+                  className="EditLink"
+                >
+                  Gestionar videos
                 </Link>
               </td>
+
+              <td></td>
             </tr>
           ))}
         </tbody>

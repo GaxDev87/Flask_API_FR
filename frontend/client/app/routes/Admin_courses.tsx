@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { cssBundleHref } from "@remix-run/css-bundle";
-import gestionarUsuariosStyles from "~/styles/gestionar_cursos.css";
+import gestionarUsuariosStyles from "~/styles/gestionar_usuarios.css";
 import { LinksFunction, json } from "@remix-run/node";
 
 import {
@@ -19,8 +19,6 @@ import { FiUser, FiHome } from "react-icons/fi";
 import Navbar from "./components/Navbar";
 import CoursesList from "./components/CoursesList";
 import Sidebar from "./components/Sidebar";
-import CoursesListAlumnos from "./CoursesListAlumnos";
-import ListCourses from "./ListCourses";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: gestionarUsuariosStyles },
@@ -47,7 +45,7 @@ export function loader() {
     });
 }
 
-const RenderListCourses = () => {
+const Admin_courses = () => {
   const menuOptions = [
     { path: "/admin", icon: <FaCog /> },
     { path: "/perfil", icon: <FiUser /> },
@@ -56,11 +54,16 @@ const RenderListCourses = () => {
   return (
     <Sidebar>
       <div style={{ marginLeft: "280px", marginTop: "7%" }}>
-        {/* <h1 className="text-blue-500 font-bold size-10">CURSOS DISPONIBLES:</h1> */}
-        <ListCourses />
+        <h1
+          style={{ marginLeft: "-285px" }}
+          className="text-blue-500 font-bold size-10"
+        >
+          GESTIONAR CURSOS:
+        </h1>
+        <CoursesList />
       </div>
     </Sidebar>
   );
 };
 
-export default RenderListCourses;
+export default Admin_courses;

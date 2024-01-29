@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { cssBundleHref } from "@remix-run/css-bundle";
-import gestionarUsuariosStyles from "~/styles/gestionar_usuarios.css";
+import gestionarUsuariosStyles from "~/styles/gestionar_cursos.css";
 import { LinksFunction, json } from "@remix-run/node";
 
 import {
@@ -19,15 +19,42 @@ import { FiUser, FiHome } from "react-icons/fi";
 import Navbar from "./components/Navbar";
 import CoursesList from "./components/CoursesList";
 import Sidebar from "./components/Sidebar";
+import CoursesListAlumnos from "./CoursesListAlumnos";
+import User_courses from "./User_courses";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: gestionarUsuariosStyles },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
 
-export function loader() {
+const RenderUserCourses = () => {
+  const [user_Id, setId] = useState(0);
+
+  useEffect(() => {
+    const userId = sessionStorage.getItem("user_id");
+    loader(userId);
+  }, []);
+
+  const menuOptions = [
+    { path: "/admin", icon: <FaCog /> },
+    { path: "/perfil", icon: <FiUser /> },
+    { path: "/main", icon: <FiHome /> },
+  ];
+  return (
+    <Sidebar>
+      <div style={{ marginLeft: "280px", marginTop: "7%" }}>
+        {/* <h1 className="text-blue-500 font-bold size-10">CURSOS DISPONIBLES:</h1> */}
+        <User_courses />
+      </div>
+    </Sidebar>
+  );
+};
+
+export default RenderUserCourses;
+
+export function loader(userId: number) {
   return axios
-    .get("http://localhost:5000/get_courses")
+    .get("http://localhost:5000/user_courses/" + userId)
     .then((response) => {
       const data = response.data;
       let data_response = data;
@@ -44,21 +71,3 @@ export function loader() {
       return error;
     });
 }
-
-const Admin_cursos = () => {
-  const menuOptions = [
-    { path: "/admin", icon: <FaCog /> },
-    { path: "/perfil", icon: <FiUser /> },
-    { path: "/main", icon: <FiHome /> },
-  ];
-  return (
-    <Sidebar>
-      <div style={{ marginLeft: "280px", marginTop: "7%" }}>
-        <h1 className="text-blue-500 font-bold size-10">GESTIONAR CURSOS:</h1>
-        <CoursesList />
-      </div>
-    </Sidebar>
-  );
-};
-
-export default Admin_cursos;

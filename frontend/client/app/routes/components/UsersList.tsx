@@ -26,7 +26,6 @@ import { User } from "./user_interface";
 import { FaTrash } from "react-icons/fa";
 import { TbEdit } from "react-icons/tb";
 import { Button, ModalBody, ModalFooter, ModalHeader } from "flowbite-react";
-<script src="https://unpkg.com/htmx.org@1.9.10"></script>;
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: registroStyles },
@@ -58,8 +57,12 @@ const UsersList = () => {
       usuario: User;
     }[]
   >([]);
+
   const data = useLoaderData();
+  const data2 = useLoaderData();
+
   let users_data = data["data_response"];
+  let users_data2 = data2["data_response"];
 
   // Fetch data using Promise with the Fetch API
 
@@ -67,7 +70,8 @@ const UsersList = () => {
     fetch("http://localhost:5000/get_users") // Fetch data based on the current page
       .then((response) => response.json()) // Parse the response as JSON
       .then((data) => {
-        setSearchUserData(data); // Set the fetched data
+        setUserData(data); // Set the fetched data
+        data; // Set the fetched data
       });
   };
 
@@ -75,14 +79,14 @@ const UsersList = () => {
     fetch("http://localhost:5000/search/" + searchId) // Fetch data based on the current page
       .then((response) => response.json()) // Parse the response as JSON
       .then((data) => {
-        setUserData(data); // Set the fetched data
+        setSearchUserData(data); // Set the fetched data
       });
   };
   const getUsersFirst = () => {
     fetch("http://localhost:5000/searchfirst/" + searchFirstName) // Fetch data based on the current page
       .then((response) => response.json()) // Parse the response as JSON
       .then((data) => {
-        setUserData(data); // Set the fetched data
+        setSearchUserData(data); // Set the fetched data
       });
   };
 
@@ -174,8 +178,8 @@ const UsersList = () => {
   };
 
   const handleClose = () => {
-    location.href = "/Admin_usuarios"; // Actualizar la tabla después
-    updateUsers();
+    location.href = "/Admin_users"; // Actualizar la tabla después
+    updateUsersSearch();
     setIsOpen(false);
   };
 
@@ -184,8 +188,8 @@ const UsersList = () => {
   // };
 
   const handleCloseCancel = () => {
-    location.href = "/Admin_usuarios";
-    updateUsers();
+    location.href = "/Admin_users";
+    updateUsersSearch();
     setIsOpenConfirm(false);
   };
 
@@ -234,38 +238,42 @@ const UsersList = () => {
     }
   };
 
-  useEffect(() => {
-    updateUsers(); // Obtener los usuarios
-  }, []);
+  // useEffect(() => {
+  //   updateUsers(); // Obtener los usuarios
+  // }, []);
 
-  // const updateUsersSearch = () => {
-  //   try {
-  //     const SearchUserData = Object.keys(users_data).map((diccionarioKey) => {
-  //       const diccionario = users_data[diccionarioKey];
-  //       const usuario: User = {
-  //         user_Id: diccionario["user_Id"],
-  //         firstName: diccionario["firstName"],
-  //         lastName: diccionario["lastName"],
-  //         // group_Type: diccionario["group_Type"],
-  //         email: diccionario["email"],
-  //         user_Type: diccionario["user_Type"],
-  //       };
+  const updateUsersSearch = () => {
+    try {
+      const SearchUserData = Object.keys(users_data2).map((diccionarioKey) => {
+        const diccionario = users_data2[diccionarioKey];
+        const usuario: User = {
+          user_Id: diccionario["user_Id"],
+          firstName: diccionario["firstName"],
+          lastName: diccionario["lastName"],
+          // group_Type: diccionario["group_Type"],
+          email: diccionario["email"],
+          user_Type: diccionario["user_Type"],
+        };
 
-  //       return {
-  //         usuario: usuario,
-  //       };
-  //     });
+        return {
+          usuario: usuario,
+        };
+      });
 
-  //     setSearchUserData(userData);
-  //     console.log(userData);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+      setSearchUserData(SearchUserData);
+      // console.log(userData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // useEffect(() => {
   //   updateUsersSearch(); // Obtener los usuarios
   // }, []);
+
+  useEffect(() => {
+    updateUsersSearch(); // Obtener los usuarios
+  }, []);
 
   return (
     <div style={{ marginRight: "7%", marginTop: "1%" }}>
@@ -328,7 +336,7 @@ const UsersList = () => {
             <th></th>
             <th></th>
           </tr>
-          {userData.map((item) => (
+          {SearchUserData.map((item) => (
             <tr key={item.usuario.user_Id}>
               <td className="text-white font-bold size-15">
                 {item.usuario.user_Id}

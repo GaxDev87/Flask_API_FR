@@ -56,8 +56,7 @@ const Inicio = () => {
 
               console.log(sessionId);
 
-              if (user_type == "Administrador")
-                location.href = "/Admin_usuarios";
+              if (user_type == "Administrador") location.href = "/Admin_users";
               else location.href = "/Dashboard";
             }
           },

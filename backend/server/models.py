@@ -31,6 +31,8 @@ class Courses(db.Model):
     course_Id = db.Column(db.Integer, primary_key=True, index=True)
     course_Name = db.Column(db.String(100), nullable=False)
     department_Name = db.Column(db.String(100), nullable=False)
+    course_Picture = db.Column(db.String(300), nullable=True)
+    course_Description = db.Column(db.String(1500), default="Descripcion")
     User_courses = relationship('User_courses', backref='user_course', cascade='all, save-update, delete') 
     Documents = relationship('Documents', backref='document', cascade='all, save-update, delete') 
     Videos = relationship('Videos', backref='video', cascade='all, save-update, delete') 
@@ -42,6 +44,7 @@ class User_courses(db.Model):
     user_Id = db.Column(db.Integer, db.ForeignKey("Users.user_Id"), nullable=False)
     course_Id = db.Column(db.Integer, db.ForeignKey("Courses.course_Id"), nullable=False)   
     course_Name = db.Column(db.String(100), nullable=False)
+    department_Name = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True),
                              server_default=func.now())
     is_course_Completed = db.Column(db.Boolean, default=False)

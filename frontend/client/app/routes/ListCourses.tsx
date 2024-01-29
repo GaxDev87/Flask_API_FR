@@ -22,6 +22,7 @@ import { cssBundleHref } from "@remix-run/css-bundle";
 // import { safeRedirect } from "~/utils";
 import cursoStyles from "~/styles/gestionar_cursos.css";
 import { Navigate, useNavigate } from "react-router-dom";
+import { User } from "./components/user_interface";
 
 import { CgArrowRightR } from "react-icons/cg";
 
@@ -36,7 +37,17 @@ const ListarCursos = () => {
   const [isCreatetOpen, setCreateOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
-  const [courseId, setId] = useState(0);
+  const [user_Id, setId] = useState(0);
+  const [firstName, setName] = useState("");
+  const [lastName, setSurname] = useState("");
+  const [email, setEmail] = useState("");
+  const [group_Type, setgroup_Type] = useState("");
+  const [user_type, setType] = useState("");
+
+  // const [info, setInfo] = useState("");
+  // const [isValidEmail, setIsValidEmail] = useState(true);
+  // const [isOpen, setIsOpen] = useState(false);
+  // const [isOpenConfirm, setIsOpenConfirm] = useState(false);
   const [courseName, setCourseName] = useState("");
   const [courseDepartment, setDepartment] = useState("");
   const [search, setSearch] = useState("");
@@ -66,6 +77,49 @@ const ListarCursos = () => {
 
     // Trigger fetching method on component mount
     getCoursesAPI();
+  }, []);
+
+  useEffect(() => {
+    try {
+      // Para recuperar el ID del usuario que ha iniciado sesion
+      const userId = sessionStorage.getItem("user_id");
+
+      // console.log(userId);
+
+      axios.get("http://localhost:5000/users/" + userId).then(
+        (response) => {
+          const data = response.data;
+          const user: User = {
+            user_Id: data["user_Id"],
+            firstName: data["firstName"],
+            lastName: data["lastName"],
+            email: data["email"],
+            // group_Type: data["group_Type"],
+            user_Type: data["user_Type"],
+          };
+
+          setId(user.user_Id);
+          setName(user.firstName);
+          setSurname(user.lastName);
+          // setgroup_Type(user.group_Type);
+          setEmail(user.email);
+          setType(user.user_Type);
+        },
+        (error) => {
+          console.log(error);
+          setInfo(
+            "Error: La información del usuario no se ha podido obtener correctamente"
+          );
+          setIsOpen(true);
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      setInfo(
+        "Error: La información del usuario no se ha podido obtener correctamente"
+      );
+      setIsOpen(true);
+    }
   }, []);
 
   const handleClickCourse = (
@@ -103,6 +157,7 @@ const ListarCursos = () => {
           course_Id: diccionario["course_Id"],
           course_Name: diccionario["course_Name"],
           department_Name: diccionario["department_Name"],
+          course_Description: diccionario["course_Description"],
         };
 
         return {
@@ -137,11 +192,9 @@ const ListarCursos = () => {
               <select
                 className="dropdownsearch"
                 name="searchName"
-                value={search}
+                // value={search}
               >
-                <option disabled value="">
-                  Cursos
-                </option>
+                <option value="">Cursos</option>
 
                 {courseData.map((item) => {
                   return (
@@ -191,9 +244,12 @@ const ListarCursos = () => {
                 <Link
                   to="/Course_Template"
                   state={{
+                    userId: user_Id,
+                    firstName: firstName,
+                    email: email,
                     course_Id: item.curso.course_Id,
                     course_Name: item.curso.course_Name,
-                    department_Name: item.curso.department_Name,
+                    course_Description: item.curso.course_Description,
                   }} // onClick={() =>
                   //   handleClickCourse(
                   //     item.curso.course_Id,

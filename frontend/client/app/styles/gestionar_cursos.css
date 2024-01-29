@@ -271,6 +271,18 @@ button:hover {
 
 }
 
+.Register_course {
+
+    background-color: #1178ec;
+    color: #FFFFFF;
+    margin-top: 100px;
+    margin-left: 5px;
+    width: 150px;
+    border-radius: 20px;
+
+
+}
+
 .GoCourse:hover {
     background-color: rgb(2, 16, 90);
 }
