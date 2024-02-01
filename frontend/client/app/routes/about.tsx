@@ -1,43 +1,28 @@
 import { Layout } from "./components/layout";
 import { Link } from "@remix-run/react";
-
+import { useState, useEffect } from "react";
 
 export default function About() {
+  const [name, setName] = useState("");
+
+  const handleChange = (e) => {
+    setName(e.target.value);
+    {
+      console.log(name);
+    }
+  };
+
   return (
-
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-    <h1>Welcome to Remix</h1>
-    <ul>
-      <li>
-        <a
-          target="_blank"
-          href="https://remix.run/tutorials/blog"
-          rel="noreferrer"
-        >
-          15m Quickstart Blog Tutorial
-        </a>
-      </li>
-      <li>
-        <a
-          target="_blank"
-          href="https://remix.run/tutorials/jokes"
-          rel="noreferrer"
-        >
-          Deep Dive Jokes App Tutorial
-        </a>
-      </li>
-      <li>
-        <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-          Remix Docs
-        </a>
-      </li>
-    </ul>
-
-    
-
-  </div>
-);
-    
-  
-
+    <div
+      style={{ marginLeft: "150px", height: "600px", marginTop: "7%" }}
+      className=" bg-cyan-600"
+    >
+      <input
+        name="searcherId"
+        value={name}
+        className="search"
+        onChange={handleChange}
+      ></input>
+    </div>
+  );
 }

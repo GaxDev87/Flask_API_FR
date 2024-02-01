@@ -68,7 +68,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
       // Para recuperar el ID del usuario que ha iniciado sesio + NV
       const userId = sessionStorage.getItem("user_id");
 
-      console.log(userId);
+      // console.log(userId);
 
       axios.get("http://localhost:5000/users/" + userId).then(
         (response) => {

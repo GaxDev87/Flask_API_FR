@@ -251,6 +251,23 @@ button:hover {
     margin-left: 25px;
     margin-top: 7px;
 }
+.EditLinkDocument
+{
+    background-color: rgb(61, 64, 247);
+    color: rgb(252, 252, 252);
+    border-color: #fdfdfd;
+    padding: 10px;
+    height: "5px";
+    width: "10px";
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 15px;
+    border: 4px solid rgba(255, 255, 255, 0.877);
+       margin-left: 25px;
+    margin-top: 7px;
+}
+
+
 
 .GoCourse
 {

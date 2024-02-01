@@ -30,7 +30,7 @@ with app.app_context():
 
 # ##********************SEARCH*********************#
     
-@app.route('/search/<int:id>', methods=['GET'])
+@app.route('/searchId/<int:id>', methods=['GET'])
 def search_id(id):
    try:
     print(id)     
@@ -238,9 +238,9 @@ def register_user_course():
         db.session.add(new_enrollment)
         db.session.commit()
         session["user_course_Id"] = new_enrollment.user_course_Id
-        return jsonify({'message': 'User created!', "user id": new_enrollment.user_Id, "id": new_enrollment.user_course_Id, "Course Name": new_enrollment.course_Name, "department_Name": new_enrollment.department_Name})
+        return jsonify({'message': 'Course registered!', "user id": new_enrollment.user_Id, "id": new_enrollment.user_course_Id, "Course Name": new_enrollment.course_Name, "department_Name": new_enrollment.department_Name})
     except:
-        return jsonify({'error': 'Error creating user'}), 500    
+        return jsonify({'error': 'Error creating course registration'}), 500    
     
 
     # get # of enrolled courses by user id
@@ -255,7 +255,7 @@ def get_user_courses(id):
 
     return jsonify(
     [
-        {
+        {   "user_course_Id":user.user_course_Id,
             "user_Id": user.user_Id,              
             "course_Id": user.course_Id,
             "course_Name": user.course_Name,
@@ -490,21 +490,21 @@ def create_document():
 
     try:   
         course_Id = request.json["course_Id"]   
-        course_Name= request.json["course_Name"]
+        document_Name= request.json["document_Name"]
         document_Url = request.json["document_Url"]
 
         #verifies if course name and course id correspond with a record in the table
-        course = Courses.query.filter_by(course_Id=course_Id, course_Name=course_Name).first()
+        course = Courses.query.filter_by(course_Id=course_Id).first()
         if not course:
            return jsonify({"error": "Course name does not exist in database"}), 401
         
-        # verifies if a course name with the same url already exists in Documents table
-        document_exists = Documents.query.filter_by(document_Name=course.course_Name, document_Url=document_Url).first() is not None
+        # verifies if a document name and the same url already exist in Documents table
+        document_exists = Documents.query.filter_by(document_Name=document_Name, document_Url=document_Url).first() is not None
 
         if document_exists:
-            return jsonify({"error": "An url document associated with course already exists"}), 409
+            return jsonify({"error": "An url document associated to the document name already exists"}), 409
 
-        new_document = Documents(course_Id=course_Id, document_Name=course_Name, document_Url=document_Url)
+        new_document = Documents(course_Id=course_Id, document_Name=document_Name, document_Url=document_Url)
         db.session.add(new_document)
         db.session.commit()
         session["course_Id"] = new_document.document_Id
@@ -513,7 +513,7 @@ def create_document():
         return jsonify({'error': 'error creating document'}), 500  
 
 
-# # update a document by course id
+# # update a document by document id
 @app.route("/update_document/<int:id>", methods=["PUT"])
 def update_document(id):
 
@@ -526,14 +526,15 @@ def update_document(id):
 
          if document:
              document.document_Url = request.json["document_Url"]
+             document.document_Name = request.json["document_Name"]
            
              db.session.commit()
-             return jsonify({'message': 'document updated!',"id": document.document_Id, "Url": document.document_Url}), 200
+             return jsonify({'message': 'document updated!',"document_Id": document.document_Id, "Url": document.document_Url}), 200
      except:
          return jsonify({'message': 'error updating document_Url'}), 500 
     
 #delete a document
-@app.route('/document/<int:id>', methods=['DELETE'])
+@app.route('/delete_document/<int:id>', methods=['DELETE'])
 def delete_document(id):
    try:
      document = Documents.query.filter_by(document_Id=id).first()
@@ -550,21 +551,21 @@ def delete_document(id):
 def create_video(): 
     try:   
         course_Id = request.json["course_Id"]   
-        course_Name= request.json["course_Name"]
+        video_Name= request.json["video_Name"]
         video_Url = request.json["video_Url"]
 
-        #verifies if course name and course id correspond with a record in the table
-        course = Courses.query.filter_by(course_Id=course_Id, course_Name=course_Name).first()
+        #verifies if course id correspond with a record in the table
+        course = Courses.query.filter_by(course_Id=course_Id).first()
         if not course:
-           return jsonify({"error": "Course name does not exist in database"}), 401
+           return jsonify({"error": "Course id does not exist in database"}), 401
         
-        # verifies if a course name with the same url already exists in Videos table
-        video_exists = Videos.query.filter_by(video_Name=course.course_Name, video_Url=video_Url).first() is not None
+        # verifies if a video name and the same url already exist in Videos table
+        video_exists = Videos.query.filter_by(video_Name=video_Name, video_Url=video_Url).first() is not None
 
         if video_exists:
-            return jsonify({"error": "An url document associated with course already exists"}), 409
+            return jsonify({"error": "A video URL associated with course already exists"}), 409
 
-        new_video = Videos(course_Id=course_Id, video_Name=course_Name, video_Url=video_Url)
+        new_video = Videos(course_Id=course_Id, video_Name=video_Name, video_Url=video_Url)
         db.session.add(new_video)
         db.session.commit()
         session["course_Id"] = new_video.video_Id
@@ -573,8 +574,28 @@ def create_video():
         return jsonify({'error': 'error creating video'}), 500   
     
 
+# # update a video by video id
+@app.route("/update_video/<int:id>", methods=["PUT"])
+def update_video(id):
+
+     if not id:
+         return jsonify({"error": "video id not found"}), 401
+    
+     try:
+         video = Videos.query.filter_by(video_Id=id).first()
+       
+
+         if video:
+             video.video_Name = request.json["video_Name"]
+             video.video_Url = request.json["video_Url"]
+           
+             db.session.commit()
+             return jsonify({'message': 'video updated!',"video_Id": video.video_Id, "video_Name": video.video_Name, "video_Url": video.video_Url}), 200
+     except:
+         return jsonify({'message': 'error updating video'}), 500 
+
 #delete a video
-@app.route('/video/<int:id>', methods=['DELETE'])
+@app.route('/delete_video/<int:id>', methods=['DELETE'])
 def delete_video(id):
    try:
      video = Videos.query.filter_by(video_Id=id).first()
