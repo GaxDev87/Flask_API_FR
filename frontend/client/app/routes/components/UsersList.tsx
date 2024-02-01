@@ -120,8 +120,9 @@ const UsersList = () => {
   };
 
   const handleChangeFirstName = (event) => {
+    console.log(searchFirstName)
     setSearchFirstName(event.target.value);
-    getUsersFirst();
+    //getUsersFirst();
     // getUsersListAPI();
   };
 
