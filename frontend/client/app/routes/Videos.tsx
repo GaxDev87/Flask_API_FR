@@ -118,7 +118,7 @@ export default function Resource_Template(props) {
       axios
         .post("http://localhost:5000/video", {
           course_Id: data.course_Id,
-          course_Name: videoName,
+          video_Name: videoName,
           video_Url: videoURL,
         })
         .then((response) => {
@@ -130,6 +130,61 @@ export default function Resource_Template(props) {
           setIsOpen(true);
         });
     } catch {}
+  };
+
+  const handleClickDelete = (id: number) => {
+    setVideoId(id);
+    setInfo("¿Está seguro de que desea eliminar el video " + id + "?");
+    setIsOpenConfirm(true);
+  };
+
+  const handleCloseConfirm = () => {
+    const data = {
+      videoId: videoId,
+    };
+
+    setIsOpenConfirm(false);
+
+    axios
+      .delete("http://localhost:5000/delete_video/" + videoId)
+      .then((response) => {
+        setInfo("Video eliminado correctamente!");
+        setIsOpen(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setInfo("Fallo al eliminar el video" + videoId);
+        setIsOpen(true);
+      });
+  };
+
+  const handleClickEdit = (
+    video_Id: number,
+    video_Name: string,
+    video_Url: string
+  ) => {
+    setVideoId(video_Id);
+    setVideoName(video_Name);
+    setVideoURL(video_Url);
+
+    // setInfo("Editando curso " + course_Name);
+    setEditOpen(true);
+  };
+
+  const handleClickUpdate = () => {
+    axios
+      .put("http://localhost:5000/update_video/" + videoId, {
+        video_Name: videoName,
+        video_Url: videoURL,
+      })
+      .then((response) => {
+        setInfo("Video actualizado correctamente!");
+        setIsOpen(true);
+      })
+      .catch((error) => {
+        setInfo("Fallo al actualizar el video");
+        setIsOpen(true);
+      });
   };
 
   const handleClose = () => {
@@ -148,12 +203,6 @@ export default function Resource_Template(props) {
     location.href = "/Videos"; // Actualizar la tabla después
     getCourseVideosAPI();
     setIsOpenConfirm(false);
-  };
-
-  const handleCloseConfirm = () => {
-    const data = {
-      id: videoId,
-    };
   };
 
   const handleClickAdd = () => {
@@ -464,7 +513,7 @@ export default function Resource_Template(props) {
           <thead>
             <tr>
               <td>
-                <Button className="AddLink">
+                <Button onClick={handleClickAdd} className="AddLink">
                   ANADIR NUEVO VIDEO <IoAddOutline />
                 </Button>
               </td>
@@ -518,35 +567,345 @@ export default function Resource_Template(props) {
                 </td>
 
                 <td>
-                  <Link
-                    to="#"
-                    //   onClick={() =>
-                    //     handleClickEdit(
-                    //       item.usuario.user_Id,
-                    //       item.usuario.firstName,
-                    //       item.usuario.lastName,
-                    //       item.usuario.email,
-                    //       item.usuario.user_Type
-                    //     )
-                    //   }
+                  <button
+                    onClick={() =>
+                      handleClickEdit(
+                        item.video_Id,
+                        item.video_Name,
+                        item.video_Url
+                      )
+                    }
                     className="EditLink"
                   >
                     <TbEdit />
-                  </Link>
+                  </button>
                 </td>
                 <td>
-                  <Link
-                    to="#"
-                    //   onClick={() => handleClickDelete(item.usuario.user_Id)}
+                  <button
+                    onClick={() => handleClickDelete(item.video_Id)}
                     className="DeleteLink"
                   >
                     <FaTrash />
-                  </Link>
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
+          <Modal
+            isOpen={isCreatetVideoOpen}
+            onRequestClose={handleClose}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "white",
+                borderRadius: "5px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                padding: "20px",
+                height: "570px",
+                maxWidth: "500px",
+                width: "100%",
+              },
+            }}
+          >
+            <h4
+              style={{
+                textAlign: "center",
+                marginRight: "40px",
+                fontSize: "30px",
+              }}
+            >
+              {" "}
+              CREAR VIDEO
+            </h4>
+            <p
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: "22px",
+              }}
+            >
+              {/* {info} */}
+            </p>
+            <form className="max-w-sm mx-auto bg">
+              <div>
+                <label htmlFor="videoName">Nombre del Video:</label>
+                <input
+                  style={{
+                    marginTop: "20px",
+                    backgroundColor: "skyblue",
+                    textAlign: "center",
+                    fontSize: "25px",
+                    borderRadius: "15px",
+                  }}
+                  type="text"
+                  id="videoName"
+                  value={videoName}
+                  onChange={(event) => setVideoName(event.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="videoURL">URL del Video:</label>
+                <input
+                  style={{
+                    backgroundColor: "skyblue",
+                    textAlign: "center",
+                    marginTop: "20px",
+                    fontSize: "25px",
+                    borderRadius: "15px",
+                  }}
+                  type="text"
+                  id="videoURL"
+                  value={videoURL}
+                  onChange={(event) => setVideoURL(event.target.value)}
+                />
+              </div>
+
+              <div>
+                <Button
+                  onClick={handleSubmitDocument}
+                  className="popUpButtonCreate"
+                >
+                  CREAR
+                </Button>
+                <Button
+                  onClick={handleCloseCancel}
+                  className="popUpButtonCancel"
+                >
+                  CANCELAR
+                </Button>
+              </div>
+            </form>
+          </Modal>
+
+          <Modal
+            isOpen={isOpenConfirm}
+            onRequestClose={handleCloseCancel}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                position: "absolute",
+                top: "50%",
+                left: "750px",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "white",
+                borderRadius: "5px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                padding: "20px",
+                height: "300px",
+                maxWidth: "700px",
+                width: "100%",
+              },
+            }}
+          >
+            <h4
+              style={{
+                textAlign: "center",
+                marginRight: "40px",
+                fontSize: "30px",
+              }}
+            >
+              AVISO
+            </h4>
+            <p
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: "22px",
+              }}
+            >
+              {info}
+            </p>
+            <button onClick={handleCloseConfirm} className="popUpButton2">
+              Aceptar
+            </button>
+            <button onClick={handleCloseCancel} className="popUpButton2">
+              Cancelar
+            </button>
+          </Modal>
+          <Modal
+            isOpen={isEditOpen}
+            onRequestClose={handleClose}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "white",
+                borderRadius: "5px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                padding: "20px",
+                height: "570px",
+                maxWidth: "500px",
+                width: "100%",
+              },
+            }}
+          >
+            <h4
+              style={{
+                textAlign: "center",
+                marginRight: "40px",
+                fontSize: "30px",
+              }}
+            >
+              {" "}
+              EDITAR VIDEO
+            </h4>
+            <p
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: "22px",
+              }}
+            >
+              {info}
+            </p>
+            <form className="max-w-sm mx-auto bg">
+              <div>
+                <label htmlFor="videoName">Nombre del Video:</label>
+                <input
+                  style={{
+                    marginTop: "20px",
+                    backgroundColor: "skyblue",
+                    textAlign: "center",
+                    fontSize: "25px",
+                    borderRadius: "15px",
+                  }}
+                  type="text"
+                  id="videoName"
+                  value={videoName}
+                  onChange={(event) => setVideoName(event.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="videoURL">URL del Video:</label>
+                <input
+                  style={{
+                    backgroundColor: "skyblue",
+                    textAlign: "center",
+                    marginTop: "20px",
+                    fontSize: "25px",
+                    borderRadius: "15px",
+                  }}
+                  type="text"
+                  id="videoURL"
+                  value={videoURL}
+                  onChange={(event) => setVideoURL(event.target.value)}
+                />
+              </div>
+
+              <div>
+                <Button
+                  onClick={handleClickUpdate}
+                  className="popUpButtonUpdate"
+                >
+                  ACTUALIZAR
+                </Button>
+                <Button onClick={handleClose} className="popUpButtonCancel">
+                  CANCELAR
+                </Button>
+              </div>
+            </form>
+          </Modal>
         </table>
+        <Modal
+          isOpen={isClosedCreatetOpen}
+          onRequestClose={handleCloseCreate}
+          style={{
+            overlay: {
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            },
+            content: {
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "white",
+              borderRadius: "5px",
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              padding: "20px",
+              height: "300px",
+              maxWidth: "500px",
+              width: "100%",
+            },
+          }}
+        >
+          <h4
+            style={{
+              textAlign: "center",
+              marginRight: "40px",
+              fontSize: "30px",
+            }}
+          >
+            AVISO
+          </h4>
+          <p
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: "22px",
+            }}
+          >
+            {info}
+          </p>
+          <Button onClick={handleCloseCreate} className="popUpButton">
+            Aceptar
+          </Button>
+        </Modal>
+
+        <Modal
+          isOpen={isOpen}
+          onRequestClose={handleClose}
+          style={{
+            overlay: {
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            },
+            content: {
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "white",
+              borderRadius: "5px",
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              padding: "20px",
+              height: "300px",
+              maxWidth: "500px",
+              width: "100%",
+            },
+          }}
+        >
+          <h4
+            style={{
+              textAlign: "center",
+              marginRight: "40px",
+              fontSize: "30px",
+            }}
+          >
+            AVISO
+          </h4>
+          <p
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: "22px",
+            }}
+          >
+            {info}
+          </p>
+          <button onClick={handleClose} className="popUpButton">
+            Aceptar
+          </button>
+        </Modal>
       </div>
     </Sidebar>
   );

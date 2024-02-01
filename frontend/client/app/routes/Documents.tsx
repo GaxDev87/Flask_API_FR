@@ -118,7 +118,7 @@ export default function Document(props) {
       axios
         .post("http://localhost:5000/document", {
           course_Id: data.course_Id,
-          course_Name: documentName,
+          document_Name: documentName,
           document_Url: documentURL,
         })
         .then((response) => {
@@ -136,6 +136,19 @@ export default function Document(props) {
           setIsOpen(true);
         });
     } catch {}
+  };
+
+  const handleClickEdit = (
+    document_Id: number,
+    document_Name: string,
+    document_Url: string
+  ) => {
+    setDocumentId(document_Id);
+    setDocumentName(document_Name);
+    setDocumentURL(document_Url);
+
+    // setInfo("Editando curso " + course_Name);
+    setEditOpen(true);
   };
 
   const handleClose = () => {
@@ -156,10 +169,46 @@ export default function Document(props) {
     setIsOpenConfirm(false);
   };
 
+  const handleClickDelete = (id: number) => {
+    setDocumentId(id);
+    setInfo("¿Está seguro de que desea eliminar el documento " + id + "?");
+    setIsOpenConfirm(true);
+  };
+
   const handleCloseConfirm = () => {
     const data = {
-      id: documentId,
+      documentId: documentId,
     };
+
+    setIsOpenConfirm(false);
+
+    axios
+      .delete("http://localhost:5000/delete_document/" + documentId)
+      .then((response) => {
+        setInfo("Documento eliminado correctamente!");
+        setIsOpen(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setInfo("Fallo al eliminar el documento" + documentId);
+        setIsOpen(true);
+      });
+  };
+
+  const handleClickUpdate = () => {
+    axios
+      .put("http://localhost:5000/update_document/" + documentId, {
+        document_Name: documentName,
+        document_Url: documentURL,
+      })
+      .then((response) => {
+        setInfo("Documento actualizado correctamente!");
+        setIsOpen(true);
+      })
+      .catch((error) => {
+        setInfo("Fallo al actualizar el documento");
+        setIsOpen(true);
+      });
   };
 
   const handleClickAdd = () => {
@@ -468,7 +517,7 @@ export default function Document(props) {
           <thead>
             <tr>
               <td>
-                <Button className="AddLink">
+                <Button onClick={handleClickAdd} className="AddLink">
                   ANADIR NUEVO DOCUMENTO <IoAddOutline />
                 </Button>
               </td>
@@ -522,35 +571,347 @@ export default function Document(props) {
                 </td>
 
                 <td>
-                  <Link
-                    to="#"
-                    //   onClick={() =>
-                    //     handleClickEdit(
-                    //       item.usuario.user_Id,
-                    //       item.usuario.firstName,
-                    //       item.usuario.lastName,
-                    //       item.usuario.email,
-                    //       item.usuario.user_Type
-                    //     )
-                    //   }
+                  <button
+                    onClick={() =>
+                      handleClickEdit(
+                        item.document_Id,
+                        item.document_Name,
+                        item.document_Url
+                      )
+                    }
                     className="EditLink"
                   >
                     <TbEdit />
-                  </Link>
+                  </button>
                 </td>
                 <td>
-                  <Link
-                    to="#"
-                    //   onClick={() => handleClickDelete(item.usuario.user_Id)}
+                  <button
+                    onClick={() => handleClickDelete(item.document_Id)}
                     className="DeleteLink"
                   >
                     <FaTrash />
-                  </Link>
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
+          <Modal
+            isOpen={isCreatetDocumentOpen}
+            onRequestClose={handleClose}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "white",
+                borderRadius: "5px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                padding: "20px",
+                height: "570px",
+                maxWidth: "500px",
+                width: "100%",
+              },
+            }}
+          >
+            <h4
+              style={{
+                textAlign: "center",
+                marginRight: "40px",
+                fontSize: "30px",
+              }}
+            >
+              {" "}
+              CREAR DOCUMENTO
+            </h4>
+            <p
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: "22px",
+              }}
+            >
+              {/* {info} */}
+            </p>
+            <form className="max-w-sm mx-auto bg">
+              <div>
+                <label htmlFor="documentName">Nombre del Documento:</label>
+                <input
+                  style={{
+                    marginTop: "20px",
+                    backgroundColor: "skyblue",
+                    textAlign: "center",
+                    fontSize: "25px",
+                    borderRadius: "15px",
+                  }}
+                  type="text"
+                  id="documentName"
+                  value={documentName}
+                  onChange={(event) => setDocumentName(event.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="document_URL">URL del Documento:</label>
+                <input
+                  style={{
+                    backgroundColor: "skyblue",
+                    textAlign: "center",
+                    marginTop: "20px",
+                    fontSize: "25px",
+                    borderRadius: "15px",
+                  }}
+                  type="text"
+                  id="documentURL"
+                  value={documentURL}
+                  onChange={(event) => setDocumentURL(event.target.value)}
+                />
+              </div>
+
+              <div>
+                <Button
+                  onClick={handleSubmitDocument}
+                  className="popUpButtonCreate"
+                >
+                  CREAR
+                </Button>
+                <Button
+                  onClick={handleCloseCancel}
+                  className="popUpButtonCancel"
+                >
+                  CANCELAR
+                </Button>
+              </div>
+            </form>
+          </Modal>
+
+          <Modal
+            isOpen={isOpenConfirm}
+            onRequestClose={handleCloseCancel}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                position: "absolute",
+                top: "50%",
+                left: "750px",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "white",
+                borderRadius: "5px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                padding: "20px",
+                height: "300px",
+                maxWidth: "700px",
+                width: "100%",
+              },
+            }}
+          >
+            <h4
+              style={{
+                textAlign: "center",
+                marginRight: "40px",
+                fontSize: "30px",
+              }}
+            >
+              AVISO
+            </h4>
+            <p
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: "22px",
+              }}
+            >
+              {info}
+            </p>
+            <button onClick={handleCloseConfirm} className="popUpButton2">
+              Aceptar
+            </button>
+            <button onClick={handleCloseCancel} className="popUpButton2">
+              Cancelar
+            </button>
+          </Modal>
+
+          <Modal
+            isOpen={isEditOpen}
+            onRequestClose={handleClose}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "white",
+                borderRadius: "5px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                padding: "20px",
+                height: "570px",
+                maxWidth: "500px",
+                width: "100%",
+              },
+            }}
+          >
+            <h4
+              style={{
+                textAlign: "center",
+                marginRight: "40px",
+                fontSize: "30px",
+              }}
+            >
+              {" "}
+              EDITAR DOCUMENTO
+            </h4>
+            <p
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: "22px",
+              }}
+            >
+              {info}
+            </p>
+            <form className="max-w-sm mx-auto bg">
+              <div>
+                <label htmlFor="documentName">Nombre del Documento:</label>
+                <input
+                  style={{
+                    marginTop: "20px",
+                    backgroundColor: "skyblue",
+                    textAlign: "center",
+                    fontSize: "25px",
+                    borderRadius: "15px",
+                  }}
+                  type="text"
+                  id="documentName"
+                  value={documentName}
+                  onChange={(event) => setDocumentName(event.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="surname">URL del Documento:</label>
+                <input
+                  style={{
+                    backgroundColor: "skyblue",
+                    textAlign: "center",
+                    marginTop: "20px",
+                    fontSize: "25px",
+                    borderRadius: "15px",
+                  }}
+                  type="text"
+                  id="courseDetartment"
+                  value={documentURL}
+                  onChange={(event) => setDocumentURL(event.target.value)}
+                />
+              </div>
+
+              <div>
+                <Button
+                  onClick={handleClickUpdate}
+                  className="popUpButtonUpdate"
+                >
+                  ACTUALIZAR
+                </Button>
+                <Button onClick={handleClose} className="popUpButtonCancel">
+                  CANCELAR
+                </Button>
+              </div>
+            </form>
+          </Modal>
         </table>
+
+        <Modal
+          isOpen={isClosedCreatetOpen}
+          onRequestClose={handleCloseCreate}
+          style={{
+            overlay: {
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            },
+            content: {
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "white",
+              borderRadius: "5px",
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              padding: "20px",
+              height: "300px",
+              maxWidth: "500px",
+              width: "100%",
+            },
+          }}
+        >
+          <h4
+            style={{
+              textAlign: "center",
+              marginRight: "40px",
+              fontSize: "30px",
+            }}
+          >
+            AVISO
+          </h4>
+          <p
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: "22px",
+            }}
+          >
+            {info}
+          </p>
+          <Button onClick={handleCloseCreate} className="popUpButton">
+            Aceptar
+          </Button>
+        </Modal>
+
+        <Modal
+          isOpen={isOpen}
+          onRequestClose={handleClose}
+          style={{
+            overlay: {
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            },
+            content: {
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "white",
+              borderRadius: "5px",
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              padding: "20px",
+              height: "300px",
+              maxWidth: "500px",
+              width: "100%",
+            },
+          }}
+        >
+          <h4
+            style={{
+              textAlign: "center",
+              marginRight: "40px",
+              fontSize: "30px",
+            }}
+          >
+            AVISO
+          </h4>
+          <p
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: "22px",
+            }}
+          >
+            {info}
+          </p>
+          <button onClick={handleClose} className="popUpButton">
+            Aceptar
+          </button>
+        </Modal>
       </div>
     </Sidebar>
   );
