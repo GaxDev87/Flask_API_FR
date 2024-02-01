@@ -47,6 +47,8 @@ const UsersList = () => {
   const [searchFirstName, setSearchFirstName] = useState("");
   const [searchSurname, setSearchSurname] = useState("");
   const [searchEmail, setSearchEmail] = useState("");
+  const [searchUserType, setsearchUserType] = useState("");
+
   const [coursesList, setCourses] = useState([]);
   const [SearchUserData, setSearchUserData] = useState([]);
 
@@ -74,6 +76,7 @@ const UsersList = () => {
         setSearchUserData(data); // Set the fetched data
       });
   };
+
   useEffect(() => {
     // Trigger fetching method on component mount
     getUsersListAPI();
@@ -110,6 +113,14 @@ const UsersList = () => {
       });
   };
 
+  const getUsersUserType = () => {
+    fetch("http://localhost:5000/searchusertype/" + searchUserType) // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setSearchUserData(data); // Set the fetched data
+      });
+  };
+
   // useEffect(() => {
   //   // Trigger fetching method on component mount
   //   getUsersListAPI();
@@ -117,13 +128,16 @@ const UsersList = () => {
   // }, []);
   // Trigger fetching method on component mount
 
-  const handleChangeId = (event) => {
-    setSearchId(event.target.value);
+  
+
+
+
+  const handleChangeId = (e) => {
+    setSearchId(e.target.value);
     getUsersId();
   };
 
   const handleChangeFirstName = (event) => {
-    console.log(searchFirstName)
     setSearchFirstName(event.target.value);
     getUsersFirst();
     // getUsersListAPI();
@@ -141,8 +155,22 @@ const UsersList = () => {
 
   const handleClickDelete = (user_Id: number) => {
     setId(user_Id);
-    setInfo("¿Está seguro de que desea eliminar el usuario " + id + "?");
+    setInfo("¿Está seguro de que desea eliminar el usuario " + user_Id + "?");
     setIsOpenConfirm(true);
+  };
+
+    const handleSearch = () => {
+      getUsersId();
+
+      getUsersFirst();
+
+      getUsersSurname();
+
+      getUsersEmail();
+
+      getUsersUserType();
+
+    
   };
 
   const handleClickUpdate = () => {
@@ -181,7 +209,7 @@ const UsersList = () => {
 
   const handleClose = () => {
     location.href = "/Admin_users"; // Actualizar la tabla después
-    updateUsers();
+    getUsersListAPI();
     setIsOpen(false);
   };
 
@@ -191,7 +219,7 @@ const UsersList = () => {
 
   const handleCloseCancel = () => {
     location.href = "/Admin_users";
-    updateUsers();
+    getUsersListAPI();
     setIsOpenConfirm(false);
   };
 
@@ -239,15 +267,16 @@ const UsersList = () => {
     }
   };
 
-  useEffect(() => {
-    updateUsers(); // Obtener los usuarios
-  }, []);
 
   return (
     <div style={{ marginRight: "7%", marginTop: "1%" }}>
+     
       <table>
+
         <thead>
+
           <tr>
+
             <th>ID</th>
             <th>Nombre</th>
             <th>Apellidos</th>
@@ -264,7 +293,7 @@ const UsersList = () => {
                 name="searcherId"
                 value={searchId}
                 className="search"
-                onChange={handleChangeId}
+                onChange={(event) => setSearchId(event.target.value)}
               ></input>
             </th>
             <th className="colim">
@@ -272,14 +301,15 @@ const UsersList = () => {
                 name="searchName"
                 value={searchFirstName}
                 className="search"
-                onChange={handleChangeFirstName}
+                onChange={(event) => setSearchFirstName(event.target.value)}
+
               ></input>
             </th>
             <th className="colim">
               <input
                 name="searchSurname"
                 value={searchSurname}
-                onChange={handleChangeSurname}
+                onChange={(event) => setSearchSurname(event.target.value)}
                 className="search"
               ></input>
             </th>
@@ -287,13 +317,20 @@ const UsersList = () => {
               <input
                 name="searchSurname"
                 value={searchEmail}
-                onChange={handleChangeEmail}
+                onChange={(event) => setSearchEmail(event.target.value)}
                 className="search"
               ></input>
             </th>
 
             <th className="colim">
-              <select className="dropdownsearch">
+              <select      
+              value={searchUserType}
+       
+              
+              onChange={(event) => setsearchUserType(event.target.value)}
+              
+              className="dropdownsearch">
+                
                 <option value="">Tipo usuario</option>
 
                 <option value="Administrador">Administrador</option>
@@ -301,7 +338,11 @@ const UsersList = () => {
                 <option value="Alumno">Alumno</option>
               </select>
             </th>
-            <th></th>
+            <th> <div>
+        <button  onClick={handleSearch}
+        className="Buscar">Buscar</button>
+
+      </div></th>
             <th></th>
           </tr>
           {SearchUserData.map((item) => (
