@@ -299,12 +299,12 @@ const UsersList = () => {
             <th className="colim">
               <input
                 style={{
-                  width: "200px",
                   backgroundColor: "white",
                   textAlign: "center",
                   fontSize: "20px",
                   borderRadius: "15px",
-                  marginLeft: "15%",
+                  width: "60%",
+                  marginLeft: "20%",
                 }}
                 name="searcherId"
                 value={searchId}
@@ -319,7 +319,8 @@ const UsersList = () => {
                   textAlign: "center",
                   fontSize: "20px",
                   borderRadius: "15px",
-                  marginRight: "7%",
+                  width: "90%",
+                  marginLeft: "5%",
                 }}
                 name="searchName"
                 value={searchFirstName}
@@ -334,6 +335,8 @@ const UsersList = () => {
                   textAlign: "center",
                   fontSize: "20px",
                   borderRadius: "15px",
+                  width: "90%",
+                  marginLeft: "5%",
                 }}
                 name="searchSurname"
                 value={searchSurname}
@@ -341,6 +344,7 @@ const UsersList = () => {
                 className="search"
               ></input>
             </th>
+
             <th className="colim">
               <input
                 style={{
@@ -348,8 +352,10 @@ const UsersList = () => {
                   textAlign: "center",
                   fontSize: "20px",
                   borderRadius: "15px",
+                  width: "90%",
+                  marginLeft: "5%",
                 }}
-                name="searchSurname"
+                name="searchEmail"
                 value={searchEmail}
                 onChange={(event) => setSearchEmail(event.target.value)}
                 className="search"
