@@ -271,7 +271,7 @@ const UsersList = () => {
             <th></th>
             <th
               style={{
-                paddingLeft: "4%",
+                paddingLeft: "0px",
               }}
             >
               ID
@@ -286,13 +286,15 @@ const UsersList = () => {
         </thead>
         <tbody>
           <tr>
-            <th>
+            <th
+              style={{
+                columnWidth: "100px",
+              }}
+            >
               {" "}
-              <div>
-                <button onClick={handleSearch} className="Buscar">
-                  Buscar
-                </button>
-              </div>
+              <button onClick={handleSearch} className="Buscar">
+                Buscar
+              </button>
             </th>
             <th className="colim">
               <input
@@ -302,7 +304,7 @@ const UsersList = () => {
                   textAlign: "center",
                   fontSize: "20px",
                   borderRadius: "15px",
-                  marginLeft: "33%",
+                  marginLeft: "15%",
                 }}
                 name="searcherId"
                 value={searchId}
@@ -317,6 +319,7 @@ const UsersList = () => {
                   textAlign: "center",
                   fontSize: "20px",
                   borderRadius: "15px",
+                  marginRight: "7%",
                 }}
                 name="searchName"
                 value={searchFirstName}
@@ -381,7 +384,7 @@ const UsersList = () => {
               <td></td>
               <td
                 style={{
-                  paddingLeft: "4%",
+                  paddingLeft: "-10px",
                 }}
                 className="text-white font-bold size-15"
               >

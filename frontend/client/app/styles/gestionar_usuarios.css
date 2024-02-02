@@ -107,6 +107,9 @@ input{
     margin-top: 8px;
     font-size: 14px;
     font-weight: 300;
+    margin-right: 25px;
+ 
+
 }
 .search {
         background-color:white;
@@ -266,7 +269,7 @@ button:hover {
     border-color: #fdfdfd;
     padding: 10px;
     size: 30%;
-    width: 60%;
+    width: 80%;
     text-decoration: none;
     display: inline-block;
     border-radius: 15px;
