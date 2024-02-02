@@ -128,10 +128,6 @@ const UsersList = () => {
   // }, []);
   // Trigger fetching method on component mount
 
-  
-
-
-
   const handleChangeId = (e) => {
     setSearchId(e.target.value);
     getUsersId();
@@ -159,18 +155,18 @@ const UsersList = () => {
     setIsOpenConfirm(true);
   };
 
-    const handleSearch = () => {
-      getUsersId();
+  const handleSearch = () => {
+    getUsersId();
 
-      getUsersFirst();
+    getUsersFirst();
 
-      getUsersSurname();
+    getUsersSurname();
 
-      getUsersEmail();
+    getUsersEmail();
 
-      getUsersUserType();
+    getUsersUserType();
 
-    
+    // Trigger fetching method on component mount
   };
 
   const handleClickUpdate = () => {
@@ -267,29 +263,47 @@ const UsersList = () => {
     }
   };
 
-
   return (
     <div style={{ marginRight: "7%", marginTop: "1%" }}>
-     
       <table>
-
         <thead>
-
           <tr>
-
-            <th>ID</th>
+            <th></th>
+            <th
+              style={{
+                paddingLeft: "4%",
+              }}
+            >
+              ID
+            </th>
             <th>Nombre</th>
             <th>Apellidos</th>
             <th>Correo Electrónico</th>
             <th>Tipo de Usuario</th>
-            <th></th>
-            <th></th>
+            <th>Editar</th>
+            <th>Eliminar</th>
           </tr>
         </thead>
         <tbody>
           <tr>
+            <th>
+              {" "}
+              <div>
+                <button onClick={handleSearch} className="Buscar">
+                  Buscar
+                </button>
+              </div>
+            </th>
             <th className="colim">
               <input
+                style={{
+                  width: "200px",
+                  backgroundColor: "white",
+                  textAlign: "center",
+                  fontSize: "20px",
+                  borderRadius: "15px",
+                  marginLeft: "33%",
+                }}
                 name="searcherId"
                 value={searchId}
                 className="search"
@@ -298,15 +312,26 @@ const UsersList = () => {
             </th>
             <th className="colim">
               <input
+                style={{
+                  backgroundColor: "white",
+                  textAlign: "center",
+                  fontSize: "20px",
+                  borderRadius: "15px",
+                }}
                 name="searchName"
                 value={searchFirstName}
                 className="search"
                 onChange={(event) => setSearchFirstName(event.target.value)}
-
               ></input>
             </th>
             <th className="colim">
               <input
+                style={{
+                  backgroundColor: "white",
+                  textAlign: "center",
+                  fontSize: "20px",
+                  borderRadius: "15px",
+                }}
                 name="searchSurname"
                 value={searchSurname}
                 onChange={(event) => setSearchSurname(event.target.value)}
@@ -315,6 +340,12 @@ const UsersList = () => {
             </th>
             <th className="colim">
               <input
+                style={{
+                  backgroundColor: "white",
+                  textAlign: "center",
+                  fontSize: "20px",
+                  borderRadius: "15px",
+                }}
                 name="searchSurname"
                 value={searchEmail}
                 onChange={(event) => setSearchEmail(event.target.value)}
@@ -323,14 +354,18 @@ const UsersList = () => {
             </th>
 
             <th className="colim">
-              <select      
-              value={searchUserType}
-       
-              
-              onChange={(event) => setsearchUserType(event.target.value)}
-              
-              className="dropdownsearch">
-                
+              <select
+                style={{
+                  backgroundColor: "white",
+                  textAlign: "center",
+                  fontSize: "20px",
+                  borderRadius: "15px",
+                  width: "100%",
+                }}
+                value={searchUserType}
+                onChange={(event) => setsearchUserType(event.target.value)}
+                className="dropdownsearch"
+              >
                 <option value="">Tipo usuario</option>
 
                 <option value="Administrador">Administrador</option>
@@ -338,16 +373,20 @@ const UsersList = () => {
                 <option value="Alumno">Alumno</option>
               </select>
             </th>
-            <th> <div>
-        <button  onClick={handleSearch}
-        className="Buscar">Buscar</button>
-
-      </div></th>
-            <th></th>
+            <th> </th>
+            <th> </th>
           </tr>
           {SearchUserData.map((item) => (
             <tr key={item.user_Id}>
-              <td className="text-white font-bold size-15">{item.user_Id}</td>
+              <td></td>
+              <td
+                style={{
+                  paddingLeft: "4%",
+                }}
+                className="text-white font-bold size-15"
+              >
+                {item.user_Id}
+              </td>
               <td className="text-white font-bold size-15">{item.firstName}</td>
               <td className="text-white font-bold size-15">{item.lastName}</td>
               <td className="text-white font-bold size-15">{item.email}</td>

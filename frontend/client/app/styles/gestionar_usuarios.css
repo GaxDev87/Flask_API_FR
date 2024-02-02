@@ -60,9 +60,10 @@ body{
     text-align: center;
     border-bottom: 5px solid #ddd;
 
+
     padding: 10px;
     color: #ffffff;
-    text-align: center;
+    text-align: relative;
   }
 
 .colim {
@@ -72,11 +73,18 @@ body{
 
     
 }
+
+.ID {
+    padding-left: 5%;
+  }
+
+
   
   td {
     
     border-bottom: 5px solid #ddd;
-    padding: 10px;
+    padding: 5px;
+    margin: 20px;
     color: #ddd;
     background-color: #2309b3;
     text-align: center;
@@ -123,9 +131,9 @@ input{
 
 .dropdownsearch
 {
-    display: block;
+    display: center;    
     height: 48px;
-    width: 100%;
+    width: 60%;
     background-color:white;
     border-radius: 3px;
     padding: 0 10px;

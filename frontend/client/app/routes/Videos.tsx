@@ -247,6 +247,14 @@ export default function Resource_Template(props) {
               <tr>
                 <th>
                   <input
+                    style={{
+                      width: "250px",
+                      backgroundColor: "white",
+                      textAlign: "center",
+                      fontSize: "25px",
+                      borderRadius: "15px",
+                      marginLeft: "70px",
+                    }}
                     name="searcherId"
                     // value={searchId}
                     className="search"
@@ -255,6 +263,12 @@ export default function Resource_Template(props) {
                 </th>
                 <th>
                   <input
+                    style={{
+                      backgroundColor: "white",
+                      textAlign: "center",
+                      fontSize: "25px",
+                      borderRadius: "15px",
+                    }}
                     name="searchName"
                     // value={searchFirstName}
                     className="search"
@@ -535,6 +549,14 @@ export default function Resource_Template(props) {
             <tr>
               <th>
                 <input
+                  style={{
+                    width: "250px",
+                    backgroundColor: "white",
+                    textAlign: "center",
+                    fontSize: "25px",
+                    borderRadius: "15px",
+                    marginLeft: "70px",
+                  }}
                   name="searcherId"
                   // value={searchId}
                   className="search"
@@ -543,6 +565,12 @@ export default function Resource_Template(props) {
               </th>
               <th>
                 <input
+                  style={{
+                    backgroundColor: "white",
+                    textAlign: "center",
+                    fontSize: "25px",
+                    borderRadius: "15px",
+                  }}
                   name="searchName"
                   // value={searchFirstName}
                   className="search"

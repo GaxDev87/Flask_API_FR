@@ -181,6 +181,7 @@ const ListarCursos = () => {
       <table>
         <thead>
           <tr>
+            <th></th>
             <th>Nombre del Curso</th>
             <th>Temática del Curso</th>
             <th></th>
@@ -189,7 +190,23 @@ const ListarCursos = () => {
         <tbody>
           <tr>
             <th>
+              <div>
+                <button
+                  // onClick={handleSearch}
+                  className="Buscar"
+                >
+                  Buscar
+                </button>
+              </div>
+            </th>
+            <th>
               <select
+                style={{
+                  backgroundColor: "white",
+                  textAlign: "left",
+                  fontSize: "20px",
+                  borderRadius: "15px",
+                }}
                 className="dropdownsearch"
                 name="searchName"
                 // value={search}
@@ -210,6 +227,12 @@ const ListarCursos = () => {
             </th>
             <th>
               <select
+                style={{
+                  backgroundColor: "white",
+                  textAlign: "left",
+                  fontSize: "20px",
+                  borderRadius: "15px",
+                }}
                 className="dropdownsearch"
                 name="searchName"
                 // value={search}
@@ -233,6 +256,7 @@ const ListarCursos = () => {
 
           {courseData.map((item) => (
             <tr key={item.curso.course_Id}>
+              <td></td>
               <td className="text-white font-bold size-15">
                 {item.curso.course_Name}
               </td>

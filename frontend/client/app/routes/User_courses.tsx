@@ -321,6 +321,7 @@ const User_courses = () => {
           <table>
             <thead>
               <tr>
+                <th></th>
                 <th>Nombre del Curso</th>
                 <th>Temática del Curso</th>
                 <th></th>
@@ -330,7 +331,24 @@ const User_courses = () => {
             <tbody>
               <tr>
                 <th>
+                  {" "}
+                  <div>
+                    <button
+                      // onClick={handleSearch}
+                      className="Buscar"
+                    >
+                      Buscar
+                    </button>
+                  </div>
+                </th>
+                <th>
                   <select
+                    style={{
+                      backgroundColor: "white",
+                      textAlign: "left",
+                      fontSize: "20px",
+                      borderRadius: "15px",
+                    }}
                     className="dropdownsearch"
                     name="searchName"
                     // value={search}
@@ -351,6 +369,12 @@ const User_courses = () => {
                 </th>
                 <th>
                   <select
+                    style={{
+                      backgroundColor: "white",
+                      textAlign: "left",
+                      fontSize: "20px",
+                      borderRadius: "15px",
+                    }}
                     className="dropdownsearch"
                     name="searchName"
                     // value={search}
@@ -369,12 +393,13 @@ const User_courses = () => {
                     })}
                   </select>
                 </th>
-                <th></th>
+                <th> </th>
                 <th></th>
               </tr>
 
               {courses.map((item) => (
                 <tr key={item.course_Id}>
+                  <td></td>
                   <td className="text-white font-bold size-15">
                     {item.course_Name}
                   </td>

@@ -37,7 +37,7 @@ const CoursesList = () => {
   const [isEditOpen, setEditOpen] = useState(false);
   const [isCreatetOpen, setCreateOpen] = useState(false);
   const [isClosedCreatetOpen, setClosedCreatetOpen] = useState(false);
-
+  const [searchId, setSearchId] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
   const [courseId, setId] = useState(0);
@@ -109,6 +109,14 @@ const CoursesList = () => {
           setIsOpen(true);
         });
     } catch {}
+  };
+
+  const handleSearch = () => {
+    // getUsersId();
+    // getUsersFirst();
+    // getUsersSurname();
+    // getUsersEmail();
+    // getUsersUserType();
   };
 
   const handleClickEdit = (
@@ -241,9 +249,17 @@ const CoursesList = () => {
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
           </tr>
           <tr>
-            <th>ID de Curso</th>
+            <th></th>
+            <th
+              style={{
+                paddingLeft: "4%",
+              }}
+            >
+              ID del Curso
+            </th>
             <th>Nombre del Curso</th>
             <th>Temática del Curso</th>
             <th>Editar Curso</th>
@@ -255,10 +271,40 @@ const CoursesList = () => {
         <tbody>
           <tr>
             <th>
-              <input></input>
+              {" "}
+              <div>
+                <button onClick={handleSearch} className="Buscar">
+                  Buscar
+                </button>
+              </div>
             </th>
             <th>
-              <select className="dropdownsearch">
+              <input
+                name="searcherId"
+                value={searchId}
+                className="search"
+                onChange={(event) => setSearchId(event.target.value)}
+                style={{
+                  width: "200px",
+                  backgroundColor: "white",
+                  textAlign: "center",
+                  fontSize: "20px",
+                  borderRadius: "15px",
+                  marginLeft: "33%",
+                }}
+              ></input>
+            </th>
+            <th>
+              <select
+                style={{
+                  backgroundColor: "white",
+                  textAlign: "left",
+                  fontSize: "20px",
+                  borderRadius: "15px",
+                  width: "100%",
+                }}
+                className="dropdownsearch"
+              >
                 <option value="">Curso</option>
 
                 {courseData.map((item) => {
@@ -274,7 +320,16 @@ const CoursesList = () => {
               </select>
             </th>
             <th>
-              <select className="dropdownsearch">
+              <select
+                style={{
+                  backgroundColor: "white",
+                  textAlign: "left",
+                  fontSize: "20px",
+                  borderRadius: "15px",
+                  width: "110%",
+                }}
+                className="dropdownsearch"
+              >
                 <option value="">Temática</option>
 
                 {courseThematic.map((item) => {
@@ -290,7 +345,7 @@ const CoursesList = () => {
               </select>
             </th>
 
-            <th></th>
+            <th> </th>
             <th></th>
             <th></th>
             <th></th>
@@ -298,7 +353,13 @@ const CoursesList = () => {
 
           {courseData.map((item) => (
             <tr key={item.curso.course_Id}>
-              <td className="text-white font-bold size-15">
+              <td></td>
+              <td
+                style={{
+                  paddingLeft: "5%",
+                }}
+                className="text-white font-bold size-15"
+              >
                 {item.curso.course_Id}
               </td>
 

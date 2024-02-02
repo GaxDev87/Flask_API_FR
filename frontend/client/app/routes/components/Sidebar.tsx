@@ -113,7 +113,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
     return (
       <aside>
         <div>
-          <Navbar title={"CURSOS DISPONIBLES"} options={menuOptions} />
+          <Navbar title="" options={menuOptions} />
 
           <div
             className="fixed top-0 left-0 w-60 bg-blue-800"
