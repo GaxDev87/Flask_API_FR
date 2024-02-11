@@ -1,10 +1,10 @@
-import { Layout } from "./components/layout";
+import { Layout } from "../components/layout";
 import { Link } from "@remix-run/react";
 import { useLocation } from "@remix-run/react";
 import { cssBundleHref } from "@remix-run/css-bundle";
 import cursoStyles from "~/styles/gestionar_cursos.css";
 import { LinksFunction, json } from "@remix-run/node";
-import Sidebar from "./components/Sidebar";
+import Sidebar from "../components/Sidebar";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Modal from "react-modal";
@@ -14,6 +14,7 @@ import { IoAddOutline } from "react-icons/io5";
 import { Button, ModalBody, ModalFooter, ModalHeader } from "flowbite-react";
 import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { BsSearch } from "react-icons/bs";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: cursoStyles },
@@ -41,16 +42,10 @@ export default function Document(props) {
   const [group_Type, setgroup_Type] = useState("");
   const [user_type, setType] = useState("");
 
-  // const [info, setInfo] = useState("");
-  // const [isValidEmail, setIsValidEmail] = useState(true);
-  // const [isOpen, setIsOpen] = useState(false);
-  // const [isOpenConfirm, setIsOpenConfirm] = useState(false);
-
-  const [courseId, setCourseId] = useState(0);
-  const [firstName, setFirstName] = useState("");
-  const [documentId, setDocumentId] = useState(0);
+  const [searchdocumentId, setSearchDocumentId] = useState("");
+  const [searchdocumentName, setSearchDocumentName] = useState("");
+  const [documentId, setDocumentId] = useState(Number);
   const [documentName, setDocumentName] = useState("");
-  const [courseDescription, setCourseDescription] = useState("");
   const [courseName, setCourseName] = useState("");
 
   const [documentURL, setDocumentURL] = useState("");
@@ -216,6 +211,31 @@ export default function Document(props) {
     setisCreatetDocumentOpen(true);
   };
 
+  const getDocumentId = () => {
+    console.log(searchdocumentId);
+    fetch("http://localhost:5000/search_documentId/" + searchdocumentId) // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setCourseDocuments(data); // Set the fetched data
+      });
+  };
+
+  const getDocumentName = () => {
+    console.log(searchdocumentName);
+    fetch("http://localhost:5000/search_documentName/" + searchdocumentName) // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setCourseDocuments(data); // Set the fetched data
+      });
+  };
+
+  const handleSearch = () => {
+    getDocumentId();
+    getDocumentName();
+    // getUsersEmail();
+    // getUsersUserType();
+  };
+
   if (CourseDocuments.map == null) {
     return (
       <Sidebar>
@@ -229,22 +249,22 @@ export default function Document(props) {
           <table>
             <thead>
               <tr>
-                <td>
+                <th>
                   <Button onClick={handleClickAdd} className="AddLink">
                     ANADIR NUEVO DOCUMENTO <IoAddOutline />
                   </Button>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
               </tr>
               <tr>
-                <th>ID del Documento</th>
-                <th> Nombre del Documento</th>
-                <th> URL del Documento</th>
-
+                <th>ID </th>
+                <th> Nombre</th>
+                <th> URL </th>
                 <th></th>
+
                 <th></th>
               </tr>
             </thead>
@@ -258,7 +278,7 @@ export default function Document(props) {
                       textAlign: "center",
                       fontSize: "25px",
                       borderRadius: "15px",
-                      marginLeft: "70px",
+                      marginLeft: "35%",
                     }}
                     name="searcherId"
                     // value={searchId}
@@ -530,21 +550,48 @@ export default function Document(props) {
         <table>
           <thead>
             <tr>
-              <td>
+              <th
+                style={{
+                  width: "15%",
+                }}
+              >
                 <Button onClick={handleClickAdd} className="AddLink">
                   ANADIR NUEVO DOCUMENTO <IoAddOutline />
                 </Button>
-              </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+              </th>
+
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
             </tr>
             <tr>
-              <th>ID del Documento</th>
-              <th> Nombre del Documento</th>
-              <th> URL del Documento</th>
+              <th
+                style={{
+                  paddingLeft: "21%",
+                }}
+              >
+                ID
+              </th>
+              <th
+                style={{
+                  paddingLeft: "19%",
+                }}
+              >
+                {" "}
+                Nombre
+              </th>
+              <th
+                style={{
+                  paddingLeft: "35%",
+                }}
+              >
+                {" "}
+                URL
+              </th>
 
+              <th></th>
               <th></th>
               <th></th>
             </tr>
@@ -552,18 +599,34 @@ export default function Document(props) {
           <tbody>
             <tr>
               <th>
+                {" "}
+                <div>
+                  <button
+                    style={{
+                      width: "45px",
+                    }}
+                    onClick={handleSearch}
+                    className="Buscar"
+                  >
+                    <BsSearch />
+                  </button>
+                </div>
+              </th>
+
+              <th>
                 <input
                   style={{
                     width: "250px",
                     backgroundColor: "white",
-                    textAlign: "center",
+                    textAlign: "left",
                     fontSize: "25px",
                     borderRadius: "15px",
-                    marginLeft: "70px",
+                    paddingLeft: "45%",
                   }}
-                  name="searcherId"
-                  // value={searchId}
+                  name="searchdocumentId"
+                  value={searchdocumentId}
                   className="search"
+                  onChange={(event) => setSearchDocumentId(event.target.value)}
                   // onChange={handleChangeId}
                 ></input>
               </th>
@@ -571,13 +634,17 @@ export default function Document(props) {
                 <input
                   style={{
                     backgroundColor: "white",
-                    textAlign: "center",
+                    textAlign: "left",
                     fontSize: "25px",
                     borderRadius: "15px",
+                    paddingLeft: "45%",
                   }}
-                  name="searchName"
-                  // value={searchFirstName}
+                  name="searchdocumentName"
+                  value={searchdocumentName}
                   className="search"
+                  onChange={(event) =>
+                    setSearchDocumentName(event.target.value)
+                  }
                   // onChange={handleChangeFirstName}
                 ></input>
               </th>
@@ -588,6 +655,7 @@ export default function Document(props) {
 
             {CourseDocuments.map((item) => (
               <tr key={item.document_Id}>
+                <td></td>
                 <td className="text-white font-bold size-15">
                   {item.document_Id}
                 </td>

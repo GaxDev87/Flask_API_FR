@@ -170,7 +170,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 
             <ul>
               <li
-                className="fixed bottom-0 flex items-center justify-left text-blue-300 hover:text-white hover:bg-blue-700"
+                className="fixed bottom-0 flex items-center justify-center text-blue-300 bg-blue-900 hover:text-white hover:bg-blue-700"
                 style={{
                   height: "12%",
                   width: "240px",
@@ -179,7 +179,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
                 }}
                 onClick={handleLogout}
               >
-                <IoCloseCircle className="w-6 h-6 mr-2" />
+                <FiLogOut className="w-6 h-6 mr-2" />
                 <Link to="/inicio">Cerrar sesión</Link>
               </li>
             </ul>
@@ -248,7 +248,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 
             <ul>
               <li
-                className="fixed bottom-0 flex items-center justify-left text-blue-300 hover:text-white hover:bg-blue-700"
+                className="fixed bottom-0 flex items-center justify-center text-blue-300 bg-blue-900 hover:text-white hover:bg-blue-700"
                 style={{
                   height: "12%",
                   width: "240px",
@@ -257,7 +257,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
                 }}
                 onClick={handleLogout}
               >
-                <IoCloseCircle className="w-6 h-6 mr-2" />
+                <FiLogOut className="w-6 h-6 mr-2" />
                 <Link to="/inicio">Cerrar sesión</Link>
               </li>
             </ul>

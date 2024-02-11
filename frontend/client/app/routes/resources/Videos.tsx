@@ -1,10 +1,10 @@
-import { Layout } from "./components/layout";
+import { Layout } from "../components/layout";
 import { Link } from "@remix-run/react";
 import { useLocation } from "@remix-run/react";
 import { cssBundleHref } from "@remix-run/css-bundle";
 import cursoStyles from "~/styles/gestionar_cursos.css";
 import { LinksFunction, json } from "@remix-run/node";
-import Sidebar from "./components/Sidebar";
+import Sidebar from "../components/Sidebar";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Modal from "react-modal";
@@ -14,6 +14,7 @@ import { IoAddOutline } from "react-icons/io5";
 import { Button, ModalBody, ModalFooter, ModalHeader } from "flowbite-react";
 import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { BsSearch } from "react-icons/bs";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: cursoStyles },
@@ -235,10 +236,9 @@ export default function Resource_Template(props) {
                 <td></td>
               </tr>
               <tr>
-                <th>ID del Video</th>
-                <th> Nombre del Video</th>
-                <th> URL del Video</th>
-
+                <th>ID</th>
+                <th> Nombre</th>
+                <th> URL</th>
                 <th></th>
                 <th></th>
               </tr>
@@ -253,7 +253,7 @@ export default function Resource_Template(props) {
                       textAlign: "center",
                       fontSize: "25px",
                       borderRadius: "15px",
-                      marginLeft: "70px",
+                      marginLeft: "35%",
                     }}
                     name="searcherId"
                     // value={searchId}
@@ -526,36 +526,76 @@ export default function Resource_Template(props) {
         <table>
           <thead>
             <tr>
-              <td>
+              <th>
                 <Button onClick={handleClickAdd} className="AddLink">
                   ANADIR NUEVO VIDEO <IoAddOutline />
                 </Button>
-              </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+              </th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
             </tr>
             <tr>
-              <th>ID del Video</th>
-              <th> Nombre del Video</th>
-              <th> URL del Video</th>
+              <th
+                style={{
+                  paddingLeft: "15%",
+                }}
+              >
+                ID
+              </th>
+              <th
+                style={{
+                  paddingLeft: "21%",
+                }}
+              >
+                {" "}
+                Nombre
+              </th>
+              <th
+                style={{
+                  paddingLeft: "35%",
+                }}
+              >
+                {" "}
+                URL
+              </th>
 
+              <th></th>
               <th></th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr>
+              <th
+                style={{
+                  width: "10%",
+                }}
+              >
+                {" "}
+                <div>
+                  <button
+                    style={{
+                      width: "45px",
+                    }}
+                    // onClick={handleSearch}
+                    className="Buscar"
+                  >
+                    <BsSearch />
+                  </button>
+                </div>
+              </th>
               <th>
                 <input
                   style={{
                     width: "250px",
                     backgroundColor: "white",
-                    textAlign: "center",
+                    textAlign: "left",
                     fontSize: "25px",
                     borderRadius: "15px",
-                    marginLeft: "70px",
+                    paddingLeft: "45%",
                   }}
                   name="searcherId"
                   // value={searchId}
@@ -567,9 +607,10 @@ export default function Resource_Template(props) {
                 <input
                   style={{
                     backgroundColor: "white",
-                    textAlign: "center",
+                    textAlign: "left",
                     fontSize: "25px",
                     borderRadius: "15px",
+                    paddingLeft: "45%",
                   }}
                   name="searchName"
                   // value={searchFirstName}
@@ -584,10 +625,21 @@ export default function Resource_Template(props) {
 
             {CourseVideos.map((item) => (
               <tr key={item.video_Id}>
-                <td className="text-white font-bold size-15">
+                <td></td>
+                <td
+                  style={{
+                    paddingRight: "2%",
+                  }}
+                  className="text-white font-bold size-15"
+                >
                   {item.video_Id}
                 </td>
-                <td className="text-white font-bold size-15">
+                <td
+                  style={{
+                    paddingLeft: "2%",
+                  }}
+                  className="text-white font-bold size-15"
+                >
                   {item.video_Name}
                 </td>
                 <td className="text-white font-bold size-15">

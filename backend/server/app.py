@@ -28,7 +28,7 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-# ##********************SEARCH*********************#
+# ##********************USERS SEARCH*********************#
     
 @app.route('/searchId/<int:id>', methods=['GET'])
 def search_id(id):
@@ -160,6 +160,245 @@ def searchusertype(query):
     
 # ##********************USERS*********************#
 
+
+# ##********************COURSES SEARCH*********************#
+      
+@app.route('/search_courseId/<int:id>', methods=['GET'])
+def search_courseId(id):
+   try:
+    print(id)     
+     
+    if id:
+        search_results_id= Courses.query.filter_by(course_Id = id).all()
+
+        return jsonify(        [ 
+            {                   
+               
+            "course_Id": course.course_Id,
+            "course_Name": course.course_Name,
+            "department_Name": course.department_Name,
+            }            
+            for course in search_results_id
+        ]
+    )
+    search_results_id = []   
+   except:
+     return jsonify({'message': 'error getting search'}), 500
+
+@app.route('/search_courseName/<string:query>', methods=['GET'])
+def search_courseName(query):
+   try:
+    print(query)     
+     
+    if query:
+        search_results= Courses.query.filter(Courses.course_Name.icontains(query))                                      
+
+        return jsonify(        [ 
+            {                   
+               
+            "course_Id": course.course_Id,
+            "course_Name": course.course_Name,
+            "department_Name": course.department_Name,
+            }            
+            for course in search_results
+        ]
+    )
+    search_results = []   
+   except:
+     return jsonify({'message': 'error getting search'}), 500
+   
+
+
+@app.route('/search_courseThematic/<string:query>', methods=['GET'])
+def search_courseThematic(query):
+   
+   try:
+    print(query)     
+     
+    if query:
+        search_results= Courses.query.filter(Courses.department_Name.icontains(query))                                      
+
+        return jsonify(        [ 
+            {                   
+               
+      
+            "course_Name": course.course_Name,
+            "department_Name": course.department_Name,
+            }            
+            for course in search_results
+        ]
+    )
+    search_results = []   
+   except:
+     return jsonify({'message': 'error getting search'}), 500
+
+
+@app.route('/search_registeredCourseName/<string:query>', methods=['GET'])
+def search_registerCourseName(query):
+   
+ try:
+
+    userid = request.json["user_Id"]
+    id_exists=User_courses.query.filter_by(user_Id=userid).first() is not None
+
+    if not id_exists:   
+        return jsonify({"error": "User not enrolled for any course"}), 401 
+    
+
+    print(query)   
+        
+    if query:
+        search_results= User_courses.query.filter(User_courses.course_Name.icontains(query))
+
+        return jsonify([ 
+            {                   
+            
+            "course_Name": course.course_Name,
+            "department_Name": course.department_Name,
+            }   
+
+            for course in search_results.filter_by(user_Id=userid)           
+ 
+        ]
+    )    
+
+    search_results = []    
+
+ except:
+     return jsonify({'message': 'error getting search'}), 500
+
+   
+
+@app.route('/search_registeredcourseThematic/<string:query>', methods=['GET'])
+def search_registeredcourseThematic(query):
+   try:
+    userid = request.json["user_Id"]
+    id_exists=User_courses.query.filter_by(user_Id=userid).first() is not None
+
+    if not id_exists:   
+        return jsonify({"error": "User not enrolled for any course"}), 401 
+    
+
+    print(query)      
+     
+    if query:
+       search_results= User_courses.query.filter(User_courses.department_Name.icontains(query))                                        
+
+       return jsonify([ 
+            {                   
+               
+            "course_Name": course.course_Name,
+            "department_Name": course.department_Name,
+            }            
+            for course in search_results.filter_by(user_Id=userid)  
+        ]
+    )
+    search_results = []   
+   except:
+     return jsonify({'message': 'error getting search'}), 500
+
+##
+
+@app.route('/search_documentId/<int:id>', methods=['GET'])
+def search_documentId(id):
+   try:
+    print(id)     
+     
+    if id:
+        search_results_id= Documents.query.filter_by(document_Id = id).all()
+
+        return jsonify(        [ 
+            {                   
+            "document_Id": course.document_Id,
+            "document_Name": course.document_Name,
+            "document_Url": course.document_Url,
+            
+            }            
+            for course in search_results_id
+        ]
+    )
+    search_results_id = []   
+   except:
+     return jsonify({'message': 'error getting search'}), 500
+ 
+   
+
+@app.route('/search_documentName/<string:query>', methods=['GET'])
+def search_documentName(query):
+   try:
+    print(query)     
+     
+    if query:
+        search_results= Documents.query.filter(Documents.document_Name.icontains(query))                                      
+
+        return jsonify(        [ 
+            {                   
+               
+        
+            "document_Id": course.document_Id,
+            "document_Name": course.document_Name,
+            "document_Url": course.document_Url,
+
+            }            
+            for course in search_results
+        ]
+    )
+    search_results = []   
+   except:
+     return jsonify({'message': 'error getting search'}), 500
+   
+
+@app.route('/search_videoId/<int:id>', methods=['GET'])
+def search_videoId(id):
+   try:
+    print(id)     
+     
+    if id:
+        search_results_id= Videos.query.filter_by(video_Id = id).all()
+
+        return jsonify(        [ 
+            {                   
+               
+         
+            "video_Id": course.video_Id,
+            "video_Name": course.video_Name,
+            "video_Url": course.video_Url,
+
+            }            
+            for course in search_results_id
+        ]
+    )
+    search_results_id = []   
+   except:
+     return jsonify({'message': 'error getting search'}), 500
+
+@app.route('/search_videoName/<string:query>', methods=['GET'])
+def search_videoName(query):
+   try:
+    print(query)     
+     
+    if query:
+        search_results= Videos.query.filter(Videos.video_Name.icontains(query))                                      
+
+        return jsonify(        [ 
+            {                   
+               
+        
+            "video_Id": course.video_Id,
+            "video_Name": course.video_Name,
+            "video_Url": course.video_Url,
+
+            }            
+            for course in search_results
+        ]
+    )
+    search_results = []   
+   except:
+     return jsonify({'message': 'error getting search'}), 500
+  
+# ##********************COURSES SEARCH*********************#
+
+
 # create a user
 @app.route("/user", methods=["POST"])
 def register_user():    
@@ -243,15 +482,19 @@ def register_user_course():
         return jsonify({'error': 'Error creating course registration'}), 500    
     
 
-    # get # of enrolled courses by user id
+# get all enrolled courses by user id
 @app.route('/user_courses/<id>', methods=['GET'])
 def get_user_courses(id):
 
   try:
+
+
     id_exists=User_courses.query.filter_by(user_Id=id).first()
 
+
     if not id_exists:
-      return jsonify({"error": "User not enrolled for any course"}), 401       
+      return jsonify({"error": "User not enrolled for any course"}), 401   
+  
 
     return jsonify(
     [
@@ -270,7 +513,20 @@ def get_user_courses(id):
   
   except:
       return jsonify({'message': 'error getting enrollments'}), 500
-    
+
+# get # of enrolled courses by user id
+@app.route('/delete_usercourse/<id>', methods=['DELETE'])
+def delete_usercourse(id):
+
+   try:
+     course = User_courses.query.filter_by(user_course_Id=id).first()
+     if course:
+       db.session.delete(course)
+       db.session.commit()      
+       return jsonify({'message': 'course deleted'}), 200
+     return jsonify({'message': 'course not found'}), 404
+   except:
+     return jsonify({'message': 'error getting course'}), 500
 
 # get current user
 @app.route("/current")
@@ -325,8 +581,6 @@ def get_user(id):
   except:
     return jsonify({'message': 'error getting user'}), 500
   
-  
-
 
 # create a course
 @app.route("/course", methods=["POST"])
@@ -350,7 +604,7 @@ def register_course():
     except:
         return jsonify({'error': 'error creating user'}), 500   
     
-# get all courses
+# get thematic
 @app.route('/get_thematic', methods=["GET"])
 def get_thematic():    
     unique_courses =  Courses.query.distinct(Courses.department_Name)    
@@ -359,6 +613,21 @@ def get_thematic():
                 "department_Name": course.department_Name              
             }            
             for course in unique_courses
+        ]
+    )
+
+# get course names
+@app.route('/get_coursenames', methods=["GET"])
+def get_coursenames():    
+    return jsonify(
+        [ 
+            {   
+                       
+                "course_Name": course.course_Name               
+
+              
+            }
+            for course in Courses.query.all()
         ]
     )
 
@@ -401,22 +670,45 @@ def get_courses():
         ]
     )
 
-    
-    # # update a course by course id
-@app.route("/update_course/<int:id>", methods=["PUT"])
-def update_course(id):
+   
+# # update a course by course id
+@app.route("/update_course/<int:course_id>", methods=["PUT"])
+def update_course(course_id):
     
     try:
-        course = Courses.query.filter_by(course_Id=id).first()
+        course = Courses.query.filter_by(course_Id=course_id).first()
+
         if course:
-            course.course_Name = request.json["course_Name"]
-            course.department_Name = request.json["department_Name"]
-        
-            db.session.commit()
-            return jsonify({'message': 'Course updated!',"id": course.course_Id, "Name": course.course_Name, "Department": course.department_Name}), 200
+           course_exists = Courses.query.filter_by(course_Name=request.json["course_Name"]).first() is not None
+
+        if course_exists:
+            return jsonify({"error": "A course with the name provided already exists"}), 409 
+        course.course_Name = request.json["course_Name"]
+        course.department_Name = request.json["department_Name"]
+        db.session.commit()        
+    
+
+        return jsonify({'message': 'Course updated!',"id": course.course_Id, "Name": course.course_Name, "Department": course.department_Name}), 200
     except:
          return jsonify({'message': 'error updating course'}), 500
+# # update a course by course id
+@app.route("/update_user_course/<int:course_id>", methods=["PUT"])
+def update_usercourse(course_id):
+    
+    try:
+        user_course = User_courses.query.filter_by(course_Id=course_id)
+            
+        if user_course:
 
+            for user_course in User_courses.query.filter_by(course_Id=course_id):
+                user_course.course_Name = request.json["course_Name"]
+                user_course.department_Name = request.json["department_Name"]
+            db.session.commit()
+    
+
+        return jsonify({'message': 'Course updated!',"1": user_course.course_Name, "2": user_course.department_Name}), 200
+    except:
+         return jsonify({'message': 'error updating course'}), 500
 #delete a course
 @app.route('/delete_course/<int:id>', methods=['DELETE'])
 def delete_course(id):
@@ -430,61 +722,7 @@ def delete_course(id):
    except:
      return jsonify({'message': 'error getting course'}), 500
    
-
-   
-# get document by course id
-@app.route('/course_document/<id>', methods=['GET'])
-def course_document(id):
-
-  try:
-    id_document_exists=Documents.query.filter_by(course_Id=id).first()
-
-    if not id_document_exists:
-      return jsonify({"error": "No document found for the selected course"}), 401       
-
-    return jsonify(
-    [
-        {
-            "document_Id": document.document_Id,              
-            "document_Name": document.document_Name,
-            "document_Url": document.document_Url,
-          
-            
-        }
-        for document in Documents.query.filter_by(course_Id=id)
-
-    ])  
-  
-  except:
-      return jsonify({'message': 'error getting recourses'}), 500
-  
-  # get video by course id
-@app.route('/course_video/<id>', methods=['GET'])
-def course_video(id):
-
-  try:
-    id_video_exists=Videos.query.filter_by(course_Id=id).first()
-
-    if not id_video_exists:
-      return jsonify({"error": "No video found for the selected course"}), 401       
-
-    return jsonify(
-    [
-        {
-          
-            "video_Id": video.video_Id,              
-            "video_Name": video.video_Name,
-            "video_Url": video.video_Url,
-            
-        }
-        for video in Videos.query.filter_by(course_Id=id)
-
-    ])  
-  
-  except:
-      return jsonify({'message': 'error getting recourses'}), 500
-
-# create a resource document
+ # create a resource document
 @app.route("/document", methods=["POST"])
 def create_document(): 
 
@@ -532,6 +770,32 @@ def update_document(id):
              return jsonify({'message': 'document updated!',"document_Id": document.document_Id, "Url": document.document_Url}), 200
      except:
          return jsonify({'message': 'error updating document_Url'}), 500 
+     
+# get document by course id
+@app.route('/course_document/<id>', methods=['GET'])
+def course_document(id):
+
+  try:
+    id_document_exists=Documents.query.filter_by(course_Id=id).first()
+
+    if not id_document_exists:
+      return jsonify({"error": "No document found for the selected course"}), 401       
+
+    return jsonify(
+    [
+        {
+            "document_Id": document.document_Id,              
+            "document_Name": document.document_Name,
+            "document_Url": document.document_Url,
+          
+            
+        }
+        for document in Documents.query.filter_by(course_Id=id)
+
+    ])  
+  
+  except:
+      return jsonify({'message': 'error getting recourses'}), 500
     
 #delete a document
 @app.route('/delete_document/<int:id>', methods=['DELETE'])
@@ -593,6 +857,35 @@ def update_video(id):
              return jsonify({'message': 'video updated!',"video_Id": video.video_Id, "video_Name": video.video_Name, "video_Url": video.video_Url}), 200
      except:
          return jsonify({'message': 'error updating video'}), 500 
+     
+      
+  
+  # get video by course id
+@app.route('/course_video/<id>', methods=['GET'])
+def course_video(id):
+
+  try:
+    id_video_exists=Videos.query.filter_by(course_Id=id).first()
+
+    if not id_video_exists:
+      return jsonify({"error": "No video found for the selected course"}), 401       
+
+    return jsonify(
+    [
+        {
+          
+            "video_Id": video.video_Id,              
+            "video_Name": video.video_Name,
+            "video_Url": video.video_Url,
+            
+        }
+        for video in Videos.query.filter_by(course_Id=id)
+
+    ])  
+  
+  except:
+      return jsonify({'message': 'error getting recourses'}), 500
+
 
 #delete a video
 @app.route('/delete_video/<int:id>', methods=['DELETE'])

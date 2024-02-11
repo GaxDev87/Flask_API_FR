@@ -24,6 +24,8 @@ import { LinksFunction, json } from "@remix-run/node";
 import { cssBundleHref } from "@remix-run/css-bundle";
 // import { safeRedirect } from "~/utils";
 import cursoStyles from "~/styles/gestionar_cursos.css";
+import { BsSearch } from "react-icons/bs";
+import Sidebar from "./Sidebar";
 
 import { Button, ModalBody, ModalFooter, ModalHeader } from "flowbite-react";
 
@@ -37,24 +39,44 @@ const CoursesList = () => {
   const [isEditOpen, setEditOpen] = useState(false);
   const [isCreatetOpen, setCreateOpen] = useState(false);
   const [isClosedCreatetOpen, setClosedCreatetOpen] = useState(false);
-  const [searchId, setSearchId] = useState("");
+  const [searchCourseId, setSearchCourseId] = useState("");
+  const [searchCourseName, setSearchCourseName] = useState("");
+  const [searchCourseThematic, setSearchCourseThematic] = useState("");
+
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
-  const [courseId, setId] = useState(0);
+  const [courseId, setcourseId] = useState(0);
   const [courseName, setCourseName] = useState("");
   const [courseDepartment, setDepartment] = useState("");
   const [courseThematic, setThematic] = useState([]);
-  const [courseData, setCourseData] = useState<
-    {
-      curso: Course;
-    }[]
-  >([]);
-  const data = useLoaderData();
-  let courses_data = data["data_response"];
-  // const [coursesList, setCourses] = useState([]);
+  const [courseNames, setCourseNames] = useState([]);
+
+  const [coursesList, setCoursesList] = useState([]);
+
+  // const [courseData, setCourseData] = useState<
+  //   {
+  //     curso: Course;
+  //   }[]
+  // >([]);
+  // const data = useLoaderData();
+  // let courses_data = data["data_response"];
+
+  // };
+  const getCoursesListAPI = () => {
+    fetch("http://localhost:5000/get_courses") // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setCoursesList(data); // Set the fetched data
+      });
+  };
+
+  useEffect(() => {
+    // Trigger fetching method on component mount
+    getCoursesListAPI();
+  }, []);
 
   const handleClickDelete = (id: number) => {
-    setId(id);
+    setcourseId(id);
     setInfo("¿Está seguro de que desea eliminar el curso " + id + "?");
     setIsOpenConfirm(true);
   };
@@ -63,7 +85,15 @@ const CoursesList = () => {
 
   useEffect(() => {
     // Fetch data using Promise with the Fetch API
-    const getCoursesAPI = () => {
+
+    const getCourseNamesAPI = () => {
+      fetch("http://localhost:5000/get_coursenames") // Fetch data based on the current page
+        .then((response) => response.json()) // Parse the response as JSON
+        .then((data) => {
+          setCourseNames(data); // Set the fetched data
+        });
+    };
+    const getThematicAPI = () => {
       fetch("http://localhost:5000/get_thematic") // Fetch data based on the current page
         .then((response) => response.json()) // Parse the response as JSON
         .then((data) => {
@@ -72,7 +102,8 @@ const CoursesList = () => {
     };
 
     // Trigger fetching method on component mount
-    getCoursesAPI();
+    getCourseNamesAPI();
+    getThematicAPI();
   }, []);
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
@@ -111,20 +142,12 @@ const CoursesList = () => {
     } catch {}
   };
 
-  const handleSearch = () => {
-    // getUsersId();
-    // getUsersFirst();
-    // getUsersSurname();
-    // getUsersEmail();
-    // getUsersUserType();
-  };
-
   const handleClickEdit = (
     course_Id: number,
     course_Name: string,
     department_Name: string
   ) => {
-    setId(course_Id);
+    setcourseId(course_Id);
     setCourseName(course_Name);
     setDepartment(department_Name);
 
@@ -142,15 +165,26 @@ const CoursesList = () => {
         setInfo("Curso actualizado correctamente!");
         setIsOpen(true);
       })
+      .then((response) => {
+        setInfo("Curso actualizado correctamente!");
+        setIsOpen(true);
+      })
       .catch((error) => {
-        setInfo("Fallo al actualizar el curso " + courseId);
+        setInfo("Ya existe un curso con el mismo nombre ");
         setIsOpen(true);
       });
+
+    //updating user Courses table inc case changes are made in table courses
+
+    axios.put("http://localhost:5000/update_user_course/" + courseId, {
+      course_Name: courseName,
+      department_Name: courseDepartment,
+    });
   };
 
   const handleClose = () => {
     location.href = "/Admin_courses"; // Actualizar tabla cursos
-    updateCourses();
+    getCoursesListAPI();
     setIsOpen(false);
   };
 
@@ -161,7 +195,7 @@ const CoursesList = () => {
 
   const handleCloseCancel = () => {
     location.href = "/Admin_courses";
-    updateCourses();
+    getCoursesListAPI();
     setIsOpenConfirm(false);
   };
 
@@ -190,72 +224,386 @@ const CoursesList = () => {
     setCreateOpen(true);
   };
 
-  const handleClickCreate = () => {
-    axios
-      .post("http://localhost:5000/course", {
-        course_Name: courseName,
-        department_Name: courseDepartment,
-      })
-      .then((response) => {
-        setInfo("Curso creado correctamente!");
-        setIsOpen(true);
-      })
-      .catch((error) => {
-        setInfo("Fallo al crear el curso");
-        setIsOpen(true);
+  const getCoursesId = () => {
+    fetch("http://localhost:5000/search_courseId/" + searchCourseId) // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setCoursesList(data); // Set the fetched data
       });
   };
 
-  const updateCourses = () => {
-    try {
-      const courseData = Object.keys(courses_data).map((diccionarioKey) => {
-        const diccionario = courses_data[diccionarioKey];
-        const curso: Course = {
-          course_Id: diccionario["course_Id"],
-          course_Name: diccionario["course_Name"],
-          department_Name: diccionario["department_Name"],
-          course_Description: diccionario["course_Description"],
-        };
-
-        return {
-          curso: curso,
-        };
+  const getCoursesName = () => {
+    fetch("http://localhost:5000/search_courseName/" + searchCourseName) // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setCoursesList(data); // Set the fetched data
       });
+  };
 
-      setCourseData(courseData);
-      console.log(courseData);
-    } catch (error) {
-      console.log(error);
-    }
+  const getCoursesThematic = () => {
+    fetch("http://localhost:5000/search_courseThematic/" + searchCourseThematic) // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setCoursesList(data); // Set the fetched data
+      });
+  };
+
+  const handleSearch = () => {
+    getCoursesId();
+    getCoursesName();
+    getCoursesThematic();
+    // getUsersEmail();
+    // getUsersUserType();
   };
 
   useEffect(() => {
-    updateCourses(); // Obtener los usuarios
+    getCoursesListAPI(); // Obtener los usuarios
   }, []);
+
+  if (coursesList.map == null) {
+    return (
+      <Sidebar>
+        <div style={{ marginRight: "7%", marginTop: "1%" }}>
+          <table
+            style={{
+              width: "90%",
+            }}
+          >
+            <thead>
+              <tr>
+                <th
+                  style={{
+                    width: "10%",
+                  }}
+                >
+                  <Button onClick={handleClickAdd} className="AddLink">
+                    ANADIR NUEVO CURSO <IoAddOutline />
+                  </Button>
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+              <tr>
+                <th></th>
+                <th
+                  style={{
+                    paddingLeft: "10%",
+                  }}
+                >
+                  ID del Curso
+                </th>
+                <th>Nombre del Curso</th>
+                <th>Temática del Curso</th>
+                <th>Editar Curso</th>
+                <th>Eliminar Curso</th>
+                <th>Gestionar Recursos</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>
+                  <input
+                    style={{
+                      width: "250px",
+                      backgroundColor: "white",
+                      textAlign: "center",
+                      fontSize: "25px",
+                      borderRadius: "15px",
+                      marginLeft: "35%",
+                    }}
+                    name="searcherId"
+                    // value={searchId}
+                    className="search"
+                    // onChange={handleChangeId}
+                  ></input>
+                </th>
+                <th>
+                  <input
+                    style={{
+                      backgroundColor: "white",
+                      textAlign: "center",
+                      fontSize: "25px",
+                      borderRadius: "15px",
+                    }}
+                    name="searchName"
+                    // value={searchFirstName}
+                    className="search"
+                    // onChange={handleChangeFirstName}
+                  ></input>
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+            </tbody>
+            <Modal
+              isOpen={isCreatetOpen}
+              onRequestClose={handleClose}
+              style={{
+                overlay: {
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                },
+                content: {
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  backgroundColor: "white",
+                  borderRadius: "5px",
+                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                  padding: "20px",
+                  height: "570px",
+                  maxWidth: "500px",
+                  width: "100%",
+                },
+              }}
+            >
+              <h4
+                style={{
+                  textAlign: "center",
+                  marginRight: "40px",
+                  fontSize: "30px",
+                }}
+              >
+                {" "}
+                CREAR CURSO
+              </h4>
+              <p
+                style={{
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: "22px",
+                }}
+              >
+                {/* {info} */}
+              </p>
+              <form className="max-w-sm mx-auto bg">
+                <div>
+                  <label htmlFor="name">Nombre del Curso:</label>
+                  <input
+                    style={{
+                      marginTop: "20px",
+                      backgroundColor: "skyblue",
+                      textAlign: "center",
+                      fontSize: "25px",
+                      borderRadius: "15px",
+                    }}
+                    type="text"
+                    id="courseName"
+                    value={courseName}
+                    onChange={(event) => setCourseName(event.target.value)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="surname">Temática:</label>
+                  <input
+                    style={{
+                      backgroundColor: "skyblue",
+                      textAlign: "center",
+                      marginTop: "20px",
+                      fontSize: "25px",
+                      borderRadius: "15px",
+                    }}
+                    type="text"
+                    id="courseDetartment"
+                    value={courseDepartment}
+                    onChange={(event) => setDepartment(event.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <Button onClick={handleSubmit} className="popUpButtonCreate">
+                    CREAR
+                  </Button>
+                  <Button
+                    onClick={handleCloseCancel}
+                    className="popUpButtonCancel"
+                  >
+                    CANCELAR
+                  </Button>
+                </div>
+              </form>
+            </Modal>
+
+            <Modal
+              isOpen={isOpenConfirm}
+              onRequestClose={handleCloseCancel}
+              style={{
+                overlay: {
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                },
+                content: {
+                  position: "absolute",
+                  top: "50%",
+                  left: "750px",
+                  transform: "translate(-50%, -50%)",
+                  backgroundColor: "white",
+                  borderRadius: "5px",
+                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                  padding: "20px",
+                  height: "300px",
+                  maxWidth: "700px",
+                  width: "100%",
+                },
+              }}
+            >
+              <h4
+                style={{
+                  textAlign: "center",
+                  marginRight: "40px",
+                  fontSize: "30px",
+                }}
+              >
+                AVISO
+              </h4>
+              <p
+                style={{
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: "22px",
+                }}
+              >
+                {info}
+              </p>
+              <button onClick={handleCloseConfirm} className="popUpButton2">
+                Aceptar
+              </button>
+              <button onClick={handleCloseCancel} className="popUpButton2">
+                Cancelar
+              </button>
+            </Modal>
+          </table>
+
+          <Modal
+            isOpen={isClosedCreatetOpen}
+            onRequestClose={handleCloseCreate}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "white",
+                borderRadius: "5px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                padding: "20px",
+                height: "300px",
+                maxWidth: "500px",
+                width: "100%",
+              },
+            }}
+          >
+            <h4
+              style={{
+                textAlign: "center",
+                marginRight: "40px",
+                fontSize: "30px",
+              }}
+            >
+              AVISO
+            </h4>
+            <p
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: "22px",
+              }}
+            >
+              {info}
+            </p>
+            <Button onClick={handleCloseCreate} className="popUpButton">
+              Aceptar
+            </Button>
+          </Modal>
+
+          <Modal
+            isOpen={isOpen}
+            onRequestClose={handleClose}
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              content: {
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "white",
+                borderRadius: "5px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                padding: "20px",
+                height: "300px",
+                maxWidth: "500px",
+                width: "100%",
+              },
+            }}
+          >
+            <h4
+              style={{
+                textAlign: "center",
+                marginRight: "40px",
+                fontSize: "30px",
+              }}
+            >
+              AVISO
+            </h4>
+            <p
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: "22px",
+              }}
+            >
+              {info}
+            </p>
+            <button onClick={handleClose} className="popUpButton">
+              Aceptar
+            </button>
+          </Modal>
+        </div>
+      </Sidebar>
+    );
+  }
 
   return (
     <div style={{ marginRight: "7%", marginTop: "1%" }}>
-      <table>
+      <table
+        style={{
+          width: "90%",
+        }}
+      >
         <thead>
           <tr>
-            <td>
+            <th
+              style={{
+                width: "10%",
+              }}
+            >
               <Button onClick={handleClickAdd} className="AddLink">
                 ANADIR NUEVO CURSO <IoAddOutline />
               </Button>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
           </tr>
           <tr>
             <th></th>
             <th
               style={{
-                paddingLeft: "4%",
+                paddingLeft: "10%",
               }}
             >
               ID del Curso
@@ -271,26 +619,35 @@ const CoursesList = () => {
         <tbody>
           <tr>
             <th>
-              {" "}
-              <div>
-                <button onClick={handleSearch} className="Buscar">
-                  Buscar
+              <div
+                style={{
+                  marginRight: "100%",
+                }}
+              >
+                <button
+                  style={{
+                    width: "45px",
+                  }}
+                  onClick={handleSearch}
+                  className="Buscar"
+                >
+                  <BsSearch />
                 </button>
               </div>
             </th>
             <th>
               <input
-                name="searcherId"
-                value={searchId}
+                name="searchCourseId"
+                value={searchCourseId}
                 className="search"
-                onChange={(event) => setSearchId(event.target.value)}
+                onChange={(event) => setSearchCourseId(event.target.value)}
                 style={{
-                  width: "200px",
                   backgroundColor: "white",
                   textAlign: "center",
                   fontSize: "20px",
                   borderRadius: "15px",
-                  marginLeft: "33%",
+                  width: "50%",
+                  marginLeft: "52%",
                 }}
               ></input>
             </th>
@@ -301,19 +658,19 @@ const CoursesList = () => {
                   textAlign: "left",
                   fontSize: "20px",
                   borderRadius: "15px",
-                  width: "100%",
+                  width: "90%",
+                  marginLeft: "10%",
                 }}
                 className="dropdownsearch"
+                onChange={(event) => setSearchCourseName(event.target.value)}
+                value={searchCourseName}
               >
                 <option value="">Curso</option>
 
-                {courseData.map((item) => {
+                {courseNames.map((item) => {
                   return (
                     <>
-                      <option key={item.curso.course_Id}>
-                        {" "}
-                        {item.curso.course_Name}
-                      </option>
+                      <option key={item.course_Id}> {item.course_Name}</option>
                     </>
                   );
                 })}
@@ -326,9 +683,14 @@ const CoursesList = () => {
                   textAlign: "left",
                   fontSize: "20px",
                   borderRadius: "15px",
-                  width: "110%",
+                  width: "100%",
+                  marginLeft: "10%",
                 }}
                 className="dropdownsearch"
+                onChange={(event) =>
+                  setSearchCourseThematic(event.target.value)
+                }
+                value={searchCourseThematic}
               >
                 <option value="">Temática</option>
 
@@ -351,23 +713,33 @@ const CoursesList = () => {
             <th></th>
           </tr>
 
-          {courseData.map((item) => (
-            <tr key={item.curso.course_Id}>
+          {coursesList.map((item) => (
+            <tr key={item.course_Id}>
               <td></td>
               <td
                 style={{
-                  paddingLeft: "5%",
+                  paddingLeft: "10%",
                 }}
                 className="text-white font-bold size-15"
               >
-                {item.curso.course_Id}
+                {item.course_Id}
               </td>
 
-              <td className="text-white font-bold size-15">
-                {item.curso.course_Name}
+              <td
+                style={{
+                  paddingLeft: "2%",
+                }}
+                className="text-white font-bold size-15"
+              >
+                {item.course_Name}
               </td>
-              <td className="text-white font-bold size-15">
-                {item.curso.department_Name}
+              <td
+                style={{
+                  paddingLeft: "2%",
+                }}
+                className="text-white font-bold size-15"
+              >
+                {item.department_Name}
               </td>
 
               <td>
@@ -375,9 +747,9 @@ const CoursesList = () => {
                   to="#"
                   onClick={() =>
                     handleClickEdit(
-                      item.curso.course_Id,
-                      item.curso.course_Name,
-                      item.curso.department_Name
+                      item.course_Id,
+                      item.course_Name,
+                      item.department_Name
                     )
                   }
                   className="EditLink"
@@ -388,7 +760,7 @@ const CoursesList = () => {
               <td>
                 <Link
                   to="#"
-                  onClick={() => handleClickDelete(item.curso.course_Id)}
+                  onClick={() => handleClickDelete(item.course_Id)}
                   className="DeleteLink"
                 >
                   <FaTrash />
@@ -399,9 +771,9 @@ const CoursesList = () => {
                 <Link
                   to="/Documents"
                   state={{
-                    course_Id: item.curso.course_Id,
-                    course_Name: item.curso.course_Name,
-                    course_Description: item.curso.course_Description,
+                    course_Id: item.course_Id,
+                    course_Name: item.course_Name,
+                    course_Description: item.course_Description,
                   }}
                   // onClick={() => handleClickDelete(item.curso.id)}
                   className="EditLink"
@@ -412,9 +784,9 @@ const CoursesList = () => {
                 <Link
                   to="/Videos"
                   state={{
-                    course_Id: item.curso.course_Id,
-                    course_Name: item.curso.course_Name,
-                    course_Description: item.curso.course_Description,
+                    course_Id: item.course_Id,
+                    course_Name: item.course_Name,
+                    course_Description: item.course_Description,
                   }}
                   // onClick={() => handleClickDelete(item.curso.id)}
                   className="EditLink"

@@ -26,7 +26,7 @@ import { User } from "./user_interface";
 import { FaTrash } from "react-icons/fa";
 import { TbEdit } from "react-icons/tb";
 import { Button, ModalBody, ModalFooter, ModalHeader } from "flowbite-react";
-<script src="https://unpkg.com/htmx.org@1.9.10"></script>;
+import { BsSearch } from "react-icons/bs";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: registroStyles },
@@ -52,13 +52,13 @@ const UsersList = () => {
   const [coursesList, setCourses] = useState([]);
   const [SearchUserData, setSearchUserData] = useState([]);
 
-  const [userData, setUserData] = useState<
-    {
-      usuario: User;
-    }[]
-  >([]);
-  const data = useLoaderData();
-  let users_data = data["data_response"];
+  // const [userData, setUserData] = useState<
+  //   {
+  //     usuario: User;
+  //   }[]
+  // >([]);
+  // const data = useLoaderData();
+  // let users_data = data["data_response"];
 
   // Fetch data using Promise with the Fetch API
 
@@ -127,27 +127,6 @@ const UsersList = () => {
   //   updateUsers();
   // }, []);
   // Trigger fetching method on component mount
-
-  const handleChangeId = (e) => {
-    setSearchId(e.target.value);
-    getUsersId();
-  };
-
-  const handleChangeFirstName = (event) => {
-    setSearchFirstName(event.target.value);
-    getUsersFirst();
-    // getUsersListAPI();
-  };
-
-  const handleChangeSurname = (event) => {
-    setSearchSurname(event.target.value);
-    getUsersSurname();
-  };
-
-  const handleChangeEmail = (event) => {
-    setSearchEmail(event.target.value);
-    getUsersEmail();
-  };
 
   const handleClickDelete = (user_Id: number) => {
     setId(user_Id);
@@ -239,42 +218,22 @@ const UsersList = () => {
       });
   };
 
-  const updateUsers = () => {
-    try {
-      const userData = Object.keys(users_data).map((diccionarioKey) => {
-        const diccionario = users_data[diccionarioKey];
-        const usuario: User = {
-          user_Id: diccionario["id"],
-          firstName: diccionario["firstName"],
-          lastName: diccionario["lastName"],
-          email: diccionario["email"],
-          user_Type: diccionario["user_Type"],
-        };
-
-        return {
-          usuario: usuario,
-        };
-      });
-
-      setUserData(userData);
-      console.log(userData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
-    <div style={{ marginRight: "7%", marginTop: "1%" }}>
-      <table>
+    <div style={{ marginLeft: "-2%", marginTop: "1%" }}>
+      <table
+        style={{
+          width: "90%",
+        }}
+      >
         <thead>
           <tr>
             <th></th>
             <th
               style={{
-                paddingLeft: "0px",
+                paddingLeft: "9%",
               }}
             >
-              ID
+              Id Usuario
             </th>
             <th>Nombre</th>
             <th>Apellidos</th>
@@ -286,15 +245,22 @@ const UsersList = () => {
         </thead>
         <tbody>
           <tr>
-            <th
-              style={{
-                columnWidth: "100px",
-              }}
-            >
-              {" "}
-              <button onClick={handleSearch} className="Buscar">
-                Buscar
-              </button>
+            <th>
+              <div
+                style={{
+                  marginRight: "100%",
+                }}
+              >
+                <button
+                  style={{
+                    width: "45px",
+                  }}
+                  onClick={handleSearch}
+                  className="Buscar"
+                >
+                  <BsSearch />
+                </button>
+              </div>
             </th>
             <th className="colim">
               <input
@@ -303,8 +269,8 @@ const UsersList = () => {
                   textAlign: "center",
                   fontSize: "20px",
                   borderRadius: "15px",
-                  width: "60%",
-                  marginLeft: "20%",
+                  width: "50%",
+                  marginLeft: "50%",
                 }}
                 name="searcherId"
                 value={searchId}
@@ -319,8 +285,8 @@ const UsersList = () => {
                   textAlign: "center",
                   fontSize: "20px",
                   borderRadius: "15px",
-                  width: "90%",
-                  marginLeft: "5%",
+                  width: "100%",
+                  marginRight: "15px",
                 }}
                 name="searchName"
                 value={searchFirstName}
@@ -335,8 +301,8 @@ const UsersList = () => {
                   textAlign: "center",
                   fontSize: "20px",
                   borderRadius: "15px",
-                  width: "90%",
-                  marginLeft: "5%",
+                  width: "100%",
+                  marginRight: "15px",
                 }}
                 name="searchSurname"
                 value={searchSurname}
@@ -352,8 +318,8 @@ const UsersList = () => {
                   textAlign: "center",
                   fontSize: "20px",
                   borderRadius: "15px",
-                  width: "90%",
-                  marginLeft: "5%",
+                  width: "100%",
+                  marginRight: "15px",
                 }}
                 name="searchEmail"
                 value={searchEmail}
@@ -366,10 +332,11 @@ const UsersList = () => {
               <select
                 style={{
                   backgroundColor: "white",
-                  textAlign: "center",
+                  textAlign: "left",
                   fontSize: "20px",
                   borderRadius: "15px",
                   width: "100%",
+                  marginRight: "15px",
                 }}
                 value={searchUserType}
                 onChange={(event) => setsearchUserType(event.target.value)}
@@ -390,7 +357,7 @@ const UsersList = () => {
               <td></td>
               <td
                 style={{
-                  paddingLeft: "-10px",
+                  paddingLeft: "10%",
                 }}
                 className="text-white font-bold size-15"
               >

@@ -23,6 +23,7 @@ import { cssBundleHref } from "@remix-run/css-bundle";
 import cursoStyles from "~/styles/gestionar_cursos.css";
 import { Navigate, useNavigate } from "react-router-dom";
 import { User } from "./components/user_interface";
+import { BsSearch } from "react-icons/bs";
 
 import { CgArrowRightR } from "react-icons/cg";
 
@@ -48,34 +49,58 @@ const ListarCursos = () => {
   // const [isValidEmail, setIsValidEmail] = useState(true);
   // const [isOpen, setIsOpen] = useState(false);
   // const [isOpenConfirm, setIsOpenConfirm] = useState(false);
-  const [courseName, setCourseName] = useState("");
-  const [courseDepartment, setDepartment] = useState("");
-  const [search, setSearch] = useState("");
+  const [searchCourseName, setSearchCourseName] = useState("");
+  const [searchCourseThematic, setSearchCourseThematic] = useState("");
   const [courseThematic, setThematic] = useState([]);
+  const [courseNames, setCourseNames] = useState([]);
+  const [coursesList, setCoursesList] = useState([]);
+
   const navigate = useNavigate();
 
-  const [courseData, setCourseData] = useState<
-    {
-      curso: Course;
-    }[]
-  >([]);
-  const data = useLoaderData();
-  let courses_data = data["data_response"];
-  // const [coursesList, setCourses] = useState([]);
+  // const [courseData, setCourseData] = useState<
+  //   {
+  //     curso: Course;
+  //   }[]
+  // >([]);
+  // const data = useLoaderData();
+  // let courses_data = data["data_response"];
+
+  // };
+  const getCoursesListAPI = () => {
+    fetch("http://localhost:5000/get_courses") // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setCoursesList(data); // Set the fetched data
+      });
+  };
+
+  useEffect(() => {
+    // Trigger fetching method on component mount
+    getCoursesListAPI();
+  }, []);
 
   // State to hold fetched thematic data
 
+  const getCoursesAPI = () => {
+    fetch("http://localhost:5000/get_thematic") // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setThematic(data); // Set the fetched data
+      });
+  };
+
+  const getCourseNamesAPI = () => {
+    fetch("http://localhost:5000/get_coursenames") // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setCourseNames(data); // Set the fetched data
+      });
+  };
   useEffect(() => {
     // Fetch data using Promise with the Fetch API
-    const getCoursesAPI = () => {
-      fetch("http://localhost:5000/get_thematic") // Fetch data based on the current page
-        .then((response) => response.json()) // Parse the response as JSON
-        .then((data) => {
-          setThematic(data); // Set the fetched data
-        });
-    };
 
     // Trigger fetching method on component mount
+    getCourseNamesAPI();
     getCoursesAPI();
   }, []);
 
@@ -122,59 +147,55 @@ const ListarCursos = () => {
     }
   }, []);
 
-  const handleClickCourse = (
-    course_Id: number,
-    course_Name: string,
-    department_Name: string
-  ) => {
-    setId(course_Id);
-    setCourseName(course_Name);
-    setDepartment(department_Name);
+  const getCoursesName = () => {
+    fetch("http://localhost:5000/search_courseName/" + searchCourseName) // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setCoursesList(data); // Set the fetched data
+      });
+  };
 
-    // setInfo("Editando curso " + course_Name);
-    // setIsOpen(true);
+  const getCoursesThematic = () => {
+    fetch("http://localhost:5000/search_courseThematic/" + searchCourseThematic) // Fetch data based on the current page
+      .then((response) => response.json()) // Parse the response as JSON
+      .then((data) => {
+        setCoursesList(data); // Set the fetched data
+      });
+  };
 
-    // navigate("/Course_Template", { state: course_Name });
-
-    // <Link
-    //   to="/Course_Template"
-    //   state={{
-    //     course_Id: courseId,
-    //     course_Name: courseName, x
-    //   }}
-    // ></Link>;
+  const handleSearch = () => {
+    getCoursesName();
+    getCoursesThematic();
+    // getUsersEmail();
+    // getUsersUserType();
   };
 
   const handleClose = () => {
     setIsOpen(false);
   };
 
-  const updateCourses = () => {
-    try {
-      const courseData = Object.keys(courses_data).map((diccionarioKey) => {
-        const diccionario = courses_data[diccionarioKey];
-        const curso: Course = {
-          course_Id: diccionario["course_Id"],
-          course_Name: diccionario["course_Name"],
-          department_Name: diccionario["department_Name"],
-          course_Description: diccionario["course_Description"],
-        };
+  // const updateCourses = () => {
+  //   try {
+  //     const courseData = Object.keys(courses_data).map((diccionarioKey) => {
+  //       const diccionario = courses_data[diccionarioKey];
+  //       const curso: Course = {
+  //         course_Id: diccionario["course_Id"],
+  //         course_Name: diccionario["course_Name"],
+  //         department_Name: diccionario["department_Name"],
+  //         course_Description: diccionario["course_Description"],
+  //       };
 
-        return {
-          curso: curso,
-        };
-      });
+  //       return {
+  //         curso: curso,
+  //       };
+  //     });
 
-      setCourseData(courseData);
-      console.log(courseData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    updateCourses(); // Obtener los usuarios
-  }, []);
+  //     setCourseData(courseData);
+  //     console.log(courseData);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <div style={{ marginRight: "7%", marginTop: "1%" }}>
@@ -190,12 +211,19 @@ const ListarCursos = () => {
         <tbody>
           <tr>
             <th>
-              <div>
+              <div
+                style={{
+                  marginRight: "100%",
+                }}
+              >
                 <button
-                  // onClick={handleSearch}
+                  style={{
+                    width: "45px",
+                  }}
+                  onClick={handleSearch}
                   className="Buscar"
                 >
-                  Buscar
+                  <BsSearch />
                 </button>
               </div>
             </th>
@@ -206,20 +234,20 @@ const ListarCursos = () => {
                   textAlign: "left",
                   fontSize: "20px",
                   borderRadius: "15px",
+                  width: "50%",
                 }}
                 className="dropdownsearch"
                 name="searchName"
+                onChange={(event) => setSearchCourseName(event.target.value)}
+                value={searchCourseName}
                 // value={search}
               >
                 <option value="">Cursos</option>
 
-                {courseData.map((item) => {
+                {courseNames.map((item) => {
                   return (
                     <>
-                      <option key={item.curso.course_Id}>
-                        {" "}
-                        {item.curso.course_Name}
-                      </option>
+                      <option key={item.course_Id}> {item.course_Name}</option>
                     </>
                   );
                 })}
@@ -232,9 +260,14 @@ const ListarCursos = () => {
                   textAlign: "left",
                   fontSize: "20px",
                   borderRadius: "15px",
+                  width: "50%",
                 }}
                 className="dropdownsearch"
                 name="searchName"
+                onChange={(event) =>
+                  setSearchCourseThematic(event.target.value)
+                }
+                value={searchCourseThematic}
                 // value={search}
               >
                 <option value="">Temática</option>
@@ -254,26 +287,26 @@ const ListarCursos = () => {
             <th></th>
           </tr>
 
-          {courseData.map((item) => (
-            <tr key={item.curso.course_Id}>
+          {coursesList.map((item) => (
+            <tr key={item.course_Id}>
               <td></td>
               <td className="text-white font-bold size-15">
-                {item.curso.course_Name}
+                {item.course_Name}
               </td>
               <td className="text-white font-bold size-15">
-                {item.curso.department_Name}
+                {item.department_Name}
               </td>
 
               <td>
                 <Link
-                  to="/Course_Template"
+                  to="/Course_Registration_template"
                   state={{
                     userId: user_Id,
                     firstName: firstName,
                     email: email,
-                    course_Id: item.curso.course_Id,
-                    course_Name: item.curso.course_Name,
-                    course_Description: item.curso.course_Description,
+                    course_Id: item.course_Id,
+                    course_Name: item.course_Name,
+                    course_Description: item.course_Description,
                   }} // onClick={() =>
                   //   handleClickCourse(
                   //     item.curso.course_Id,
@@ -289,50 +322,6 @@ const ListarCursos = () => {
             </tr>
           ))}
         </tbody>
-        {/* <Modal
-          isOpen={isOpen}
-          onRequestClose={handleClose}
-          style={{
-            overlay: {
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            },
-            content: {
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              backgroundColor: "white",
-              borderRadius: "5px",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-              padding: "20px",
-              height: "300px",
-              maxWidth: "500px",
-              width: "100%",
-            },
-          }}
-        >
-          <h4
-            style={{
-              textAlign: "center",
-              marginRight: "40px",
-              fontSize: "30px",
-            }}
-          >
-            AVISO
-          </h4>
-          <p
-            style={{
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: "22px",
-            }}
-          >
-            {info}
-          </p>
-          <button onClick={handleClose} className="popUpButton">
-            Aceptar
-          </button>
-        </Modal> */}
       </table>
     </div>
   );
