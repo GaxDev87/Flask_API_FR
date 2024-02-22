@@ -9,7 +9,7 @@ class ApplicationConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = True
     
-    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:admin8722@localhost:5432"
+    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:password@localhost:5432"
 
 
 
