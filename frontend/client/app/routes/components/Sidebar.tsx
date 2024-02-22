@@ -11,7 +11,6 @@ import { Link } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import LogoNTT from "~/images/NTT2.png";
 import { GiExitDoor } from "react-icons/gi";
-import { AiFillExperiment, AiOutlineHome } from "react-icons/ai";
 import { BiSolidBookReader } from "react-icons/bi";
 
 import { RxDashboard } from "react-icons/rx";
@@ -19,7 +18,7 @@ import Navbar from "./Navbar";
 import styles from "~/styles/app.css";
 import {} from "react-icons/ai";
 import { FaCircleUser } from "react-icons/fa6";
-
+import { AiFillExperiment, AiOutlineHome } from "react-icons/ai";
 import { FiUser } from "react-icons/fi";
 import { FaCog } from "react-icons/fa";
 import axios from "axios";
@@ -48,7 +47,7 @@ import { RiNumber0 } from "react-icons/ri";
 function Sidebar({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const menuOptions = [
-    { path: "/", icon: <FaCog /> },
+    // { path: "/", icon: <FaCog /> },
     { path: "/Micuenta", icon: <FaCircleUser /> },
     { path: "/", icon: <AiOutlineHome /> },
   ];
@@ -156,7 +155,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
                 style={{ color: "white" }}
               >
                 <IoBookSharp className="w-6 h-6 mr-2" />
-                <Link to={`/User_courses`}>Mis cursos</Link>
+                <Link to={`/RenderUserCourses`}>Mis cursos</Link>
               </li>
 
               <li
@@ -164,7 +163,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
                 style={{ color: "white" }}
               >
                 <AiFillExperiment className="w-6 h-6 mr-2" />
-                <Link to={`/...`}>Mis laboratorios</Link>
+                <Link to={`#`}>Mis laboratorios</Link>
               </li>
             </ul>
 
@@ -195,11 +194,6 @@ function Sidebar({ children }: { children: React.ReactNode }) {
     return (
       <aside>
         <div>
-          <Navbar
-            title={"Hola " + firstName + ", te damos la bienvenida!"}
-            options={menuOptions}
-          />
-
           <div
             className="fixed top-0 left-0 w-60 bg-blue-800"
             style={{
@@ -242,7 +236,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
                 style={{ color: "white" }}
               >
                 <AiFillExperiment className="w-6 h-6 mr-2" />
-                <Link to={`/...`}>Gestión de Laboratorios</Link>
+                <Link to={`#`}>Gestión de Laboratorios</Link>
               </li>
             </ul>
 

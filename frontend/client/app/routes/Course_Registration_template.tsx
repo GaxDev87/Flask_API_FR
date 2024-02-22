@@ -23,6 +23,8 @@ export default function Course_Template(props) {
   const [firstName, setFirstName] = useState("");
   const [courseName, setCourseName] = useState("");
   const [courseDescription, setCourseDescription] = useState("");
+  const [courseImage, setCourseImage] = useState("");
+
   const [courseId, setCourseId] = useState(0);
   const [courseEmail, setCourseEmail] = useState("");
 
@@ -37,6 +39,7 @@ export default function Course_Template(props) {
     setFirstName(data.firstName);
     setCourseName(data.course_Name);
     setCourseDescription(data.course_Description);
+    setCourseImage(data.course_Picture);
   }, []);
 
   const handleClose = () => {
@@ -89,11 +92,32 @@ export default function Course_Template(props) {
           Hola {firstName}, a continuación te ofrecemos los detalles del curso:{" "}
           <p>{courseName}</p>
           <br></br>
+          <img
+            style={{
+              display: "center",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+            src={courseImage}
+            alt="Course Image"
+            width="800px"
+            height="1100px"
+          />
           <p className="text-3xl font-bold text-white">Descripción:</p>
           <br></br>
           <div>
             <p>{courseDescription}</p>
           </div>
+          <br></br>
+          <p>Durante este curso se abordarán los siguientes modulos:</p>
+          <ul>
+            <br></br>
+
+            <li>-Introduccion a {courseName}</li>
+            <li>-Objetivos de aprendisaje del curso {courseName}</li>
+            <li>-Antecedentes de {courseName}</li>
+            <li>-Aspectos básicos de {courseName}</li>
+          </ul>
         </h1>
 
         <br></br>

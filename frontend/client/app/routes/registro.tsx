@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { cssBundleHref } from "@remix-run/css-bundle";
+
 // import { safeRedirect } from "~/utils";
 import registroStyles from "~/styles/registro.css";
+import { cssBundleHref } from "@remix-run/css-bundle";
 import { Navigate } from "react-router-dom";
 
 import { LinksFunction, json } from "@remix-run/node";
@@ -18,7 +19,6 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import { Layout } from "./layout";
 // import Navbar from "~/components/Navbar";
 // import { FaCog } from "react-icons/fa";
 // import { FiUser, FiHome } from "react-icons/fi";
@@ -109,8 +109,7 @@ const Registro_user = () => {
                 );
               } else {
                 console.log("Usuario añadido correctamente");
-                setInfo("Usuario creado correctamente");
-                navigate("/inicio");
+                setInfo("Usuario creado correctamente!");
               }
             },
             (error) => {
@@ -130,6 +129,7 @@ const Registro_user = () => {
 
   const handleClose = () => {
     setIsOpen(false);
+    navigate("/inicio");
   };
 
   return (

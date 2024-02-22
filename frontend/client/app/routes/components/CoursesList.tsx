@@ -48,18 +48,13 @@ const CoursesList = () => {
   const [courseId, setcourseId] = useState(0);
   const [courseName, setCourseName] = useState("");
   const [courseDepartment, setDepartment] = useState("");
+  const [courseDescription, setCourseDescription] = useState("");
+  const [courseImageURL, setcourseImageURL] = useState("");
+
   const [courseThematic, setThematic] = useState([]);
   const [courseNames, setCourseNames] = useState([]);
 
   const [coursesList, setCoursesList] = useState([]);
-
-  // const [courseData, setCourseData] = useState<
-  //   {
-  //     curso: Course;
-  //   }[]
-  // >([]);
-  // const data = useLoaderData();
-  // let courses_data = data["data_response"];
 
   // };
   const getCoursesListAPI = () => {
@@ -75,9 +70,9 @@ const CoursesList = () => {
     getCoursesListAPI();
   }, []);
 
-  const handleClickDelete = (id: number) => {
+  const handleClickDelete = (id: number, coursename: string) => {
     setcourseId(id);
-    setInfo("¿Está seguro de que desea eliminar el curso " + id + "?");
+    setInfo("¿Está seguro de que desea eliminar el curso " + coursename + "?");
     setIsOpenConfirm(true);
   };
 
@@ -130,6 +125,8 @@ const CoursesList = () => {
         .post("http://localhost:5000/course", {
           course_Name: courseName,
           department_Name: courseDepartment,
+          course_Description: courseDescription,
+          course_Picture: courseImageURL,
         })
         .then((response) => {
           setInfo("Curso creado correctamente!");
@@ -145,11 +142,15 @@ const CoursesList = () => {
   const handleClickEdit = (
     course_Id: number,
     course_Name: string,
-    department_Name: string
+    department_Name: string,
+    course_Description: string,
+    course_Picture: string
   ) => {
     setcourseId(course_Id);
     setCourseName(course_Name);
     setDepartment(department_Name);
+    setCourseDescription(course_Description);
+    setcourseImageURL(course_Picture);
 
     // setInfo("Editando curso " + course_Name);
     setEditOpen(true);
@@ -160,6 +161,8 @@ const CoursesList = () => {
       .put("http://localhost:5000/update_course/" + courseId, {
         course_Name: courseName,
         department_Name: courseDepartment,
+        course_Description: courseDescription,
+        course_Picture: courseImageURL,
       })
       .then((response) => {
         setInfo("Curso actualizado correctamente!");
@@ -267,6 +270,9 @@ const CoursesList = () => {
           <table
             style={{
               width: "90%",
+              display: "auto",
+              marginRight: "auto",
+              marginLeft: "auto",
             }}
           >
             <thead>
@@ -310,7 +316,7 @@ const CoursesList = () => {
                 <th>
                   <input
                     style={{
-                      width: "250px",
+                      width: "230px",
                       backgroundColor: "white",
                       textAlign: "center",
                       fontSize: "25px",
@@ -357,7 +363,7 @@ const CoursesList = () => {
                   borderRadius: "5px",
                   boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
                   padding: "20px",
-                  height: "570px",
+                  height: "750px",
                   maxWidth: "500px",
                   width: "100%",
                 },
@@ -400,7 +406,7 @@ const CoursesList = () => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="surname">Temática:</label>
+                  <label htmlFor="surname">Temática del curso:</label>
                   <input
                     style={{
                       backgroundColor: "skyblue",
@@ -414,6 +420,34 @@ const CoursesList = () => {
                     value={courseDepartment}
                     onChange={(event) => setDepartment(event.target.value)}
                   />
+                </div>
+                <div>
+                  <label htmlFor="surname">Descripción del curso:</label>
+
+                  <textarea
+                    style={{
+                      marginTop: "20px",
+                      backgroundColor: "skyblue",
+                      textAlign: "center",
+                      fontSize: "25px",
+                      borderRadius: "15px",
+                      width: "100%",
+                      height: "70%",
+                    }}
+                  ></textarea>
+                </div>
+
+                <div>
+                  <label htmlFor="surname">URL Imagen del curso:</label>
+                  <input
+                    style={{
+                      backgroundColor: "skyblue",
+                      textAlign: "center",
+                      marginTop: "20px",
+                      fontSize: "25px",
+                      borderRadius: "15px",
+                    }}
+                  ></input>
                 </div>
 
                 <div>
@@ -601,32 +635,77 @@ const CoursesList = () => {
           </tr>
           <tr>
             <th></th>
+            <th>ID del Curso</th>
             <th
               style={{
-                paddingLeft: "10%",
+                display: "auto",
+                marginRight: "auto",
+                marginLeft: "auto",
               }}
             >
-              ID del Curso
+              Nombre del Curso
             </th>
-            <th>Nombre del Curso</th>
-            <th>Temática del Curso</th>
-            <th>Editar Curso</th>
-            <th>Eliminar Curso</th>
-            <th>Gestionar Recursos</th>
+            <th
+              style={{
+                display: "auto",
+                marginRight: "auto",
+                marginLeft: "auto",
+              }}
+            >
+              Temática del Curso
+            </th>
+            <th
+              style={{
+                display: "auto",
+                marginRight: "auto",
+                marginLeft: "auto",
+              }}
+            >
+              Editar Curso
+            </th>
+            <th
+              style={{
+                display: "auto",
+                marginRight: "auto",
+                marginLeft: "auto",
+              }}
+            >
+              Eliminar Curso
+            </th>
+            <th
+              style={{
+                display: "auto",
+                marginRight: "auto",
+                marginLeft: "auto",
+              }}
+            >
+              Gestionar Recursos
+            </th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th>
-              <div
+            <th
+              style={{
+                paddingRight: "11%",
+              }}
+            >
+              <label
                 style={{
-                  marginRight: "100%",
+                  marginLeft: "60%",
+                  marginTop: "-5%",
+                  fontSize: "18px",
                 }}
               >
+                Filtrar
+              </label>
+              <div>
                 <button
                   style={{
-                    width: "45px",
+                    fontSize: "34px",
+                    width: "58px",
+                    height: "58px",
                   }}
                   onClick={handleSearch}
                   className="Buscar"
@@ -642,12 +721,14 @@ const CoursesList = () => {
                 className="search"
                 onChange={(event) => setSearchCourseId(event.target.value)}
                 style={{
+                  width: "150px",
                   backgroundColor: "white",
                   textAlign: "center",
                   fontSize: "20px",
                   borderRadius: "15px",
-                  width: "50%",
-                  marginLeft: "52%",
+                  display: "auto",
+                  marginRight: "auto",
+                  marginLeft: "auto",
                 }}
               ></input>
             </th>
@@ -658,8 +739,10 @@ const CoursesList = () => {
                   textAlign: "left",
                   fontSize: "20px",
                   borderRadius: "15px",
-                  width: "90%",
-                  marginLeft: "10%",
+                  width: "350px",
+                  display: "auto",
+                  marginRight: "auto",
+                  marginLeft: "auto",
                 }}
                 className="dropdownsearch"
                 onChange={(event) => setSearchCourseName(event.target.value)}
@@ -684,7 +767,9 @@ const CoursesList = () => {
                   fontSize: "20px",
                   borderRadius: "15px",
                   width: "100%",
-                  marginLeft: "10%",
+                  display: "auto",
+                  marginRight: "auto",
+                  marginLeft: "auto",
                 }}
                 className="dropdownsearch"
                 onChange={(event) =>
@@ -716,29 +801,12 @@ const CoursesList = () => {
           {coursesList.map((item) => (
             <tr key={item.course_Id}>
               <td></td>
-              <td
-                style={{
-                  paddingLeft: "10%",
-                }}
-                className="text-white font-bold size-15"
-              >
-                {item.course_Id}
-              </td>
+              <td className="text-white font-bold size-15">{item.course_Id}</td>
 
-              <td
-                style={{
-                  paddingLeft: "2%",
-                }}
-                className="text-white font-bold size-15"
-              >
+              <td className="text-white font-bold size-15">
                 {item.course_Name}
               </td>
-              <td
-                style={{
-                  paddingLeft: "2%",
-                }}
-                className="text-white font-bold size-15"
-              >
+              <td className="text-white font-bold size-15">
                 {item.department_Name}
               </td>
 
@@ -749,7 +817,9 @@ const CoursesList = () => {
                     handleClickEdit(
                       item.course_Id,
                       item.course_Name,
-                      item.department_Name
+                      item.department_Name,
+                      item.course_Description,
+                      item.course_Picture
                     )
                   }
                   className="EditLink"
@@ -760,7 +830,9 @@ const CoursesList = () => {
               <td>
                 <Link
                   to="#"
-                  onClick={() => handleClickDelete(item.course_Id)}
+                  onClick={() =>
+                    handleClickDelete(item.course_Id, item.course_Name)
+                  }
                   className="DeleteLink"
                 >
                   <FaTrash />
@@ -814,7 +886,7 @@ const CoursesList = () => {
               borderRadius: "5px",
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
               padding: "20px",
-              height: "570px",
+              height: "750px",
               maxWidth: "500px",
               width: "100%",
             },
@@ -857,7 +929,7 @@ const CoursesList = () => {
               />
             </div>
             <div>
-              <label htmlFor="surname">Temática:</label>
+              <label htmlFor="surname">Temática del curso:</label>
               <input
                 style={{
                   backgroundColor: "skyblue",
@@ -871,6 +943,39 @@ const CoursesList = () => {
                 value={courseDepartment}
                 onChange={(event) => setDepartment(event.target.value)}
               />
+            </div>
+
+            <div>
+              <label htmlFor="courseDescription">Descripción del curso:</label>
+
+              <textarea
+                style={{
+                  marginTop: "20px",
+                  backgroundColor: "skyblue",
+                  textAlign: "center",
+                  fontSize: "25px",
+                  borderRadius: "15px",
+                  width: "100%",
+                  height: "70%",
+                }}
+                value={courseDescription}
+                onChange={(event) => setCourseDescription(event.target.value)}
+              ></textarea>
+            </div>
+
+            <div>
+              <label htmlFor="courseImageURL">URL Imagen del curso:</label>
+              <input
+                style={{
+                  backgroundColor: "skyblue",
+                  textAlign: "center",
+                  marginTop: "20px",
+                  fontSize: "25px",
+                  borderRadius: "15px",
+                }}
+                value={courseImageURL}
+                onChange={(event) => setcourseImageURL(event.target.value)}
+              ></input>
             </div>
 
             <div>
@@ -899,7 +1004,7 @@ const CoursesList = () => {
               borderRadius: "5px",
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
               padding: "20px",
-              height: "570px",
+              height: "800px",
               maxWidth: "500px",
               width: "100%",
             },
@@ -942,7 +1047,7 @@ const CoursesList = () => {
               />
             </div>
             <div>
-              <label htmlFor="surname">Temática:</label>
+              <label htmlFor="courseDepartment">Temática del curso:</label>
               <input
                 style={{
                   backgroundColor: "skyblue",
@@ -956,6 +1061,38 @@ const CoursesList = () => {
                 value={courseDepartment}
                 onChange={(event) => setDepartment(event.target.value)}
               />
+            </div>
+
+            <div>
+              <label htmlFor="courseDescription">Descripción del curso:</label>
+
+              <textarea
+                style={{
+                  marginTop: "20px",
+                  backgroundColor: "skyblue",
+                  textAlign: "center",
+                  fontSize: "25px",
+                  borderRadius: "15px",
+                  width: "100%",
+                  height: "70%",
+                }}
+                value={courseDescription}
+                onChange={(event) => setCourseDescription(event.target.value)}
+              ></textarea>
+            </div>
+            <div>
+              <label htmlFor="courseImageURL">URL Imagen del curso:</label>
+              <input
+                style={{
+                  backgroundColor: "skyblue",
+                  textAlign: "center",
+                  marginTop: "20px",
+                  fontSize: "25px",
+                  borderRadius: "15px",
+                }}
+                value={courseImageURL}
+                onChange={(event) => setcourseImageURL(event.target.value)}
+              ></input>
             </div>
 
             <div>

@@ -19,43 +19,41 @@ import { FiUser, FiHome } from "react-icons/fi";
 import Navbar from "./components/Navbar";
 import CoursesList from "./components/CoursesList";
 import Sidebar from "./components/Sidebar";
-import CoursesListAlumnos from "./CoursesListAlumnos";
-import ListCourses from "./ListCourses";
-
+import ListCourses from "./components/ListCourses";
+import { FaCircleUser } from "react-icons/fa6";
+import { AiFillExperiment, AiOutlineHome } from "react-icons/ai";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: gestionarUsuariosStyles },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
 
-export function loader() {
-  return axios
-    .get("http://localhost:5000/get_courses")
-    .then((response) => {
-      const data = response.data;
-      let data_response = data;
-      if (typeof response.data === "string") {
-        console.log("Error: no data");
-        return "no data";
-      } else {
-        console.log("Usuarios obtenidos correctamente");
-        return { data_response };
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      return error;
-    });
-}
-
 const RenderListCourses = () => {
   const menuOptions = [
-    { path: "/admin", icon: <FaCog /> },
-    { path: "/perfil", icon: <FiUser /> },
-    { path: "/main", icon: <FiHome /> },
+    // { path: "/", icon: <FaCog /> },
+    { path: "/Micuenta", icon: <FaCircleUser /> },
+    { path: "/", icon: <AiOutlineHome /> },
   ];
   return (
     <Sidebar>
-      <div style={{ marginLeft: "280px", marginTop: "7%" }}>
+      <Navbar title="CURSOS DISPONIBLES" options={menuOptions} />{" "}
+      <h1
+        style={{
+          marginLeft: "9.8%",
+          width: "83.6%",
+          borderRadius: "15px",
+          marginTop: "5%",
+        }}
+        className="text-3xl font-bold text-white bg-blue-600 align-middle"
+      >
+        <p
+          style={{
+            paddingBottom: "25px",
+          }}
+        >
+          LISTADO DE CURSOS DISPONIBLES:
+        </p>
+      </h1>
+      <div style={{ marginLeft: "280px", marginTop: "2%" }}>
         {/* <h1 className="text-blue-500 font-bold size-10">CURSOS DISPONIBLES:</h1> */}
         <ListCourses />
       </div>

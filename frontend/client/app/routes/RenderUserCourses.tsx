@@ -19,8 +19,9 @@ import { FiUser, FiHome } from "react-icons/fi";
 import Navbar from "./components/Navbar";
 import CoursesList from "./components/CoursesList";
 import Sidebar from "./components/Sidebar";
-import CoursesListAlumnos from "./CoursesListAlumnos";
-import User_courses from "./User_courses";
+import User_courses from "./components/User_courses";
+import { FaCircleUser } from "react-icons/fa6";
+import { AiFillExperiment, AiOutlineHome } from "react-icons/ai";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: gestionarUsuariosStyles },
@@ -28,20 +29,16 @@ export const links: LinksFunction = () => [
 ];
 
 const RenderUserCourses = () => {
-  const [user_Id, setId] = useState(0);
-
-  useEffect(() => {
-    const userId = sessionStorage.getItem("user_id");
-    loader(userId);
-  }, []);
+  const [user_Id, setId] = useState(Number);
 
   const menuOptions = [
-    { path: "/admin", icon: <FaCog /> },
-    { path: "/perfil", icon: <FiUser /> },
-    { path: "/main", icon: <FiHome /> },
+    // { path: "/", icon: <FaCog /> },
+    { path: "/Micuenta", icon: <FaCircleUser /> },
+    { path: "/", icon: <AiOutlineHome /> },
   ];
   return (
     <Sidebar>
+      <Navbar title="CURSOS INSCRITOS" options={menuOptions} />{" "}
       <div style={{ marginLeft: "280px", marginTop: "7%" }}>
         {/* <h1 className="text-blue-500 font-bold size-10">CURSOS DISPONIBLES:</h1> */}
         <User_courses />
@@ -51,23 +48,3 @@ const RenderUserCourses = () => {
 };
 
 export default RenderUserCourses;
-
-export function loader(userId: number) {
-  return axios
-    .get("http://localhost:5000/user_courses/" + userId)
-    .then((response) => {
-      const data = response.data;
-      let data_response = data;
-      if (typeof response.data === "string") {
-        console.log("Error: no data");
-        return "no data";
-      } else {
-        console.log("Usuarios obtenidos correctamente");
-        return { data_response };
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      return error;
-    });
-}

@@ -84,10 +84,10 @@ export default function Curso(props) {
             <p>Durante este curso se abordarán los siguientes modulos:</p>
             <br></br>
 
-            <p>-Introduccion a {courseName}</p>
-            <p>-Objetivos de aprendisaje del curso {courseName}</p>
-            <p>-Aspectos básicos de {courseName}</p>
-            <p>-Antecedentes de {courseName}</p>
+            <li>-Introduccion a {courseName}</li>
+            <li>-Objetivos de aprendisaje del curso {courseName}</li>
+            <li>-Aspectos básicos de {courseName}</li>
+            <li>-Antecedentes de {courseName}</li>
           </ul>
           <br></br>
           <div>

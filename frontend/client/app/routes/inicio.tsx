@@ -89,7 +89,7 @@ const Inicio = () => {
         <h3>{info}</h3>
         <input
           type="text"
-          placeholder="Introduzca su nombre de usuario"
+          placeholder="Introduce tu correo electrónico"
           id="email"
           value={email}
           onChange={(event) => setUsername(event.target.value)}
@@ -98,7 +98,7 @@ const Inicio = () => {
       <div>
         <input
           type="password"
-          placeholder="Introduzca su contraseña"
+          placeholder="Introduce tu contraseña"
           id="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
@@ -107,7 +107,7 @@ const Inicio = () => {
       <button type="submit">INICIAR SESIÓN</button>
 
       <div className="contrasena">
-        <Link to="#">¿Has olvidado tu contraseña?</Link>
+        <Link to="/forgot_password">¿Has olvidado tu contraseña?</Link>
       </div>
       <Modal
         isOpen={isOpen}

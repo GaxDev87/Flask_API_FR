@@ -16,15 +16,17 @@ import { Link, useLoaderData, useParams } from "@remix-run/react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Modal from "react-modal";
-import { Course } from "./components/course_interface";
+import { Course } from "./course_interface";
 import { LinksFunction, json } from "@remix-run/node";
 import { cssBundleHref } from "@remix-run/css-bundle";
 // import { safeRedirect } from "~/utils";
 import cursoStyles from "~/styles/gestionar_cursos.css";
 import { Navigate, useNavigate } from "react-router-dom";
-import { User } from "./components/user_interface";
+import { User } from "./user_interface";
 import { BsSearch } from "react-icons/bs";
-
+import Navbar from "./Navbar";
+import { FaCircleUser } from "react-icons/fa6";
+import { AiFillExperiment, AiOutlineHome } from "react-icons/ai";
 import { CgArrowRightR } from "react-icons/cg";
 
 export const links: LinksFunction = () => [
@@ -45,10 +47,6 @@ const ListarCursos = () => {
   const [group_Type, setgroup_Type] = useState("");
   const [user_type, setType] = useState("");
 
-  // const [info, setInfo] = useState("");
-  // const [isValidEmail, setIsValidEmail] = useState(true);
-  // const [isOpen, setIsOpen] = useState(false);
-  // const [isOpenConfirm, setIsOpenConfirm] = useState(false);
   const [searchCourseName, setSearchCourseName] = useState("");
   const [searchCourseThematic, setSearchCourseThematic] = useState("");
   const [courseThematic, setThematic] = useState([]);
@@ -56,14 +54,6 @@ const ListarCursos = () => {
   const [coursesList, setCoursesList] = useState([]);
 
   const navigate = useNavigate();
-
-  // const [courseData, setCourseData] = useState<
-  //   {
-  //     curso: Course;
-  //   }[]
-  // >([]);
-  // const data = useLoaderData();
-  // let courses_data = data["data_response"];
 
   // };
   const getCoursesListAPI = () => {
@@ -174,29 +164,6 @@ const ListarCursos = () => {
     setIsOpen(false);
   };
 
-  // const updateCourses = () => {
-  //   try {
-  //     const courseData = Object.keys(courses_data).map((diccionarioKey) => {
-  //       const diccionario = courses_data[diccionarioKey];
-  //       const curso: Course = {
-  //         course_Id: diccionario["course_Id"],
-  //         course_Name: diccionario["course_Name"],
-  //         department_Name: diccionario["department_Name"],
-  //         course_Description: diccionario["course_Description"],
-  //       };
-
-  //       return {
-  //         curso: curso,
-  //       };
-  //     });
-
-  //     setCourseData(courseData);
-  //     console.log(courseData);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   return (
     <div style={{ marginRight: "7%", marginTop: "1%" }}>
       <table>
@@ -210,7 +177,21 @@ const ListarCursos = () => {
         </thead>
         <tbody>
           <tr>
-            <th>
+            <th
+              style={{
+                paddingRight: "12%",
+              }}
+            >
+              <label
+                style={{
+                  marginLeft: "60%",
+                  marginTop: "-5%",
+                  fontSize: "18px",
+                }}
+              >
+                Filtrar
+              </label>
+
               <div
                 style={{
                   marginRight: "100%",
@@ -218,7 +199,9 @@ const ListarCursos = () => {
               >
                 <button
                   style={{
-                    width: "45px",
+                    fontSize: "34px",
+                    width: "58px",
+                    height: "58px",
                   }}
                   onClick={handleSearch}
                   className="Buscar"
@@ -307,6 +290,7 @@ const ListarCursos = () => {
                     course_Id: item.course_Id,
                     course_Name: item.course_Name,
                     course_Description: item.course_Description,
+                    course_Picture: item.course_Picture,
                   }} // onClick={() =>
                   //   handleClickCourse(
                   //     item.curso.course_Id,

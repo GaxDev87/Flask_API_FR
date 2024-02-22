@@ -48,27 +48,8 @@ const UsersList = () => {
   const [searchSurname, setSearchSurname] = useState("");
   const [searchEmail, setSearchEmail] = useState("");
   const [searchUserType, setsearchUserType] = useState("");
-
-  const [coursesList, setCourses] = useState([]);
   const [SearchUserData, setSearchUserData] = useState([]);
 
-  // const [userData, setUserData] = useState<
-  //   {
-  //     usuario: User;
-  //   }[]
-  // >([]);
-  // const data = useLoaderData();
-  // let users_data = data["data_response"];
-
-  // Fetch data using Promise with the Fetch API
-
-  // const getUsersListAPI = () => {
-  //   fetch("http://localhost:5000/get_users") // Fetch data based on the current page
-  //     .then((response) => response.json()) // Parse the response as JSON
-  //     .then((data) => {
-  //       setSearchUserData(data); // Set the fetched data
-  //     });
-  // };
   const getUsersListAPI = () => {
     fetch("http://localhost:5000/get_users") // Fetch data based on the current page
       .then((response) => response.json()) // Parse the response as JSON
@@ -82,6 +63,7 @@ const UsersList = () => {
     getUsersListAPI();
   }, []);
 
+  //lists of functions that handle input searches
   const getUsersId = () => {
     fetch("http://localhost:5000/searchId/" + searchId) // Fetch data based on the current page
       .then((response) => response.json()) // Parse the response as JSON
@@ -121,19 +103,13 @@ const UsersList = () => {
       });
   };
 
-  // useEffect(() => {
-  //   // Trigger fetching method on component mount
-  //   getUsersListAPI();
-  //   updateUsers();
-  // }, []);
-  // Trigger fetching method on component mount
-
   const handleClickDelete = (user_Id: number) => {
     setId(user_Id);
     setInfo("¿Está seguro de que desea eliminar el usuario " + user_Id + "?");
     setIsOpenConfirm(true);
   };
 
+  //function that handles input search calls
   const handleSearch = () => {
     getUsersId();
 
@@ -188,10 +164,6 @@ const UsersList = () => {
     setIsOpen(false);
   };
 
-  // const getOppositeUserRole = (userType: string) => {
-  //   return userType === "Administrador" ? "Alumno" : "Administrador";
-  // };
-
   const handleCloseCancel = () => {
     location.href = "/Admin_users";
     getUsersListAPI();
@@ -223,6 +195,9 @@ const UsersList = () => {
       <table
         style={{
           width: "90%",
+          display: "auto",
+          marginRight: "auto",
+          marginLeft: "auto",
         }}
       >
         <thead>
@@ -230,30 +205,87 @@ const UsersList = () => {
             <th></th>
             <th
               style={{
-                paddingLeft: "9%",
+                display: "auto",
+                marginRight: "auto",
+                marginLeft: "auto",
               }}
             >
               Id Usuario
             </th>
-            <th>Nombre</th>
-            <th>Apellidos</th>
-            <th>Correo Electrónico</th>
-            <th>Tipo de Usuario</th>
-            <th>Editar</th>
-            <th>Eliminar</th>
+            <th
+              style={{
+                display: "auto",
+                marginRight: "auto",
+                marginLeft: "auto",
+              }}
+            >
+              Nombre
+            </th>
+            <th
+              style={{
+                display: "auto",
+                marginRight: "auto",
+                marginLeft: "auto",
+              }}
+            >
+              Apellidos
+            </th>
+            <th
+              style={{
+                display: "auto",
+                marginRight: "auto",
+                marginLeft: "auto",
+              }}
+            >
+              Correo Electrónico
+            </th>
+            <th
+              style={{
+                display: "auto",
+                marginRight: "auto",
+                marginLeft: "auto",
+              }}
+            >
+              Tipo de Usuario
+            </th>
+            <th
+              style={{
+                display: "auto",
+                marginRight: "auto",
+                marginLeft: "auto",
+              }}
+            >
+              Editar
+            </th>
+            <th
+              style={{
+                display: "auto",
+                marginRight: "auto",
+                marginLeft: "auto",
+              }}
+            >
+              Eliminar
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <th>
-              <div
+              <label
                 style={{
-                  marginRight: "100%",
+                  paddingLeft: "16%",
+                  marginTop: "-5%",
+                  fontSize: "18px",
                 }}
               >
+                Filtrar
+              </label>
+              <div>
                 <button
                   style={{
-                    width: "45px",
+                    fontSize: "34px",
+                    width: "58px",
+                    height: "58px",
                   }}
                   onClick={handleSearch}
                   className="Buscar"
@@ -265,12 +297,14 @@ const UsersList = () => {
             <th className="colim">
               <input
                 style={{
+                  width: "150px",
                   backgroundColor: "white",
                   textAlign: "center",
-                  fontSize: "20px",
+                  fontSize: "25px",
                   borderRadius: "15px",
-                  width: "50%",
-                  marginLeft: "50%",
+                  display: "auto",
+                  marginRight: "auto",
+                  marginLeft: "auto",
                 }}
                 name="searcherId"
                 value={searchId}
@@ -286,7 +320,9 @@ const UsersList = () => {
                   fontSize: "20px",
                   borderRadius: "15px",
                   width: "100%",
-                  marginRight: "15px",
+                  display: "auto",
+                  marginRight: "auto",
+                  marginLeft: "auto",
                 }}
                 name="searchName"
                 value={searchFirstName}
@@ -302,7 +338,9 @@ const UsersList = () => {
                   fontSize: "20px",
                   borderRadius: "15px",
                   width: "100%",
-                  marginRight: "15px",
+                  display: "auto",
+                  marginRight: "auto",
+                  marginLeft: "auto",
                 }}
                 name="searchSurname"
                 value={searchSurname}
@@ -319,7 +357,9 @@ const UsersList = () => {
                   fontSize: "20px",
                   borderRadius: "15px",
                   width: "100%",
-                  marginRight: "15px",
+                  display: "auto",
+                  marginRight: "auto",
+                  marginLeft: "auto",
                 }}
                 name="searchEmail"
                 value={searchEmail}
@@ -336,7 +376,9 @@ const UsersList = () => {
                   fontSize: "20px",
                   borderRadius: "15px",
                   width: "100%",
-                  marginRight: "15px",
+                  display: "auto",
+                  marginRight: "auto",
+                  marginLeft: "auto",
                 }}
                 value={searchUserType}
                 onChange={(event) => setsearchUserType(event.target.value)}
@@ -355,14 +397,7 @@ const UsersList = () => {
           {SearchUserData.map((item) => (
             <tr key={item.user_Id}>
               <td></td>
-              <td
-                style={{
-                  paddingLeft: "10%",
-                }}
-                className="text-white font-bold size-15"
-              >
-                {item.user_Id}
-              </td>
+              <td className="text-white font-bold size-15">{item.user_Id}</td>
               <td className="text-white font-bold size-15">{item.firstName}</td>
               <td className="text-white font-bold size-15">{item.lastName}</td>
               <td className="text-white font-bold size-15">{item.email}</td>

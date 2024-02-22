@@ -19,46 +19,42 @@ import { FiUser, FiHome } from "react-icons/fi";
 import Navbar from "./components/Navbar";
 import CoursesList from "./components/CoursesList";
 import Sidebar from "./components/Sidebar";
+import { FaCircleUser } from "react-icons/fa6";
+import { AiFillExperiment, AiOutlineHome } from "react-icons/ai";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: gestionarUsuariosStyles },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
 
-export function loader() {
-  return axios
-    .get("http://localhost:5000/get_courses")
-    .then((response) => {
-      const data = response.data;
-      let data_response = data;
-      if (typeof response.data === "string") {
-        console.log("Error: no data");
-        return "no data";
-      } else {
-        console.log("Usuarios obtenidos correctamente");
-        return { data_response };
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      return error;
-    });
-}
-
 const Admin_courses = () => {
   const menuOptions = [
-    { path: "/admin", icon: <FaCog /> },
-    { path: "/perfil", icon: <FiUser /> },
-    { path: "/main", icon: <FiHome /> },
+    // { path: "/admin", icon: <FaCog /> },
+    { path: "/Micuenta", icon: <FaCircleUser /> },
+    { path: "/", icon: <AiOutlineHome /> },
   ];
+
   return (
     <Sidebar>
-      <div style={{ marginLeft: "280px", marginTop: "7%" }}>
+      <div
+        style={{
+          marginLeft: "300px",
+          marginRight: "250px",
+          marginTop: "150px",
+        }}
+      >
         <h1
-          style={{ marginLeft: "-285px" }}
-          className="text-blue-500 font-bold size-10"
+          style={{ marginLeft: "4.6%", width: "83.5%", borderRadius: "15px" }}
+          className="text-3xl font-bold text-white bg-blue-600 align-middle"
         >
-          GESTIONAR CURSOS:
+          <p
+            style={{
+              paddingBottom: "25px",
+            }}
+          >
+            <Navbar title="GESTIONAR CURSOS" options={menuOptions} />
+            LISTADO DE CURSOS REGISTRADOS
+          </p>
         </h1>
         <CoursesList />
       </div>

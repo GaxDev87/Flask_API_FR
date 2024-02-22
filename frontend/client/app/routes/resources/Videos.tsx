@@ -15,13 +15,21 @@ import { Button, ModalBody, ModalFooter, ModalHeader } from "flowbite-react";
 import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
+import { AiFillExperiment, AiOutlineHome } from "react-icons/ai";
+import { FaCircleUser } from "react-icons/fa6";
+import Navbar from "../components/Navbar";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: cursoStyles },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
 
-export default function Resource_Template(props) {
+export default function Videos(props) {
+  const menuOptions = [
+    // { path: "/", icon: <FaCog /> },
+    { path: "/Micuenta", icon: <FaCircleUser /> },
+    { path: "/", icon: <AiOutlineHome /> },
+  ];
   const Location = useLocation();
   console.log(props, "props");
   console.log(Location, "useLocation Hook");
@@ -34,6 +42,9 @@ export default function Resource_Template(props) {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
   const [isClosedCreatetOpen, setClosedCreatetOpen] = useState(false);
+  const [searchvideoId, setSearchVideoId] = useState("");
+  const [searchvideoName, setSearchVideoName] = useState("");
+  const [searchvideoModule, setSearchVideoModule] = useState("");
 
   const [user_Id, setId] = useState(0);
   const [firstName, setName] = useState("");
@@ -51,10 +62,10 @@ export default function Resource_Template(props) {
   const [videoName, setVideoName] = useState("");
   const [videoURL, setVideoURL] = useState("");
   const [courseName, setCourseName] = useState("");
+  const [videoModule, setVideoModule] = useState("");
 
   const navigate = useNavigate();
 
-  const [CourseDocuments, setCourseDocuments] = useState([]);
   const [CourseVideos, setCourseVideos] = useState([]);
 
   //   const navigate = useNavigate();
@@ -121,6 +132,7 @@ export default function Resource_Template(props) {
           course_Id: data.course_Id,
           video_Name: videoName,
           video_Url: videoURL,
+          video_Module: videoModule,
         })
         .then((response) => {
           setInfo("Video creado correctamente!");
@@ -162,11 +174,13 @@ export default function Resource_Template(props) {
   const handleClickEdit = (
     video_Id: number,
     video_Name: string,
-    video_Url: string
+    video_Url: string,
+    video_Module: string
   ) => {
     setVideoId(video_Id);
     setVideoName(video_Name);
     setVideoURL(video_Url);
+    setVideoModule(video_Module);
 
     // setInfo("Editando curso " + course_Name);
     setEditOpen(true);
@@ -177,6 +191,7 @@ export default function Resource_Template(props) {
       .put("http://localhost:5000/update_video/" + videoId, {
         video_Name: videoName,
         video_Url: videoURL,
+        video_Module: videoModule,
       })
       .then((response) => {
         setInfo("Video actualizado correctamente!");
@@ -201,7 +216,7 @@ export default function Resource_Template(props) {
   };
 
   const handleCloseCancel = () => {
-    location.href = "/Videos"; // Actualizar la tabla después
+    location.href = "/Documents"; // Actualizar la tabla después
     getCourseVideosAPI();
     setIsOpenConfirm(false);
   };
@@ -211,34 +226,502 @@ export default function Resource_Template(props) {
     setisCreatetVideoOpen(true);
   };
 
+  const getVideoId = () => {
+    axios
+      .post("http://localhost:5000/search_videoId/" + searchvideoId, {
+        course_Id: data.course_Id,
+      }) // Fetch data based on the current page
+      .then((response) => setCourseVideos(response.data)); // Parse the response as JSON
+  };
+  const getVideoName = () => {
+    axios
+      .post("http://localhost:5000/search_videoName/" + searchvideoName, {
+        course_Id: data.course_Id,
+      }) // Fetch data based on the current page
+      .then((response) => setCourseVideos(response.data)); // Parse the response as JSON
+  };
+
+  const getVideoModule = () => {
+    axios
+      .post("http://localhost:5000/search_video_module/" + searchvideoModule, {
+        course_Id: data.course_Id,
+      }) // Fetch data based on the current page
+      .then((response) => setCourseVideos(response.data)); // Parse the response as JSON
+  };
+
+  const handleSearch = () => {
+    getVideoId();
+    getVideoName();
+    getVideoModule();
+    // getUsersEmail();
+    // getUsersUserType();
+  };
+
   if (CourseVideos.map == null) {
     return (
+      <>
+        <Navbar title="GESTIONAR VIDEOS" options={menuOptions} />
+
+        <Sidebar>
+          <div
+            style={{ marginLeft: "10%", marginRight: "10%", marginTop: "5%" }}
+          >
+            <h1
+              style={{ marginLeft: "10%", marginRight: "10%", marginTop: "5%" }}
+              className="text-3xl font-bold text-blue-700"
+            >
+              {" "}
+              VIDEOS DEL CURSO {courseName}{" "}
+            </h1>
+            <table>
+              <thead>
+                <tr>
+                  <td>
+                    <Button onClick={handleClickAdd} className="AddLink">
+                      ANADIR NUEVO VIDEO <IoAddOutline />
+                    </Button>
+                  </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th
+                    style={{
+                      display: "auto",
+                      marginRight: "auto",
+                      marginLeft: "auto",
+                    }}
+                  >
+                    ID
+                  </th>
+                  <th
+                    style={{
+                      display: "auto",
+                      marginRight: "auto",
+                      marginLeft: "auto",
+                    }}
+                  >
+                    {" "}
+                    Nombre
+                  </th>
+                  <th
+                    style={{
+                      display: "auto",
+                      marginRight: "auto",
+                      marginLeft: "auto",
+                    }}
+                  >
+                    {" "}
+                    Módulo
+                  </th>
+                  <th
+                    style={{
+                      display: "auto",
+                      marginRight: "auto",
+                      marginLeft: "auto",
+                    }}
+                  >
+                    {" "}
+                    URL
+                  </th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>
+                    <input
+                      style={{
+                        width: "150px",
+                        backgroundColor: "white",
+                        textAlign: "center",
+                        fontSize: "25px",
+                        borderRadius: "15px",
+                        display: "auto",
+                        marginRight: "auto",
+                        marginLeft: "auto",
+                      }}
+                      name="searcherId"
+                      // value={searchId}
+                      className="search"
+                      // onChange={handleChangeId}
+                    ></input>
+                  </th>
+                  <th>
+                    <input
+                      style={{
+                        width: "300px",
+
+                        backgroundColor: "white",
+                        textAlign: "center",
+                        fontSize: "25px",
+                        borderRadius: "15px",
+                        display: "auto",
+                        marginRight: "auto",
+                        marginLeft: "auto",
+                      }}
+                      name="searchName"
+                      // value={searchFirstName}
+                      className="search"
+                      // onChange={handleChangeFirstName}
+                    ></input>
+                  </th>
+                  <th>
+                    <input
+                      style={{
+                        width: "150px",
+
+                        backgroundColor: "white",
+                        textAlign: "center",
+                        fontSize: "25px",
+                        borderRadius: "15px",
+                        display: "auto",
+                        marginRight: "auto",
+                        marginLeft: "auto",
+                      }}
+                      name="VideoModule"
+                      // value={searchFirstName}
+                      className="search"
+                      // onChange={handleChangeFirstName}
+                    ></input>
+                  </th>
+
+                  <th></th>
+                  <th></th>
+                </tr>
+              </tbody>
+              <Modal
+                isOpen={isCreatetVideoOpen}
+                onRequestClose={handleClose}
+                style={{
+                  overlay: {
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  },
+                  content: {
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    backgroundColor: "white",
+                    borderRadius: "5px",
+                    boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                    padding: "20px",
+                    height: "570px",
+                    maxWidth: "500px",
+                    width: "100%",
+                  },
+                }}
+              >
+                <h4
+                  style={{
+                    textAlign: "center",
+                    marginRight: "40px",
+                    fontSize: "30px",
+                  }}
+                >
+                  {" "}
+                  CREAR VIDEO
+                </h4>
+                <p
+                  style={{
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    fontSize: "22px",
+                  }}
+                >
+                  {/* {info} */}
+                </p>
+                <form className="max-w-sm mx-auto bg">
+                  <div>
+                    <label htmlFor="videoName">Nombre del Video:</label>
+                    <input
+                      style={{
+                        width: "100%",
+                        marginTop: "20px",
+                        backgroundColor: "skyblue",
+                        textAlign: "center",
+                        fontSize: "25px",
+                        borderRadius: "15px",
+                      }}
+                      type="text"
+                      id="videoName"
+                      value={videoName}
+                      onChange={(event) => setVideoName(event.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="videoURL">URL del Video:</label>
+                    <input
+                      style={{
+                        width: "100%",
+                        backgroundColor: "skyblue",
+                        textAlign: "center",
+                        marginTop: "20px",
+                        fontSize: "25px",
+                        borderRadius: "15px",
+                      }}
+                      type="text"
+                      id="videoURL"
+                      value={videoURL}
+                      onChange={(event) => setVideoURL(event.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="videoModule">Modulo del Video:</label>
+                    <input
+                      style={{
+                        width: "30%",
+
+                        backgroundColor: "skyblue",
+                        textAlign: "center",
+                        marginTop: "20px",
+                        fontSize: "25px",
+                        borderRadius: "15px",
+                      }}
+                      type="text"
+                      id="videoModule"
+                      value={videoModule}
+                      onChange={(event) => setVideoModule(event.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <Button
+                      onClick={handleSubmitDocument}
+                      className="popUpButtonCreate"
+                    >
+                      CREAR
+                    </Button>
+                    <Button
+                      onClick={handleCloseCancel}
+                      className="popUpButtonCancel"
+                    >
+                      CANCELAR
+                    </Button>
+                  </div>
+                </form>
+              </Modal>
+
+              <Modal
+                isOpen={isOpenConfirm}
+                onRequestClose={handleCloseCancel}
+                style={{
+                  overlay: {
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  },
+                  content: {
+                    position: "absolute",
+                    top: "50%",
+                    left: "750px",
+                    transform: "translate(-50%, -50%)",
+                    backgroundColor: "white",
+                    borderRadius: "5px",
+                    boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                    padding: "20px",
+                    height: "300px",
+                    maxWidth: "700px",
+                    width: "100%",
+                  },
+                }}
+              >
+                <h4
+                  style={{
+                    textAlign: "center",
+                    marginRight: "40px",
+                    fontSize: "30px",
+                  }}
+                >
+                  AVISO
+                </h4>
+                <p
+                  style={{
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    fontSize: "22px",
+                  }}
+                >
+                  {info}
+                </p>
+                <button onClick={handleCloseConfirm} className="popUpButton2">
+                  Aceptar
+                </button>
+                <button onClick={handleCloseCancel} className="popUpButton2">
+                  Cancelar
+                </button>
+              </Modal>
+            </table>
+
+            <Modal
+              isOpen={isClosedCreatetOpen}
+              onRequestClose={handleCloseCreate}
+              style={{
+                overlay: {
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                },
+                content: {
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  backgroundColor: "white",
+                  borderRadius: "5px",
+                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                  padding: "20px",
+                  height: "300px",
+                  maxWidth: "500px",
+                  width: "100%",
+                },
+              }}
+            >
+              <h4
+                style={{
+                  textAlign: "center",
+                  marginRight: "40px",
+                  fontSize: "30px",
+                }}
+              >
+                AVISO
+              </h4>
+              <p
+                style={{
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: "22px",
+                }}
+              >
+                {info}
+              </p>
+              <Button onClick={handleCloseCreate} className="popUpButton">
+                Aceptar
+              </Button>
+            </Modal>
+
+            <Modal
+              isOpen={isOpen}
+              onRequestClose={handleClose}
+              style={{
+                overlay: {
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                },
+                content: {
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  backgroundColor: "white",
+                  borderRadius: "5px",
+                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                  padding: "20px",
+                  height: "300px",
+                  maxWidth: "500px",
+                  width: "100%",
+                },
+              }}
+            >
+              <h4
+                style={{
+                  textAlign: "center",
+                  marginRight: "40px",
+                  fontSize: "30px",
+                }}
+              >
+                AVISO
+              </h4>
+              <p
+                style={{
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: "22px",
+                }}
+              >
+                {info}
+              </p>
+              <button onClick={handleClose} className="popUpButton">
+                Aceptar
+              </button>
+            </Modal>
+          </div>
+        </Sidebar>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Navbar title="GESTIONAR VIDEOS" options={menuOptions} />
+
       <Sidebar>
         <div style={{ marginLeft: "10%", marginRight: "10%", marginTop: "5%" }}>
           <h1
             style={{ marginLeft: "10%", marginRight: "10%", marginTop: "5%" }}
             className="text-3xl font-bold text-blue-700"
           >
-            {" "}
             VIDEOS DEL CURSO {courseName}{" "}
           </h1>
           <table>
             <thead>
               <tr>
-                <td>
+                <th>
                   <Button onClick={handleClickAdd} className="AddLink">
                     ANADIR NUEVO VIDEO <IoAddOutline />
                   </Button>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
               </tr>
               <tr>
-                <th>ID</th>
-                <th> Nombre</th>
-                <th> URL</th>
+                <th
+                  style={{
+                    display: "auto",
+                    marginRight: "auto",
+                    marginLeft: "auto",
+                  }}
+                ></th>
+                <th
+                  style={{
+                    display: "auto",
+                    marginRight: "auto",
+                    marginLeft: "auto",
+                  }}
+                >
+                  ID
+                </th>
+                <th
+                  style={{
+                    display: "auto",
+                    marginRight: "auto",
+                    marginLeft: "auto",
+                  }}
+                >
+                  {" "}
+                  Nombre
+                </th>
+                <th
+                  style={{
+                    display: "auto",
+                    marginRight: "auto",
+                    marginLeft: "auto",
+                  }}
+                >
+                  {" "}
+                  Módulo
+                </th>
+                <th
+                  style={{
+                    display: "auto",
+                    marginRight: "auto",
+                    marginLeft: "auto",
+                  }}
+                >
+                  {" "}
+                  URL
+                </th>
                 <th></th>
                 <th></th>
               </tr>
@@ -246,39 +729,132 @@ export default function Resource_Template(props) {
             <tbody>
               <tr>
                 <th>
+                  {" "}
+                  <div
+                    style={{
+                      marginRight: "100%",
+                    }}
+                  >
+                    <button
+                      style={{
+                        fontSize: "34px",
+                        width: "58px",
+                        height: "58px",
+                      }}
+                      onClick={handleSearch}
+                      className="Buscar"
+                    >
+                      <BsSearch />
+                    </button>
+                  </div>
+                </th>
+                <th>
                   <input
                     style={{
-                      width: "250px",
+                      width: "150px",
                       backgroundColor: "white",
                       textAlign: "center",
                       fontSize: "25px",
                       borderRadius: "15px",
-                      marginLeft: "35%",
+                      display: "auto",
+                      marginRight: "auto",
+                      marginLeft: "auto",
                     }}
-                    name="searcherId"
-                    // value={searchId}
+                    name="searchvideoId"
+                    value={searchvideoId}
                     className="search"
+                    onChange={(event) => setSearchVideoId(event.target.value)}
                     // onChange={handleChangeId}
                   ></input>
                 </th>
                 <th>
                   <input
                     style={{
+                      width: "350px",
                       backgroundColor: "white",
                       textAlign: "center",
                       fontSize: "25px",
                       borderRadius: "15px",
+                      display: "auto",
+                      marginRight: "auto",
+                      marginLeft: "auto",
                     }}
-                    name="searchName"
-                    // value={searchFirstName}
+                    name="searchvideoName"
+                    value={searchvideoName}
                     className="search"
+                    onChange={(event) => setSearchVideoName(event.target.value)}
                     // onChange={handleChangeFirstName}
+                  ></input>
+                </th>
+                <th>
+                  <input
+                    style={{
+                      width: "150px",
+
+                      backgroundColor: "white",
+                      textAlign: "center",
+                      fontSize: "25px",
+                      borderRadius: "15px",
+                      display: "auto",
+                      marginRight: "auto",
+                      marginLeft: "auto",
+                    }}
+                    name="VideoModule"
+                    value={searchvideoModule}
+                    className="search"
+                    onChange={(event) =>
+                      setSearchVideoModule(event.target.value)
+                    }
                   ></input>
                 </th>
                 <th></th>
                 <th></th>
                 <th></th>
               </tr>
+
+              {CourseVideos.map((item) => (
+                <tr key={item.video_Id}>
+                  <td></td>
+                  <td className="text-white font-bold size-15">
+                    {item.video_Id}
+                  </td>
+                  <td className="text-white font-bold size-15">
+                    {item.video_Name}
+                  </td>
+
+                  <td className="text-white font-bold size-15">
+                    {item.video_Module}
+                  </td>
+
+                  <td className="text-white font-bold size-15">
+                    {item.video_Url}
+                  </td>
+
+                  <td>
+                    <button
+                      onClick={() =>
+                        handleClickEdit(
+                          item.video_Id,
+                          item.video_Name,
+                          item.video_Url,
+                          item.video_Module
+                        )
+                      }
+                      className="EditLink"
+                    >
+                      <TbEdit />
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => handleClickDelete(item.video_Id)}
+                      className="DeleteLink"
+                    >
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
             <Modal
               isOpen={isCreatetVideoOpen}
@@ -325,6 +901,7 @@ export default function Resource_Template(props) {
                   <label htmlFor="videoName">Nombre del Video:</label>
                   <input
                     style={{
+                      width: "100%",
                       marginTop: "20px",
                       backgroundColor: "skyblue",
                       textAlign: "center",
@@ -341,6 +918,7 @@ export default function Resource_Template(props) {
                   <label htmlFor="videoURL">URL del Video:</label>
                   <input
                     style={{
+                      width: "100%",
                       backgroundColor: "skyblue",
                       textAlign: "center",
                       marginTop: "20px",
@@ -351,6 +929,24 @@ export default function Resource_Template(props) {
                     id="videoURL"
                     value={videoURL}
                     onChange={(event) => setVideoURL(event.target.value)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="videoModule">Modulo del Video:</label>
+                  <input
+                    style={{
+                      width: "30%",
+
+                      backgroundColor: "skyblue",
+                      textAlign: "center",
+                      marginTop: "20px",
+                      fontSize: "25px",
+                      borderRadius: "15px",
+                    }}
+                    type="text"
+                    id="videoModule"
+                    value={videoModule}
+                    onChange={(event) => setVideoModule(event.target.value)}
                   />
                 </div>
 
@@ -418,8 +1014,115 @@ export default function Resource_Template(props) {
                 Cancelar
               </button>
             </Modal>
-          </table>
+            <Modal
+              isOpen={isEditOpen}
+              onRequestClose={handleClose}
+              style={{
+                overlay: {
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                },
+                content: {
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  backgroundColor: "white",
+                  borderRadius: "5px",
+                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                  padding: "20px",
+                  height: "570px",
+                  maxWidth: "500px",
+                  width: "100%",
+                },
+              }}
+            >
+              <h4
+                style={{
+                  textAlign: "center",
+                  marginRight: "40px",
+                  fontSize: "30px",
+                }}
+              >
+                {" "}
+                EDITAR VIDEO
+              </h4>
+              <p
+                style={{
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: "22px",
+                }}
+              >
+                {info}
+              </p>
+              <form className="max-w-sm mx-auto bg">
+                <div>
+                  <label htmlFor="videoName">Nombre del Video:</label>
+                  <input
+                    style={{
+                      width: "100%",
+                      marginTop: "20px",
+                      backgroundColor: "skyblue",
+                      textAlign: "center",
+                      fontSize: "25px",
+                      borderRadius: "15px",
+                    }}
+                    type="text"
+                    id="videoName"
+                    value={videoName}
+                    onChange={(event) => setVideoName(event.target.value)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="videoURL">URL del Video:</label>
+                  <input
+                    style={{
+                      width: "100%",
+                      backgroundColor: "skyblue",
+                      textAlign: "center",
+                      marginTop: "20px",
+                      fontSize: "25px",
+                      borderRadius: "15px",
+                    }}
+                    type="text"
+                    id="videoURL"
+                    value={videoURL}
+                    onChange={(event) => setVideoURL(event.target.value)}
+                  />
+                </div>
 
+                <div>
+                  <label htmlFor="videoModule">Modulo del Video:</label>
+                  <input
+                    style={{
+                      width: "30%",
+
+                      backgroundColor: "skyblue",
+                      textAlign: "center",
+                      marginTop: "20px",
+                      fontSize: "25px",
+                      borderRadius: "15px",
+                    }}
+                    type="text"
+                    id="videoModule"
+                    value={videoModule}
+                    onChange={(event) => setVideoModule(event.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <Button
+                    onClick={handleClickUpdate}
+                    className="popUpButtonUpdate"
+                  >
+                    ACTUALIZAR
+                  </Button>
+                  <Button onClick={handleClose} className="popUpButtonCancel">
+                    CANCELAR
+                  </Button>
+                </div>
+              </form>
+            </Modal>
+          </table>
           <Modal
             isOpen={isClosedCreatetOpen}
             onRequestClose={handleCloseCreate}
@@ -511,482 +1214,6 @@ export default function Resource_Template(props) {
           </Modal>
         </div>
       </Sidebar>
-    );
-  }
-
-  return (
-    <Sidebar>
-      <div style={{ marginLeft: "10%", marginRight: "10%", marginTop: "5%" }}>
-        <h1
-          style={{ marginLeft: "10%", marginRight: "10%", marginTop: "5%" }}
-          className="text-3xl font-bold text-blue-700"
-        >
-          VIDEOS DEL CURSO {courseName}{" "}
-        </h1>
-        <table>
-          <thead>
-            <tr>
-              <th>
-                <Button onClick={handleClickAdd} className="AddLink">
-                  ANADIR NUEVO VIDEO <IoAddOutline />
-                </Button>
-              </th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-            </tr>
-            <tr>
-              <th
-                style={{
-                  paddingLeft: "15%",
-                }}
-              >
-                ID
-              </th>
-              <th
-                style={{
-                  paddingLeft: "21%",
-                }}
-              >
-                {" "}
-                Nombre
-              </th>
-              <th
-                style={{
-                  paddingLeft: "35%",
-                }}
-              >
-                {" "}
-                URL
-              </th>
-
-              <th></th>
-              <th></th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th
-                style={{
-                  width: "10%",
-                }}
-              >
-                {" "}
-                <div>
-                  <button
-                    style={{
-                      width: "45px",
-                    }}
-                    // onClick={handleSearch}
-                    className="Buscar"
-                  >
-                    <BsSearch />
-                  </button>
-                </div>
-              </th>
-              <th>
-                <input
-                  style={{
-                    width: "250px",
-                    backgroundColor: "white",
-                    textAlign: "left",
-                    fontSize: "25px",
-                    borderRadius: "15px",
-                    paddingLeft: "45%",
-                  }}
-                  name="searcherId"
-                  // value={searchId}
-                  className="search"
-                  // onChange={handleChangeId}
-                ></input>
-              </th>
-              <th>
-                <input
-                  style={{
-                    backgroundColor: "white",
-                    textAlign: "left",
-                    fontSize: "25px",
-                    borderRadius: "15px",
-                    paddingLeft: "45%",
-                  }}
-                  name="searchName"
-                  // value={searchFirstName}
-                  className="search"
-                  // onChange={handleChangeFirstName}
-                ></input>
-              </th>
-              <th></th>
-              <th></th>
-              <th></th>
-            </tr>
-
-            {CourseVideos.map((item) => (
-              <tr key={item.video_Id}>
-                <td></td>
-                <td
-                  style={{
-                    paddingRight: "2%",
-                  }}
-                  className="text-white font-bold size-15"
-                >
-                  {item.video_Id}
-                </td>
-                <td
-                  style={{
-                    paddingLeft: "2%",
-                  }}
-                  className="text-white font-bold size-15"
-                >
-                  {item.video_Name}
-                </td>
-                <td className="text-white font-bold size-15">
-                  {item.video_Url}
-                </td>
-
-                <td>
-                  <button
-                    onClick={() =>
-                      handleClickEdit(
-                        item.video_Id,
-                        item.video_Name,
-                        item.video_Url
-                      )
-                    }
-                    className="EditLink"
-                  >
-                    <TbEdit />
-                  </button>
-                </td>
-                <td>
-                  <button
-                    onClick={() => handleClickDelete(item.video_Id)}
-                    className="DeleteLink"
-                  >
-                    <FaTrash />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-          <Modal
-            isOpen={isCreatetVideoOpen}
-            onRequestClose={handleClose}
-            style={{
-              overlay: {
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-              },
-              content: {
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                backgroundColor: "white",
-                borderRadius: "5px",
-                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-                padding: "20px",
-                height: "570px",
-                maxWidth: "500px",
-                width: "100%",
-              },
-            }}
-          >
-            <h4
-              style={{
-                textAlign: "center",
-                marginRight: "40px",
-                fontSize: "30px",
-              }}
-            >
-              {" "}
-              CREAR VIDEO
-            </h4>
-            <p
-              style={{
-                textAlign: "center",
-                fontWeight: "bold",
-                fontSize: "22px",
-              }}
-            >
-              {/* {info} */}
-            </p>
-            <form className="max-w-sm mx-auto bg">
-              <div>
-                <label htmlFor="videoName">Nombre del Video:</label>
-                <input
-                  style={{
-                    marginTop: "20px",
-                    backgroundColor: "skyblue",
-                    textAlign: "center",
-                    fontSize: "25px",
-                    borderRadius: "15px",
-                  }}
-                  type="text"
-                  id="videoName"
-                  value={videoName}
-                  onChange={(event) => setVideoName(event.target.value)}
-                />
-              </div>
-              <div>
-                <label htmlFor="videoURL">URL del Video:</label>
-                <input
-                  style={{
-                    backgroundColor: "skyblue",
-                    textAlign: "center",
-                    marginTop: "20px",
-                    fontSize: "25px",
-                    borderRadius: "15px",
-                  }}
-                  type="text"
-                  id="videoURL"
-                  value={videoURL}
-                  onChange={(event) => setVideoURL(event.target.value)}
-                />
-              </div>
-
-              <div>
-                <Button
-                  onClick={handleSubmitDocument}
-                  className="popUpButtonCreate"
-                >
-                  CREAR
-                </Button>
-                <Button
-                  onClick={handleCloseCancel}
-                  className="popUpButtonCancel"
-                >
-                  CANCELAR
-                </Button>
-              </div>
-            </form>
-          </Modal>
-
-          <Modal
-            isOpen={isOpenConfirm}
-            onRequestClose={handleCloseCancel}
-            style={{
-              overlay: {
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-              },
-              content: {
-                position: "absolute",
-                top: "50%",
-                left: "750px",
-                transform: "translate(-50%, -50%)",
-                backgroundColor: "white",
-                borderRadius: "5px",
-                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-                padding: "20px",
-                height: "300px",
-                maxWidth: "700px",
-                width: "100%",
-              },
-            }}
-          >
-            <h4
-              style={{
-                textAlign: "center",
-                marginRight: "40px",
-                fontSize: "30px",
-              }}
-            >
-              AVISO
-            </h4>
-            <p
-              style={{
-                textAlign: "center",
-                fontWeight: "bold",
-                fontSize: "22px",
-              }}
-            >
-              {info}
-            </p>
-            <button onClick={handleCloseConfirm} className="popUpButton2">
-              Aceptar
-            </button>
-            <button onClick={handleCloseCancel} className="popUpButton2">
-              Cancelar
-            </button>
-          </Modal>
-          <Modal
-            isOpen={isEditOpen}
-            onRequestClose={handleClose}
-            style={{
-              overlay: {
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-              },
-              content: {
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                backgroundColor: "white",
-                borderRadius: "5px",
-                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-                padding: "20px",
-                height: "570px",
-                maxWidth: "500px",
-                width: "100%",
-              },
-            }}
-          >
-            <h4
-              style={{
-                textAlign: "center",
-                marginRight: "40px",
-                fontSize: "30px",
-              }}
-            >
-              {" "}
-              EDITAR VIDEO
-            </h4>
-            <p
-              style={{
-                textAlign: "center",
-                fontWeight: "bold",
-                fontSize: "22px",
-              }}
-            >
-              {info}
-            </p>
-            <form className="max-w-sm mx-auto bg">
-              <div>
-                <label htmlFor="videoName">Nombre del Video:</label>
-                <input
-                  style={{
-                    marginTop: "20px",
-                    backgroundColor: "skyblue",
-                    textAlign: "center",
-                    fontSize: "25px",
-                    borderRadius: "15px",
-                  }}
-                  type="text"
-                  id="videoName"
-                  value={videoName}
-                  onChange={(event) => setVideoName(event.target.value)}
-                />
-              </div>
-              <div>
-                <label htmlFor="videoURL">URL del Video:</label>
-                <input
-                  style={{
-                    backgroundColor: "skyblue",
-                    textAlign: "center",
-                    marginTop: "20px",
-                    fontSize: "25px",
-                    borderRadius: "15px",
-                  }}
-                  type="text"
-                  id="videoURL"
-                  value={videoURL}
-                  onChange={(event) => setVideoURL(event.target.value)}
-                />
-              </div>
-
-              <div>
-                <Button
-                  onClick={handleClickUpdate}
-                  className="popUpButtonUpdate"
-                >
-                  ACTUALIZAR
-                </Button>
-                <Button onClick={handleClose} className="popUpButtonCancel">
-                  CANCELAR
-                </Button>
-              </div>
-            </form>
-          </Modal>
-        </table>
-        <Modal
-          isOpen={isClosedCreatetOpen}
-          onRequestClose={handleCloseCreate}
-          style={{
-            overlay: {
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            },
-            content: {
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              backgroundColor: "white",
-              borderRadius: "5px",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-              padding: "20px",
-              height: "300px",
-              maxWidth: "500px",
-              width: "100%",
-            },
-          }}
-        >
-          <h4
-            style={{
-              textAlign: "center",
-              marginRight: "40px",
-              fontSize: "30px",
-            }}
-          >
-            AVISO
-          </h4>
-          <p
-            style={{
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: "22px",
-            }}
-          >
-            {info}
-          </p>
-          <Button onClick={handleCloseCreate} className="popUpButton">
-            Aceptar
-          </Button>
-        </Modal>
-
-        <Modal
-          isOpen={isOpen}
-          onRequestClose={handleClose}
-          style={{
-            overlay: {
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            },
-            content: {
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              backgroundColor: "white",
-              borderRadius: "5px",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-              padding: "20px",
-              height: "300px",
-              maxWidth: "500px",
-              width: "100%",
-            },
-          }}
-        >
-          <h4
-            style={{
-              textAlign: "center",
-              marginRight: "40px",
-              fontSize: "30px",
-            }}
-          >
-            AVISO
-          </h4>
-          <p
-            style={{
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: "22px",
-            }}
-          >
-            {info}
-          </p>
-          <button onClick={handleClose} className="popUpButton">
-            Aceptar
-          </button>
-        </Modal>
-      </div>
-    </Sidebar>
+    </>
   );
 }
